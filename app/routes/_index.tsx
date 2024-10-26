@@ -1,4 +1,8 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderFunction, MetaFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
+import { Outlet, useLoaderData } from "@remix-run/react";
+
+import { getSession } from "~/app/utils/session.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,18 +11,16 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader: LoaderFunction = async ({ request }) => {
+  const session = await getSession(request);
+
+  if (session.has("accessToken")) {
+    return redirect("/calendar");
+  } else {
+    return redirect("/auth/login");
+  }
+};
+
 export default function Index() {
-  return (
-    <div className="mx-auto flex min-h-screen flex-col items-center justify-center p-4">
-      <header className="flex flex-col items-center justify-center gap-4 p-4">
-        <h1 className="text-3xl font-bold">Becoming You!</h1>
-      </header>
-      <a
-        href="/auth"
-        className="inline-block rounded-lg bg-gray-100 px-5 py-3 font-medium text-gray-900"
-      >
-        Login with Google <span aria-hidden="true">&rarr;</span>
-      </a>
-    </div>
-  );
+  return <Outlet />
 }

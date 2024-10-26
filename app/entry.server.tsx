@@ -15,7 +15,7 @@ import { createExpressApp } from 'remix-create-express-app';
 import morgan from 'morgan';
 import session from 'express-session';
 import passport from 'passport';
-import { sayHello } from '#app/hello.server';
+import { sayHello } from '~/app/hello.server';
 
 const ABORT_DELAY = 5_000;
 

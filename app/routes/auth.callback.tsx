@@ -1,5 +1,6 @@
 // app/routes/auth.callback.tsx
 import { LoaderFunction, redirect } from "@remix-run/node";
+import { getSession, commitSession } from "~/app/utils/session.server";
 import { google } from "googleapis";
 
 // Handle the callback from Google OAuth
@@ -19,10 +20,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // Exchange the authorization code for tokens
   const { tokens } = await oauth2Client.getToken(code);
-  oauth2Client.setCredentials(tokens);
-
-  // Save tokens to session or user storage as needed (for now, just redirect)
+  const session = await getSession(request);
+  session.set("accessToken", tokens.access_token);
+  session.set("refreshToken", tokens.refresh_token);
 
   // Redirect the user to the home page
-  return redirect("/");
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
 };
