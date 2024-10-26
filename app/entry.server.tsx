@@ -11,6 +11,11 @@ import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
+import { createExpressApp } from 'remix-create-express-app';
+import morgan from 'morgan';
+import session from 'express-session';
+import passport from 'passport';
+import { sayHello } from '#app/hello.server';
 
 const ABORT_DELAY = 5_000;
 
@@ -138,3 +143,23 @@ function handleBrowserRequest(
     setTimeout(abort, ABORT_DELAY);
   });
 }
+
+export const app = createExpressApp({
+  configure: app => {
+    // customize your express app with additional middleware
+    app.use(morgan('tiny'));
+    app.use(
+      session({
+      secret: process.env.SESSION_SECRET!,
+      resave: false,
+      saveUninitialized: false,
+    }))
+    app.use(passport.initialize());
+    app.use(passport.session());
+  },
+  getLoadContext: () => {
+    // return the AppLoadContext
+    return { sayHello } as AppLoadContext
+  },
+  unstable_middleware: true,
+})
