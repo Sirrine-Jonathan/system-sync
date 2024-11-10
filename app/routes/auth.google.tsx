@@ -1,13 +1,11 @@
-import { LoaderFunction, redirect } from "@remix-run/node";
+import { redirect, type ActionFunctionArgs } from '@remix-run/node'
+import { authenticator } from '~/app/services/auth.server'
 
-export const loader: LoaderFunction = async () => {
-  const googleAuthURL = new URL("https://accounts.google.com/o/oauth2/auth");
-  googleAuthURL.searchParams.set("client_id", process.env.GOOGLE_CLIENT_ID!);
-  googleAuthURL.searchParams.set("redirect_uri", "http://localhost:5173/auth/callback");
-  googleAuthURL.searchParams.set("response_type", "code");
-  googleAuthURL.searchParams.set("scope", "https://www.googleapis.com/auth/calendar");
-  googleAuthURL.searchParams.set("prompt", "select_account");
+export const loader = () => redirect('/auth/login')
 
-  // Redirect the user to the Google OAuth URL
-  return redirect(googleAuthURL.toString());
-};
+export const action = ({ request }: ActionFunctionArgs) => {
+  return authenticator.authenticate('google', request, {
+    successRedirect: '/dashboard',
+    failureRedirect: '/auth/login',
+  })
+}

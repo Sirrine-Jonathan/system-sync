@@ -1,6 +1,6 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { google, calendar_v3 } from "googleapis";
-import { getSession } from "~/app/utils/session.server";
+import { getSession } from "~app/services/session.server";
 import { Outlet, useLoaderData } from "@remix-run/react";
 
 export const loader: LoaderFunction = async ({ request }): Promise<calendar_v3.Schema$Event[] | undefined> => {

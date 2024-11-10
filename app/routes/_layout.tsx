@@ -1,18 +1,20 @@
-import { NavLink, Outlet } from "@remix-run/react";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import { Header } from "../components/Header";
+import { authenticator } from "~/app/services/auth.server";
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+	
+	const user = await authenticator.isAuthenticated(request);
+
+	return user
+}
+
 export default function Layout() {
+	const user = useLoaderData<ReturnType<typeof loader>>();
+
 	return (
-		<main className="h-screen flex flex-col">
-			<header className="p-4 flex justify-between">
-			<h1>Becoming You</h1>
-				<a href="/auth/logout" className="flex items-center gap-2"><img className="w-6 h-6" src="/icons/logout.svg" alt="sign out"/></a>
-			</header>
-			<nav className="p-4">
-				<ul className="flex gap-4">
-					<li><NavLink to="/calendar">Calendar</NavLink></li>
-					<li><NavLink to="/tasks">Tasks</NavLink></li>
-					<li><NavLink to="/habits">Habits</NavLink></li>
-				</ul>
-			</nav>
+		<main className="flex-col">
+			<Header imageUrl={user.photos[0].value} />
 			<Outlet />
 		</main>
 	);

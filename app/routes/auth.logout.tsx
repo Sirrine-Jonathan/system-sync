@@ -1,7 +1,7 @@
 import { LoaderFunction, redirect } from "@remix-run/node";
-import { destroySession } from "~/app/utils/session.server";
+import { authenticator } from "~/app/services/auth.server";
 
 export const loader: LoaderFunction = async ({ request }) => {
-	await destroySession(request);
+	await authenticator.logout(request, { redirectTo: "/about" });
 	return redirect("/");
 }

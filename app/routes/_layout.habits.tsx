@@ -1,7 +1,7 @@
 export default function Habits() {
 	return (
-		<div>
+		<section id="habits">
 			<h1>Habits</h1>
-		</div>
+		</section>
 	);
 }

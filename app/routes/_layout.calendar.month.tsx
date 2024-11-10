@@ -1,9 +1,9 @@
 import type { LoaderFunction } from "@remix-run/node";
-import { google, GoogleApis } from "googleapis";
-import { getSession } from "~/app/utils/session.server";
+import { google, calendar_v3 } from "googleapis";
+import { getSession } from "~app/services/session.server";
 import { Outlet, useLoaderData } from "@remix-run/react";
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request }): Promise<calendar_v3.Schema$Event[] | undefined> => {
 		// Get session and access token
 		const session = await getSession(request);
 		const accessToken = session.get("accessToken");

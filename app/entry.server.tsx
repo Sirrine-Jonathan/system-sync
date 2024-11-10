@@ -14,8 +14,7 @@ import { renderToPipeableStream } from "react-dom/server";
 import { createExpressApp } from 'remix-create-express-app';
 import morgan from 'morgan';
 import session from 'express-session';
-import passport from 'passport';
-import { sayHello } from '~/app/hello.server';
+import { timezoneMiddleware } from "./middleware/timezone";
 
 const ABORT_DELAY = 5_000;
 
@@ -154,12 +153,10 @@ export const app = createExpressApp({
       resave: false,
       saveUninitialized: false,
     }))
-    app.use(passport.initialize());
-    app.use(passport.session());
+    app.use(timezoneMiddleware);
   },
   getLoadContext: () => {
-    // return the AppLoadContext
-    return { sayHello } as AppLoadContext
+    return {};
   },
   unstable_middleware: true,
 })

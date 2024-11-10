@@ -1,8 +1,6 @@
-import type { LoaderFunction, MetaFunction } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
-
-import { getSession } from "~/app/utils/session.server";
+import type { MetaFunction, LoaderFunctionArgs } from "@remix-run/node";
+import { Outlet } from "@remix-run/react";
+import { authenticator } from "~/app/services/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,15 +9,12 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
-  const session = await getSession(request);
-
-  if (session.has("accessToken")) {
-    return redirect("/calendar");
-  } else {
-    return redirect("/auth/login");
-  }
-};
+export function loader({ request }: LoaderFunctionArgs) {
+  return authenticator.isAuthenticated(request, {
+    successRedirect: "/dashboard",
+    failureRedirect: "/auth/login",
+  });
+}
 
 export default function Index() {
   return <Outlet />
