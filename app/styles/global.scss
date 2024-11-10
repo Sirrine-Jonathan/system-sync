@@ -1,0 +1,208 @@
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	height: 100vh;
+	background: linear-gradient(#0f0c29, #302b63, #24243e);
+	color: white;
+	font: 0.6em 'Inter', sans-serif;
+}
+
+.grid {
+	display: grid;
+	gap: 1em;
+	padding: 1em;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1em;
+	background: rgba(255, 255, 255, 0.1);
+
+	.menuContainer {
+
+		button.avatar {
+			background: transparent;
+			border: none;
+	
+			img {
+				width: 50px;
+				aspect-ratio: 1;
+				border: 3px solid white;
+				border-radius: 100px;
+			}
+		}
+
+		.menu {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 50dvw;
+			max-width: 300px;
+			background: black;
+			border-bottom-left-radius: 5px;
+			padding: 1em;
+			list-style: none;
+			box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+			color: white;
+			z-index: 1;
+
+			.closeMenu {
+				position: absolute;
+				top: 0.5em;
+				right: 0.5em;
+				background: transparent;
+				border: none;
+				color: white;
+				cursor: pointer;
+			}
+
+			ul {
+				padding: 0;
+				li {
+					margin: 0.5em 0;
+					list-style: none;
+					font-size: 2em;
+					a {
+						color: white;
+						text-decoration: none;
+						img {
+							width: 2rem;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	
+
+	h1 {
+		margin: 0;
+		font-size: 2rem;
+	}
+}
+
+section {
+	padding: 1em;
+}
+
+form {
+	display: flex;
+	gap: 1em;
+
+	input {
+		flex: 1;
+	}
+
+	button {
+		background: transparent;
+		border: 1px solid white;
+		border-radius: 5px;
+		color: white;
+		padding: 0.5em 1em;
+		cursor: pointer;
+	}
+}
+
+#tasks {
+	.tasksList {
+		list-style: none;
+		padding: 0;
+		display: grid;
+		gap: 1em;
+
+		.taskContainer {
+			display: flex;
+			flex-direction: column;
+			gap: 1em;
+			border-radius: 5px;
+			padding: 1em;
+			background: rgba(255, 255, 255, 0.1);
+			
+			.taskDisplay {
+				list-style: none;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				gap: 1em;
+				font-size: 1.2rem;
+			}
+
+			img {
+				cursor: pointer;
+				width: 1rem;
+			}
+
+			.edit, .close {
+				background: transparent;
+				border: none;
+				color: white;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+			}
+
+			.save, .delete {
+				border: 1px solid white;
+				background: transparent;
+				border-radius: 5px;
+				padding: 0.5em 1em;
+				cursor: pointer;
+				margin: 15px 0 0;
+			}
+
+			.delete {
+				border: 1px solid crimson;
+				color: crimson;
+				margin: 15px 0 0;
+				font-weight: bold;
+			}
+
+			label {
+				font-size: 0.7rem;
+			}
+			
+			input {
+				background: transparent;
+				border: none;
+				border-bottom: 1px solid white;
+				padding: 0.5em;
+				color: white;
+				font-size: 1.2rem;
+			}
+		}
+	}
+	
+}
+
+#googleLoginBtn {
+	display: flex;
+	align-items: center;
+	margin: 20px auto;
+
+	img {
+		margin-right: 0.5em;
+	}
+}
+
+/*
+	Utility classes
+*/
+
+.flex {
+	display: flex;
+	gap: 1em;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.flex-col {
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}

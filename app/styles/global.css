@@ -1,0 +1,184 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  background: linear-gradient(#0f0c29, #302b63, #24243e);
+  color: white;
+  font: 0.6em "Inter", sans-serif;
+}
+
+.grid {
+  display: grid;
+  gap: 1em;
+  padding: 1em;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  background: rgba(255, 255, 255, 0.1);
+}
+header .menuContainer button.avatar {
+  background: transparent;
+  border: none;
+}
+header .menuContainer button.avatar img {
+  width: 50px;
+  aspect-ratio: 1;
+  border: 3px solid white;
+  border-radius: 100px;
+}
+header .menuContainer .menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50dvw;
+  max-width: 300px;
+  background: black;
+  border-bottom-left-radius: 5px;
+  padding: 1em;
+  list-style: none;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+  color: white;
+  z-index: 1;
+}
+header .menuContainer .menu .closeMenu {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+header .menuContainer .menu ul {
+  padding: 0;
+}
+header .menuContainer .menu ul li {
+  margin: 0.5em 0;
+  list-style: none;
+  font-size: 2em;
+}
+header .menuContainer .menu ul li a {
+  color: white;
+  text-decoration: none;
+}
+header .menuContainer .menu ul li a img {
+  width: 2rem;
+}
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+section {
+  padding: 1em;
+}
+
+form {
+  display: flex;
+  gap: 1em;
+}
+form input {
+  flex: 1;
+}
+form button {
+  background: transparent;
+  border: 1px solid white;
+  border-radius: 5px;
+  color: white;
+  padding: 0.5em 1em;
+  cursor: pointer;
+}
+
+#tasks .tasksList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1em;
+}
+#tasks .tasksList .taskContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  border-radius: 5px;
+  padding: 1em;
+  background: rgba(255, 255, 255, 0.1);
+}
+#tasks .tasksList .taskContainer .taskDisplay {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+  font-size: 1.2rem;
+}
+#tasks .tasksList .taskContainer img {
+  cursor: pointer;
+  width: 1rem;
+}
+#tasks .tasksList .taskContainer .edit, #tasks .tasksList .taskContainer .close {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+#tasks .tasksList .taskContainer .save, #tasks .tasksList .taskContainer .delete {
+  border: 1px solid white;
+  background: transparent;
+  border-radius: 5px;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  margin: 15px 0 0;
+}
+#tasks .tasksList .taskContainer .delete {
+  border: 1px solid crimson;
+  color: crimson;
+  margin: 15px 0 0;
+  font-weight: bold;
+}
+#tasks .tasksList .taskContainer label {
+  font-size: 0.7rem;
+}
+#tasks .tasksList .taskContainer input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid white;
+  padding: 0.5em;
+  color: white;
+  font-size: 1.2rem;
+}
+
+#googleLoginBtn {
+  display: flex;
+  align-items: center;
+  margin: 20px auto;
+}
+#googleLoginBtn img {
+  margin-right: 0.5em;
+}
+
+/*
+	Utility classes
+*/
+.flex {
+  display: flex;
+  gap: 1em;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+/*# sourceMappingURL=global.css.map */
