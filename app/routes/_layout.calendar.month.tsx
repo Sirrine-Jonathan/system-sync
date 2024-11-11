@@ -1,53 +1,45 @@
 import type { LoaderFunction } from "@remix-run/node";
-import { google, calendar_v3 } from "googleapis";
+import { calendar_v3 } from "googleapis";
 import { Outlet, useLoaderData, useRouteError } from "@remix-run/react";
 import { SignInButton } from "~app/components/SignInButton";
-import { authenticator, oauth2Client } from "~app/services/auth.server";
+import { Event } from "~app/components/Event";
+import { getEvents } from "~app/services/calendar.server";
+import styled from "@emotion/styled";
 
 export const handle = {
   title: "Calendar | Month",
 };
 
+const StyledCalendar = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1em;
+
+  .event.mon {
+  }
+
+  .event.tues {
+  }
+`;
+
 export const loader: LoaderFunction = async ({
   request,
-}: LoaderFunctionArgs): Promise<calendar_v3.Schema$Event[] | undefined> => {
-  console.log("authenticating");
-  authenticator.authenticate("google", request);
-  authenticator.isAuthenticated(request);
-  // Initialize Google Calendar API client
-  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-
-  // Fetch primary calendar events
-  const response = await calendar.events.list({
-    calendarId: "primary",
-    // start of current month
-    timeMin: new Date(
-      new Date().getFullYear(),
-      new Date().getMonth(),
-      1
-    ).toISOString(),
-    // end of current month
-    timeMax: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0),
+}): Promise<calendar_v3.Schema$Event[] | undefined> => {
+  return getEvents(request, {
+    timeMin: new Date().toISOString(),
     maxResults: 10,
     singleEvents: true,
     orderBy: "startTime",
   });
-
-  return response.data.items; // These are the user’s calendar events
 };
 export default function Calendar() {
   const events = useLoaderData<GoogleApis.Calendar_v3.Schema.Event[]>();
-  console.log({ events });
   return (
     <div>
-      {events &&
-        events.map((event) => (
-          <div key={event.id}>
-            <h2>{event.summary}</h2>
-            <p>{event.start?.dateTime}</p>
-            <p>{event.end?.dateTime}</p>
-          </div>
-        ))}
+      <StyledCalendar>
+        {events &&
+          events.map((event) => <Event key={event.id} event={event} />)}
+      </StyledCalendar>
       <Outlet />
     </div>
   );

@@ -1,10 +1,11 @@
 import { Authenticator } from "remix-auth";
 import { GoogleStrategy, GoogleProfile } from "remix-auth-google";
 import { sessionStorage } from "./session.server";
-import { findOrCreateUser } from "./user.server";
 import { google } from "googleapis";
 
-type User = GoogleProfile;
+export type User = GoogleProfile & {
+  accessToken: string;
+};
 
 export const authenticator = new Authenticator<User>(sessionStorage, {
   sessionKey: "user",
@@ -21,21 +22,8 @@ export const googleStrategy = new GoogleStrategy(
     scope: "profile email https://www.googleapis.com/auth/calendar",
     includeGrantedScopes: true,
   },
-  async ({ accessToken, profile }) => {
-    console.log("setting access token");
-    oauth2Client.setCredentials({ access_token: accessToken });
-    try {
-      await findOrCreateUser({
-        ...profile,
-        email: profile.emails?.[0].value,
-        provider: "google",
-        preferences: {},
-        tasks: [],
-      });
-    } catch (error) {
-      console.log({ error });
-    }
-    return profile as User;
+  async ({ profile, accessToken }) => {
+    return { ...profile, accessToken } as User;
   }
 );
 

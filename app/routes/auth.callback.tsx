@@ -1,7 +1,8 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { authenticator } from "~/app/services/auth.server";
+import { authenticator } from "~app/services/auth.server";
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return authenticator.authenticate("google", request, {
+  return await authenticator.authenticate("google", request, {
     successRedirect: "/dashboard",
     failureRedirect: "/auth/signin",
   });
