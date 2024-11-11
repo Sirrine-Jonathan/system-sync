@@ -3,6 +3,10 @@ import { google, calendar_v3 } from "googleapis";
 import { getSession } from "~app/services/session.server";
 import { Outlet, useLoaderData } from "@remix-run/react";
 
+export const handle = {
+	title: 'Calendar | Week',
+}
+
 export const loader: LoaderFunction = async ({ request }): Promise<calendar_v3.Schema$Event[] | undefined> => {
 		// Get session and access token
 		const session = await getSession(request);

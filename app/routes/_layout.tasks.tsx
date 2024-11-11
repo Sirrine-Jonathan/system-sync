@@ -1,111 +1,334 @@
-import { useState } from "react";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from '@remix-run/react';
-import mongoose from "mongoose";
-import Task from "~app/models/task";
+import { useLoaderData, useActionData, json, Form } from "@remix-run/react";
+import {
+  getTasks,
+  addTask,
+  updateTask,
+  deleteTask,
+  type THydratedTaskModel,
+} from "~/app/services/task.server";
+import { useEffect, useState, useRef, forwardRef } from "react";
+import styled from "@emotion/styled";
+import { authenticator } from "~app/services/auth.server";
+import { StyledSelect } from "~app/components/styledParts/Select";
+
+const StyledList = styled.ul`
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 1em;
+`;
+
+const StyledItem = styled.li`
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  border-radius: 5px;
+  padding: 1em;
+  background: rgba(255, 255, 255, 0.1);
+
+  .taskDisplay {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    font-size: 1.2rem;
+    cursor: pointer;
+  }
+
+  img {
+    cursor: pointer;
+    width: 1rem;
+  }
+
+  .edit,
+  .close {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+
+  .save,
+  .delete {
+    border: 1px solid white;
+    background: transparent;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    margin: 15px 0 0;
+  }
+
+  .delete {
+    border: 1px solid crimson;
+    color: crimson;
+    margin: 15px 0 0;
+    font-weight: bold;
+  }
+
+  .save {
+    color: white;
+  }
+
+  label {
+    font-size: 0.7rem;
+  }
+
+  input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    padding: 0.5em;
+    color: white;
+    font-size: 1.2rem;
+  }
+`;
+
+export const handle = {
+  title: "Tasks",
+};
+
+const TaskForm = forwardRef(function taskForm(
+  { task, children }: { task?: THydratedTaskModel; children: React.ReactNode },
+  ref: React.ForwardedRef<HTMLFormElement>
+) {
+  return (
+    <StyledForm method="post" ref={ref}>
+      <input type="hidden" name="_action" value="addTask" />
+      <label>
+        Task Name
+        <input
+          type="text"
+          placeholder="Task Name"
+          name="name"
+          defaultValue={task?.name || ""}
+        />
+      </label>
+      <label>
+        Task Description
+        <textarea
+          placeholder="Task Description"
+          name="description"
+          defaultValue={task?.description || ""}
+          rows={5}
+          cols={30}
+        ></textarea>
+      </label>
+      <label>
+        Due Date
+        <input type="date" name="dueDate" />
+      </label>
+      <label htmlFor="taskPriority">
+        Priority
+        <StyledSelect id="taskPriority" name="priority">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </StyledSelect>
+      </label>
+      <label>
+        Duration
+        <div className="inputWithSuffix">
+          <input type="number" name="duration" step="0.5" /> Hours
+        </div>
+      </label>
+      {children}
+    </StyledForm>
+  );
+});
+
+export const TaskEditor = ({ task }: { task: THydratedTaskModel }) => {
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const onDelete = () => {
+    setIsEditMode(false);
+  };
+
+  return (
+    <StyledItem>
+      <label className="taskDisplay">
+        <div>{task.name}</div>
+        {!isEditMode && (
+          <button className="edit" onClick={() => setIsEditMode(true)}>
+            <img src="/icons/edit.svg" alt="edit" />
+          </button>
+        )}
+        {isEditMode && (
+          <button className="close" onClick={() => setIsEditMode(false)}>
+            <img src="/icons/up.svg" alt="close" />
+          </button>
+        )}
+      </label>
+      {isEditMode && (
+        <div className="editFormContainer">
+          <TaskForm task={task}>
+            <input type="hidden" name="_action" value="updateTask" />
+            <input type="hidden" name="_id" value={task._id.toString()} />
+            <button className="save" type="submit">
+              Save
+            </button>
+          </TaskForm>
+          <Form method="post" onSubmit={onDelete}>
+            <input type="hidden" name="_action" value="deleteTask" />
+            <input type="hidden" name="_id" value={task._id.toString()} />
+            <button className="delete" type="submit">
+              Delete
+            </button>
+          </Form>
+        </div>
+      )}
+    </StyledItem>
+  );
+};
 
 export const loader = async () => {
-	mongoose.connect(process.env.MONGODB_URI!);
-
-	const tasks = await Task.find({});
-
-	console.log({ tasks })
-
-	return tasks;
+  return json(await getTasks());
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-	mongoose.connect(process.env.MONGODB_URI!);
+  const owner = authenticator.isAuthenticated(request);
+  const formData = await request.formData();
+  const action = formData.get("_action");
+  const id = formData.get("_id");
+  const name = formData.get("name");
+  const description = formData.get("description");
+  const dueDate = formData.get("dueDate");
+  const duration = formData.get("duration");
+  const priority = formData.get("priority");
 
-
-	const formData = await request.formData();
-	console.log(formData);
-
-	const _action = formData.get('_action');
-	if (_action === 'updateTask') {
-		const _id = formData.get('_id');
-		console.log('updating parsed', JSON.parse(_id).buffer.toString());
-		console.log('updating', _id?.toString());
-		await Task.updateOne({ _id: _id.toString() }, {
-			name: formData.get('name'),
-		});
-		return {};
-	} else if (_action === 'deleteTask') {
-		const _id = formData.get('_id');
-		console.log('deleting', { _id: _id?.toString() });
-		await Task.deleteOne({ _id });
-		return {};
-	} else if (_action === 'addTask') {
-		const name = formData.get('name');
-		console.log('adding', { name });
-		await Task.create({
-			name,
-		});
-		return {};
-	}
-	
-
-	return {};
+  switch (action) {
+    case "addTask":
+      return await addTask(
+        {
+          name,
+          description,
+          dueDate,
+          duration,
+          priority,
+        },
+        owner._id
+      );
+    case "updateTask":
+      return await updateTask(id, name);
+    case "deleteTask":
+      return await deleteTask(id);
+    default:
+      throw new Error("Invalid action");
+  }
 };
 
-const TaskEditor = ({ task }: { task: Task }) => {
-	const [isEditMode, setIsEditMode] = useState(false);
+const StyledForm = styled(Form)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1em;
+  border-radius: 5px;
+  padding: 1em;
+  background: rgba(255, 255, 255, 0.1);
 
-	const onDelete = () => {
-		setIsEditMode(false);
-	}
+  label {
+    font-size: 0.7rem;
+    color: white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
 
-	return (
-		<li className="taskContainer">
-			<div className="taskDisplay">
-				<div>{task.name}</div>
-				{!isEditMode && <button className="edit" onClick={() => setIsEditMode(true)}><img src="/icons/edit.svg" alt="edit" /></button>}
-				{isEditMode && <button className="close" onClick={() => setIsEditMode(false)}><img src="/icons/close.svg" alt="close" /></button>}
-			</div>
-			{isEditMode && (
-				<div className="editFormContainer">
-					<Form method="post">
-						<input type="hidden" name="_action" value="updateTask" />
-						<input type="hidden" name="_id" value={JSON.stringify(task._id)} />
-						<label htmlFor="name">Task Name
-							<input type="text" placeholder="Task Name" name="name" defaultValue={task.name} />
-						</label>
-						<button className="save" type='submit'>Save</button>
-					</Form>
-					<Form method="post" onSubmit={onDelete}>
-						<input type="hidden" name="_action" value="deleteTask" />
-						<input type="hidden" name="_id" value={task._id.toString()} />
-						<button className="delete" type='submit'>Delete</button>
-					</Form>
-				</div>
-			)}
-		</li>
-	);
-}
+  input,
+  textarea {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid white;
+    padding: 0.5em;
+    color: white;
+    font-size: 1.2rem;
+  }
+
+  input[type="number"] {
+    &:webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    &:webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  .inputWithSuffix {
+    display: flex;
+    align-items: end;
+    gap: 0.5em;
+  }
+
+  button {
+    border: 1px solid white;
+    background: transparent;
+    border-radius: 5px;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    margin: 15px 0 0;
+    font-weight: bold;
+    color: white;
+  }
+`;
+
+const StyledControls = styled.section`
+  display: flex;
+  gap: 1em;
+
+  select {
+  }
+`;
 
 export default function Tasks() {
-	const actionData = useActionData();
-	const loaderData = useLoaderData();
+  const tasks = useLoaderData() as THydratedTaskModel[];
+  const actionData = useActionData();
+  const formRef = useRef<HTMLFormElement>(null);
 
-	console.log({ actionData, loaderData });
+  useEffect(() => {
+    formRef.current?.reset();
+  }, [actionData]);
 
-	loaderData?.forEach(({ _doc : task}) => {
-		console.log(task.name);
-	});
-
-	return (
-		<section id="tasks">
-			<h1>Tasks</h1>
-			<ul className="tasksList">
-				{loaderData?.map(({ _doc : task}) => (
-					<TaskEditor task={task} key={task._id} />
-				))}
-			</ul>
-			<Form method="post">
-				<input type="hidden" name="_action" value="addTask" />
-				<input type="text" placeholder="Task Name" name="name" />
-				<button type='submit'>Add</button>
-			</Form>
-		</section>
-	);
+  return (
+    <section id="tasks">
+      {/* sorting and filtering controls*/}
+      <StyledControls id="controls">
+        <StyledSelect>
+          <option value="all">All</option>
+          <option value="completed">Completed</option>
+          <option value="uncompleted">Uncompleted</option>
+          <option value="overdue">Overdue</option>
+          <option value="dueToday">Due Today</option>
+          <option value="dueThisWeek">Due This Week</option>
+          <option value="dueThisMonth">Due This Month</option>
+        </StyledSelect>
+      </StyledControls>
+      <section id="tasks">
+        <StyledList>
+          {tasks.map((task) => (
+            <TaskEditor key={task._id.toString()} task={task} />
+          ))}
+        </StyledList>
+      </section>
+      <section id="add-task">
+        <h2>Add Task</h2>
+        <TaskForm ref={formRef}>
+          <button onClick={() => formRef.current?.requestSubmit()}>
+            Add Task
+          </button>
+        </TaskForm>
+      </section>
+    </section>
+  );
 }

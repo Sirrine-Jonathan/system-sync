@@ -2,6 +2,11 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { authenticator } from "~/app/services/auth.server";
 import { Header } from "~app/components/Header";
+import { SignInButton } from "~app/components/SignInButton";
+
+export const handle = {
+	title: 'About',
+}
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	
 	const user = await authenticator.isAuthenticated(request);
@@ -14,17 +19,12 @@ export default function About() {
 	
 	return (
 		<main>
-			{user && <Header imageUrl={user.photos[0].value}/>}
-			{!user && (
-				<header>
-					<h1>Becoming You</h1>
-				</header>
-			)}
+			<Header imageUrl={user ? user.photos[0].value : ""}/>
 			<section>
 				{!user && (
-					<Form action="/auth/google" method="post">
-						<button id="googleLoginBtn"><img src="/icons/google-logo.svg" alt="google"/>Login with Google</button>
-					</Form>
+					<SignInButton
+						type="Google"
+					/>
 				)}
 			</section>
 		</main>

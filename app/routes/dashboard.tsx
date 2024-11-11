@@ -3,6 +3,10 @@ import { Header } from '../components/Header';
 import { authenticator } from '~app/services/auth.server';
 import { useLoaderData } from '@remix-run/react';
 
+export const handle = {
+	title: 'Dashboard',
+}
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
 	
 	const user = await authenticator.isAuthenticated(request);
@@ -22,6 +26,5 @@ export default function Dashboard() {
 				{user && <div>{user.emails?.[0]?.value}</div>}
 			</section>
 		</main>
-
 	);
 }

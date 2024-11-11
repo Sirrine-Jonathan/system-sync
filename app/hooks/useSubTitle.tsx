@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useMatches } from "@remix-run/react";
 
-export const useSubTitle = () => {
-	const [title, setTitle] = useState<string>("");
+interface RouteHandle {
+	title: string;
+}
 
-	useEffect(() => {
-		const title = document.title;
-		setTitle(title);
-	}, []);
-
-	return title;
-};
+export const useSubtitle = () => {
+	const matches = useMatches();
+	const leafRoute = matches[matches.length - 1];
+	const subtitle = leafRoute.handle as RouteHandle | undefined;
+	return subtitle?.title;
+}

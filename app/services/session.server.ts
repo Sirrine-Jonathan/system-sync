@@ -18,8 +18,3 @@ export const getSession = (request: Request) =>
   sessionStorage.getSession(request.headers.get("Cookie"));
 export const commitSession = (session: Session) =>
   sessionStorage.commitSession(session);
-
-export const destroySession = async (request: Request) => {
-  const session = await getSession(request);
-  return sessionStorage.destroySession(session);
-};

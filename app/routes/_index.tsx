@@ -12,7 +12,7 @@ export const meta: MetaFunction = () => {
 export function loader({ request }: LoaderFunctionArgs) {
   return authenticator.isAuthenticated(request, {
     successRedirect: "/dashboard",
-    failureRedirect: "/auth/login",
+    failureRedirect: "/auth/signin",
   });
 }
 

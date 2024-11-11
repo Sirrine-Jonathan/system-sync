@@ -1,16 +1,30 @@
 import { NavLink, Outlet } from "@remix-run/react";
-import clsx from "clsx";
+import { authenticator } from "~app/services/auth.server";
+
+export const handle = {
+  title: "Calendar",
+};
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  authenticator.authenticate("google", request);
+  return null;
+};
 
 export default function Calendar() {
-	return (
-		<div>
-			<h1>Calendar</h1>
-			<ul className="flex gap-4">
-				<li><NavLink to="/calendar/month">Month</NavLink></li>
-				<li><NavLink to="/calendar/week">Week</NavLink></li>
-				<li><NavLink to="/calendar/day">Day</NavLink></li>
-			</ul>
-			<Outlet />
-		</div>
-	);
+  return (
+    <div>
+      <ul>
+        <li>
+          <NavLink to="/calendar/month">Month</NavLink>
+        </li>
+        <li>
+          <NavLink to="/calendar/week">Week</NavLink>
+        </li>
+        <li>
+          <NavLink to="/calendar/day">Day</NavLink>
+        </li>
+      </ul>
+      <Outlet />
+    </div>
+  );
 }
