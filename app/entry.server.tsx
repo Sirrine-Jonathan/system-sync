@@ -11,10 +11,6 @@ import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import { createExpressApp } from 'remix-create-express-app';
-import morgan from 'morgan';
-import session from 'express-session';
-import { timezoneMiddleware } from "./middleware/timezone";
 
 const ABORT_DELAY = 5_000;
 
@@ -142,21 +138,3 @@ function handleBrowserRequest(
     setTimeout(abort, ABORT_DELAY);
   });
 }
-
-export const app = createExpressApp({
-  configure: app => {
-    // customize your express app with additional middleware
-    app.use(morgan('tiny'));
-    app.use(
-      session({
-      secret: process.env.SESSION_SECRET!,
-      resave: false,
-      saveUninitialized: false,
-    }))
-    app.use(timezoneMiddleware);
-  },
-  getLoadContext: () => {
-    return {};
-  },
-  unstable_middleware: true,
-})
