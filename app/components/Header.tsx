@@ -1,10 +1,20 @@
 import { useState, useRef, useEffect } from "react";
-import { useSubtitle } from "~/hooks/useSubtitle";
-import { NavLink } from "@remix-run/react";
+import { NavLink, useMatches } from "@remix-run/react";
 import { FlexContainer } from "./styledParts/FlexContainer";
 import { Avatar } from "./styledParts/Avatar";
 
 import styled from "@emotion/styled";
+
+interface RouteHandle {
+  title: string;
+}
+
+const useSubtitle = () => {
+  const matches = useMatches();
+  const leafRoute = matches[matches.length - 1];
+  const subtitle = leafRoute.handle as RouteHandle | undefined;
+  return subtitle?.title;
+};
 
 const StyledHeader = styled.header`
   display: flex;
@@ -76,12 +86,18 @@ const StyledHeader = styled.header`
           display: block;
           font-size: 0.8em;
           margin: 0.5em 0 0 1em;
+
+          a {
+            display: block;
+            width: 100%;
+          }
         }
 
         a {
           color: white;
           text-decoration: none;
           transition: color 0.2s ease-in-out;
+          width: 100%;
 
           &:hover {
             color: gold;
@@ -89,6 +105,7 @@ const StyledHeader = styled.header`
 
           img {
             width: 1.5rem;
+            margin-left: auto;
           }
         }
       }
@@ -96,15 +113,26 @@ const StyledHeader = styled.header`
 
     .closeMenu {
       position: absolute;
-      top: 0.5em;
-      right: 0.5em;
+      top: 1em;
+      right: 1em;
       background: transparent;
-      border: none;
+      border: 1px solid transparent;
+      border-radius: 100px;
       color: white;
       cursor: pointer;
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s ease-in-out;
 
       img {
         width: 1rem;
+      }
+
+      &:hover {
+        border-color: white;
       }
     }
   }
