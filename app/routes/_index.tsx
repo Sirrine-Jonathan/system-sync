@@ -4,8 +4,8 @@ import { authenticator } from "~/app/services/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Becoming You" },
-    { name: "description", content: "Welcome to Becoming You" },
+    { title: "Become You" },
+    { name: "description", content: "Welcome to Become You" },
   ];
 };
 
@@ -17,5 +17,5 @@ export function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  return <Outlet />
+  return <Outlet />;
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSubtitle } from "~/app/hooks/useSubtitle";
 import { NavLink } from "@remix-run/react";
 import { FlexContainer } from "./styledParts/FlexContainer";
@@ -34,6 +34,11 @@ const StyledHeader = styled.header`
     font-size: 1rem;
   }
 
+  hr {
+    border-color: rgba(255, 255, 255, 0.7);
+    margin: 30px 0;
+  }
+
   .menu {
     position: absolute;
     top: 0;
@@ -58,8 +63,17 @@ const StyledHeader = styled.header`
         margin: 0.5em 0;
         list-style: none;
         font-size: 1em;
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        cursor: pointer;
+
+        img {
+          width: 1.5rem;
+        }
 
         ul li {
+          display: block;
           font-size: 0.8em;
           margin: 0.5em 0 0 1em;
         }
@@ -67,6 +81,11 @@ const StyledHeader = styled.header`
         a {
           color: white;
           text-decoration: none;
+          transition: color 0.2s ease-in-out;
+
+          &:hover {
+            color: gold;
+          }
 
           img {
             width: 1.5rem;
@@ -91,9 +110,25 @@ const StyledHeader = styled.header`
   }
 `;
 
+export const FALLBACK_IMAGE_URL = "/icons/avatar.svg";
+
 export const Header = ({ imageUrl }: { imageUrl?: string }) => {
   const subtitle = useSubtitle();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [usableImageUrl, setUsableImageUrl] = useState(
+    imageUrl || FALLBACK_IMAGE_URL
+  );
+
+  const avatarImageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    avatarImageRef.current?.addEventListener("load", () => {
+      setUsableImageUrl(usableImageUrl || FALLBACK_IMAGE_URL);
+    });
+    avatarImageRef.current?.addEventListener("error", () => {
+      setUsableImageUrl(FALLBACK_IMAGE_URL);
+    });
+  }, [usableImageUrl, imageUrl]);
 
   return (
     <StyledHeader>
@@ -103,14 +138,14 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
         alignItems="flex-start"
       >
         <h1>
-          <NavLink to="/dashboard">Becoming You</NavLink>
+          <NavLink to="/dashboard">Become You</NavLink>
         </h1>
         <h2>{subtitle}</h2>
       </FlexContainer>
       <div className="menuContainer">
         {imageUrl && (
           <Avatar onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <img src={imageUrl} alt="profile" />
+            <img ref={avatarImageRef} src={usableImageUrl} alt="profile" />
           </Avatar>
         )}
         {isMenuOpen && (
@@ -120,30 +155,47 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
             </button>
             <ul>
               <li>
-                <a href="/calendar">Calendar</a>
-                <ul>
-                  <li>
-                    <a href="/calendar/month">Month</a>
-                  </li>
-                  <li>
-                    <a href="/calendar/week">Week</a>
-                  </li>
-                  <li>
-                    <a href="/calendar/day">Day</a>
-                  </li>
-                </ul>
+                <img src="/icons/dashboard.svg" alt="Dashboard" />
+                <a href="/dashboard">Dashboard</a>
               </li>
               <li>
+                <img src="/icons/event.svg" alt="Events" />
                 <a href="/events">Events</a>
               </li>
               <li>
+                <img src="/icons/task.svg" alt="Tasks" />
                 <a href="/tasks">Tasks</a>
               </li>
               <li>
+                <img src="/icons/habit.svg" alt="Habits" />
                 <a href="/habits">Habits</a>
               </li>
+              <hr />
               <li>
+                <img src="/icons/calendar.svg" alt="Calendar" />
+                <a href="/calendar">
+                  Calendar
+                  <ul>
+                    <li>
+                      <a href="/calendar/month">Month</a>
+                    </li>
+                    <li>
+                      <a href="/calendar/week">Week</a>
+                    </li>
+                    <li>
+                      <a href="/calendar/day">Day</a>
+                    </li>
+                  </ul>
+                </a>
+              </li>
+              <hr />
+              <li>
+                <img src="/icons/about.svg" alt="About" />
                 <a href="/about">About</a>
+              </li>
+              <li>
+                <img src="/icons/settings.svg" alt="Settings" />
+                <a href="/settings">Settings</a>
               </li>
               <hr />
               <li>
