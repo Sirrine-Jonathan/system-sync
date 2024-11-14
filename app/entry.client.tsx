@@ -10,8 +10,8 @@ import * as React from "react";
 import { startTransition, StrictMode } from "react";
 import { hydrateRoot } from "react-dom/client";
 
-import ClientStyleContext from "~/app/styles/client.context";
-import createEmotionCache from "~/app/styles/createEmotionCache";
+import ClientStyleContext from "~/styles/client.context";
+import createEmotionCache from "~/styles/createEmotionCache";
 
 interface ClientCacheProviderProps {
   children: React.ReactNode;
@@ -36,7 +36,7 @@ startTransition(() => {
     document,
     <StrictMode>
       <ClientCacheProvider>
-      <RemixBrowser />
+        <RemixBrowser />
       </ClientCacheProvider>
     </StrictMode>
   );

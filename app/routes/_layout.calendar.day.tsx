@@ -1,8 +1,8 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { calendar_v3 } from "googleapis";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import { Event } from "~/app/components/Event";
-import { getEvents } from "~/app/services/calendar.server";
+import { Event } from "~/components/Event";
+import { getEvents } from "~/services/calendar.server";
 
 export const handle = {
   title: "Calendar | Day",

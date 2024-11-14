@@ -1,4 +1,4 @@
-import { mongoose } from "~/app/services/db.server";
+import { mongoose } from "~/services/db.server";
 
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true },

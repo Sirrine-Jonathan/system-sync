@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useSubtitle } from "~/app/hooks/useSubtitle";
+import { useSubtitle } from "~/hooks/useSubtitle";
 import { NavLink } from "@remix-run/react";
 import { FlexContainer } from "./styledParts/FlexContainer";
 import { Avatar } from "./styledParts/Avatar";

@@ -1,4 +1,4 @@
-import { mongoose } from "~/app/services/db.server";
+import { mongoose } from "~/services/db.server";
 
 const TaskSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

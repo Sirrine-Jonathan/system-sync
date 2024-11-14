@@ -5,11 +5,11 @@ import {
   updateTask,
   deleteTask,
   type THydratedTaskModel,
-} from "~/app/services/task.server";
+} from "~/services/task.server";
 import { useEffect, useState, useRef, forwardRef } from "react";
 import styled from "@emotion/styled";
-import { authenticator } from "~/app/services/auth.server";
-import { StyledSelect } from "~/app/components/styledParts/Select";
+import { authenticator } from "~/services/auth.server";
+import { StyledSelect } from "~/components/styledParts/Select";
 
 const StyledList = styled.ul`
   list-style: none;

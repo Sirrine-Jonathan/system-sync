@@ -1,6 +1,6 @@
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import { getUsers } from "~/app/services/user.server";
+import { getUsers } from "~/services/user.server";
 
 export const handle = {
   title: "Admin | Users",

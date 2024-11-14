@@ -9,8 +9,8 @@ import { useContext, useEffect, useRef } from "react";
 import type { LinksFunction } from "@remix-run/node";
 import { withEmotionCache, Global } from "@emotion/react";
 
-import ClientStyleContext from "~/app/styles/client.context";
-import ServerStyleContext from "~/app/styles/server.context";
+import ClientStyleContext from "~/styles/client.context";
+import ServerStyleContext from "~/styles/server.context";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

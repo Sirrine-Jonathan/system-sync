@@ -4,6 +4,7 @@ import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { expressDevServer } from "remix-express-dev-server";
+import { netlifyPlugin } from "@netlify/remix-adapter/plugin";
 
 installGlobals({ nativeFetch: true });
 
@@ -23,6 +24,7 @@ export default defineConfig({
         v3_lazyRouteDiscovery: true,
       },
     }),
+    netlifyPlugin(),
     tsconfigPaths(),
   ],
   resolve: {

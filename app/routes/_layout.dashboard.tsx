@@ -1,4 +1,4 @@
-import type { User } from "~/app/services/auth.server";
+import type { User } from "~/services/auth.server";
 import { useOutletContext } from "@remix-run/react";
 
 export const handle = {
