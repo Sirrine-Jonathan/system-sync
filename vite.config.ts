@@ -1,3 +1,4 @@
+import { resolve } from "path";
 import { vitePlugin as remix } from "@remix-run/dev";
 import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
@@ -9,6 +10,7 @@ installGlobals({ nativeFetch: true });
 export default defineConfig({
   build: {
     target: "esnext",
+    outDir: "./build",
   },
   plugins: [
     expressDevServer(),
@@ -23,4 +25,9 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  resolve: {
+    alias: {
+      "~/*": resolve("."),
+    },
+  },
 });
