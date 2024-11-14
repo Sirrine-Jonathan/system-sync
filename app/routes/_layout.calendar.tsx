@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "@remix-run/react";
-import { authenticator } from "~app/services/auth.server";
+import { authenticator } from "~/app/services/auth.server";
 import styled from "@emotion/styled";
 
 const StyledTimeUl = styled.ul`

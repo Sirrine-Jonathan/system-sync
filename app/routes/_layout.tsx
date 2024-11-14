@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { getSession, commitSession } from "~/app/services/session.server";
 import { redirect } from "@remix-run/node";
-import { Header, FALLBACK_IMAGE_URL } from "../components/Header";
+import { Header, FALLBACK_IMAGE_URL } from "~/app/components/Header";
 import { authenticator } from "~/app/services/auth.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

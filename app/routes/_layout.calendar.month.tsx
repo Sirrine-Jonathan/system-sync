@@ -1,9 +1,9 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { calendar_v3 } from "googleapis";
 import { Outlet, useLoaderData, useRouteError } from "@remix-run/react";
-import { SignInButton } from "~app/components/SignInButton";
-import { Event } from "~app/components/Event";
-import { getEvents } from "~app/services/calendar.server";
+import { SignInButton } from "~/app/components/SignInButton";
+import { Event } from "~/app/components/Event";
+import { getEvents } from "~/app/services/calendar.server";
 import styled from "@emotion/styled";
 
 export const handle = {
