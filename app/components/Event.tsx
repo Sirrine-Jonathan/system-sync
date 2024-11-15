@@ -27,9 +27,6 @@ const StyledEvent = styled.div`
 `;
 
 export const Event = ({ event }: { event: calendar_v3.Schema$Event }) => {
-  console.log(event);
-  console.log("start", event.start);
-  console.log(typeof event.start);
   const start = new Date(event.start?.dateTime || "");
   const end = new Date(event.end?.dateTime || "");
 

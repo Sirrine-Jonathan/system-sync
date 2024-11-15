@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "remix vite:dev",
-    "start": "netlify serve",
+    "dev": "NODE_ENV=development node server.js",
+    "start": "NODE_ENV=production node server.js",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "pretty": "prettier --write .",
     "typecheck": "tsc"
@@ -21,6 +21,8 @@
     "@remix-run/react": "^2.13.1",
     "@remix-run/serve": "^2.13.1",
     "@typegoose/typegoose": "^12.9.0",
+    "@types/moment": "^2.11.29",
+    "chalk": "^5.3.0",
     "clsx": "^2.1.1",
     "cookie": "^1.0.1",
     "express-session": "^1.18.1",
@@ -28,11 +30,13 @@
     "isbot": "^4.1.0",
     "mongoose": "~8.8.0",
     "morgan": "^1.10.0",
+    "nodemon": "^3.1.7",
     "npm-run-all": "^4.1.5",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-zoom-pan-pinch": "^3.6.1",
     "remix-auth": "^3.7.0",
     "remix-auth-google": "^2.0.0",
     "remix-create-express-app": "^0.4.5"
