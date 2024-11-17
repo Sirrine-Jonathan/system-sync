@@ -1,18 +1,16 @@
 import { Authenticator } from "remix-auth";
 import { GoogleStrategy, GoogleProfile } from "remix-auth-google";
 import { sessionStorage } from "./session.server";
-import { google } from "googleapis";
 
 export type User = GoogleProfile & {
   accessToken: string;
+  timeZone: string;
 };
 
 export const authenticator = new Authenticator<User>(sessionStorage, {
   sessionKey: "user",
   sessionErrorKey: "error",
 });
-
-export const oauth2Client = new google.auth.OAuth2();
 
 export const googleStrategy = new GoogleStrategy(
   {

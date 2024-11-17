@@ -6,8 +6,8 @@ export const StyledCalenderHeader = styled.div`
   justify-content: center;
 
   h1 {
-    min-width: 500px;
     text-align: center;
+    font-size: 1em;
   }
 
   button {
@@ -17,7 +17,7 @@ export const StyledCalenderHeader = styled.div`
     margin: 0 1em;
 
     img {
-      width: 1.5rem;
+      width: 1.5em;
     }
   }
 `;

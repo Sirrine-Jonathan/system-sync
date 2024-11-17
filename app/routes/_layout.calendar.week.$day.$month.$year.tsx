@@ -2,9 +2,11 @@ import type { LoaderFunction } from "@remix-run/node";
 import { calendar_v3 } from "googleapis";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { Event } from "~/components/Event";
-import { getEvents } from "~/services/calendar.server";
+import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax } from "~/utils/time";
+import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
+import { DesktopOnly } from "~/components/styledParts/DesktopOnly";
 
 export const handle = {
   title: "Calendar | Week",
@@ -13,7 +15,10 @@ export const handle = {
 const StyledWeek = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1em;
+  gap: 1rem
+  max-width: 100%;
+  overflow: auto;
+  padding-bottom: 1rem
 `;
 
 const StyledDay = styled.div(
@@ -66,13 +71,30 @@ export default function Calendar() {
     return event.start?.dateTime;
   });
 
+  const goToNextWeek = () => {};
+
+  const goToPreviousWeek = () => {};
+
+  const calendarTitle = `${weekMin.toLocaleDateString()} - ${weekMax.toLocaleDateString()}`;
+
   return (
     <div>
+      <StyledCalenderHeader>
+        <button onClick={goToPreviousWeek}>
+          <img src="/icons/arrow-left.svg" alt="previous" />
+        </button>
+        <h1>{calendarTitle}</h1>
+        <button onClick={goToNextWeek}>
+          <img src="/icons/arrow-right.svg" alt="previous" />
+        </button>
+      </StyledCalenderHeader>
       <StyledWeek>
         {Array.from({ length: 7 }, (_, i) => (
           <StyledDay key={i} gridColumnStart={i + 1}>
-            <span>{daysOfTheWeek[i]}</span>
-            {" | "}
+            <DesktopOnly>
+              <span>{daysOfTheWeek[i]}</span>
+              {" | "}
+            </DesktopOnly>
             <span>{weekMin.getDate() + i}</span>
           </StyledDay>
         ))}

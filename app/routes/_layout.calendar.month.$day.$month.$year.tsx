@@ -3,14 +3,12 @@ import { calendar_v3 } from "googleapis";
 import {
   Outlet,
   useLoaderData,
-  useRouteError,
   useParams,
   useNavigate,
   NavLink,
 } from "@remix-run/react";
-import { SignInButton } from "~/components/SignInButton";
 import { Event } from "~/components/Event";
-import { getEvents } from "~/services/calendar.server";
+import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax, getNextMonth, getPreviousMonth } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
@@ -58,6 +56,8 @@ const StyledCalendar = styled.div`
     padding: 0;
     margin: 0;
     gap: 5px;
+    max-width: 100%;
+    overflow: auto;
 
     .day {
       a.title {
@@ -82,17 +82,6 @@ const StyledCalendar = styled.div`
       margin-left: 30px;
       margin-bottom: 30px;
       position: relative;
-
-      // &:after {
-      //   content: "";
-      //   position: absolute;
-      //   border-top: 1px solid #eee;
-      //   border-right: 1px solid #eee;
-      //   width: calc(100% - 50px);
-      //   height: 7px;
-      //   top: 50%;
-      //   right: 0;
-      // }
     }
   }
 `;
@@ -107,7 +96,7 @@ const StyledCalendarDay = styled.li(
 );
 
 export default function Calendar() {
-  const { events, monthMin, monthMax } = useLoaderData<{
+  const { events } = useLoaderData<{
     events: GoogleApis.Calendar_v3.Schema.Event[];
     monthMin: Date;
     monthMax: Date;
@@ -264,25 +253,3 @@ export default function Calendar() {
     </div>
   );
 }
-
-export const ErrorBoundary = () => {
-  const error = useRouteError();
-  if (
-    error &&
-    typeof error === "object" &&
-    "message" in error &&
-    error.message === "User not authenticated"
-  ) {
-    return (
-      <section>
-        <SignInButton type="Google" />
-      </section>
-    );
-  }
-  return (
-    <section>
-      <h1>Error</h1>
-      <p>Something went wrong</p>
-    </section>
-  );
-};

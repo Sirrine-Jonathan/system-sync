@@ -1,9 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useMatches } from "@remix-run/react";
 import { FlexContainer } from "./styledParts/FlexContainer";
-import { Avatar } from "./styledParts/Avatar";
+import { Avatar, DesktopAvatar } from "./styledParts/Avatar";
 
 import styled from "@emotion/styled";
+import { MobileOnly } from "./styledParts/MobileOnly";
+import { useIsMobile } from "~/hooks/useIsMobile";
+import { SignOutButton } from "./SignOutButton";
 
 interface RouteHandle {
   title: string;
@@ -20,7 +23,7 @@ const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: "center";
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.9));
 
   h1,
   h2,
@@ -32,7 +35,7 @@ const StyledHeader = styled.header`
   }
 
   h1 {
-    font-size: 2rem;
+    font-size: 1.5rem;
 
     a {
       text-decoration: none;
@@ -45,7 +48,8 @@ const StyledHeader = styled.header`
   }
 
   hr {
-    border-color: rgba(255, 255, 255, 0.7);
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
     margin: 30px 0;
   }
 
@@ -53,11 +57,11 @@ const StyledHeader = styled.header`
     position: absolute;
     top: 0;
     right: 0;
-    width: 50dvw;
+    width: 80dvw;
     max-width: 300px;
-    background: black;
+    background: #111;
     border-bottom-left-radius: 5px;
-    padding: 1em;
+    padding: 1rem;
     list-style: none;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
     color: white;
@@ -72,10 +76,10 @@ const StyledHeader = styled.header`
       li {
         margin: 0.5em 0;
         list-style: none;
-        font-size: 1em;
+        font-size: 1rem;
         display: flex;
         align-items: center;
-        gap: 0.5em;
+        gap: 0.5rem;
         cursor: pointer;
 
         img {
@@ -84,8 +88,8 @@ const StyledHeader = styled.header`
 
         ul li {
           display: block;
-          font-size: 0.8em;
-          margin: 0.5em 0 0 1em;
+          font-size: 0.8rem;
+          margin: 0.5em 0 0 1rem;
 
           a {
             display: block;
@@ -113,8 +117,8 @@ const StyledHeader = styled.header`
 
     .closeMenu {
       position: absolute;
-      top: 1em;
-      right: 1em;
+      top: 1rem;
+      right: 1rem;
       background: transparent;
       border: 1px solid transparent;
       border-radius: 100px;
@@ -147,6 +151,10 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
     imageUrl || FALLBACK_IMAGE_URL
   );
 
+  const { isMobile } = useIsMobile();
+
+  const AvatarTag = isMobile ? Avatar : DesktopAvatar;
+
   const avatarImageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -168,77 +176,80 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
         <h1>
           <NavLink to="/dashboard">Become You</NavLink>
         </h1>
-        <h2>{subtitle}</h2>
+        <h2>
+          {subtitle} - {isMobile ? "Mobile" : "Desktop"}
+        </h2>
       </FlexContainer>
       <div className="menuContainer">
         {imageUrl && (
-          <Avatar onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <AvatarTag onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <img ref={avatarImageRef} src={usableImageUrl} alt="profile" />
-          </Avatar>
+          </AvatarTag>
         )}
         {isMenuOpen && (
-          <div className="menu">
-            <button className="closeMenu" onClick={() => setIsMenuOpen(false)}>
-              <img src="/icons/close.svg" alt="close" />
-            </button>
-            <ul>
-              <li>
-                <img src="/icons/dashboard.svg" alt="Dashboard" />
-                <a href="/dashboard">Dashboard</a>
-              </li>
-              <li>
-                <img src="/icons/event.svg" alt="Events" />
-                <a href="/events">Events</a>
-              </li>
-              <li>
-                <img src="/icons/task.svg" alt="Tasks" />
-                <a href="/tasks">Tasks</a>
-              </li>
-              <li>
-                <img src="/icons/habit.svg" alt="Habits" />
-                <a href="/habits">Habits</a>
-              </li>
-              <hr />
-              <li>
-                <img src="/icons/calendar.svg" alt="Calendar" />
-                <a href="/calendar">
-                  Calendar
-                  <ul>
-                    <li>
-                      <a href="/calendar/month">Month</a>
-                    </li>
-                    <li>
-                      <a href="/calendar/week">Week</a>
-                    </li>
-                    <li>
-                      <a href="/calendar/day">Day</a>
-                    </li>
-                  </ul>
-                </a>
-              </li>
-              <hr />
-              <li>
-                <img src="/icons/about.svg" alt="About" />
-                <a href="/about">About</a>
-              </li>
-              <li>
-                <img src="/icons/settings.svg" alt="Settings" />
-                <a href="/settings">Settings</a>
-              </li>
-              <hr />
-              <li>
-                <a href="/auth/signout">
-                  <FlexContainer
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <span>Sign Out</span>
-                    <img src="/icons/signout.svg" alt="" />
-                  </FlexContainer>
-                </a>
-              </li>
-            </ul>
-          </div>
+          <MobileOnly>
+            <div className="menu">
+              <button
+                className="closeMenu"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <img src="/icons/close.svg" alt="close" />
+              </button>
+              <ul>
+                <li>
+                  <img src="/icons/dashboard.svg" alt="" />
+                  <a href="/dashboard">Dashboard</a>
+                </li>
+
+                <li>
+                  <img src="/icons/task.svg" alt="" />
+                  <a href="/tasks">Tasks</a>
+                </li>
+                <li>
+                  <img src="/icons/habit.svg" alt="" />
+                  <a href="/habits">Habits</a>
+                </li>
+                <hr />
+                <li>
+                  <img src="/icons/calendar.svg" alt="" />
+                  <a href="/calendar">
+                    Calendar
+                    <ul>
+                      <li>
+                        <a href="/calendar/events">Upcoming Events</a>
+                      </li>
+                      <li>
+                        <a href="/calendar/month">Month</a>
+                      </li>
+                      <li>
+                        <a href="/calendar/week">Week</a>
+                      </li>
+                      <li>
+                        <a href="/calendar/day">Day</a>
+                      </li>
+                    </ul>
+                  </a>
+                </li>
+                <hr />
+                <li>
+                  <img src="/icons/account.svg" alt="" />
+                  <a href="/account">Account</a>
+                </li>
+                <li>
+                  <img src="/icons/settings.svg" alt="" />
+                  <a href="/settings">Settings</a>
+                </li>
+                <li>
+                  <img src="/icons/about.svg" alt="About" />
+                  <a href="/about">About</a>
+                </li>
+                <hr />
+                <li>
+                  <SignOutButton />
+                </li>
+              </ul>
+            </div>
+          </MobileOnly>
         )}
       </div>
     </StyledHeader>

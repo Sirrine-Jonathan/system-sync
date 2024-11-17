@@ -4,7 +4,7 @@ export const StyledSelect = styled.select`
   background: transparent;
   border: none;
   border-bottom: 1px solid white;
-  padding: 0.5em;
+  padding: 0.5rem;
   color: white;
   font-size: 1.2rem;
 `;
@@ -12,5 +12,5 @@ export const StyledSelect = styled.select`
 export const StyledOption = styled.option`
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.2em;
 `;

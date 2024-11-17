@@ -7,7 +7,7 @@ import {
   useNavigate,
 } from "@remix-run/react";
 import { Event } from "~/components/Event";
-import { getEvents } from "~/services/calendar.server";
+import { getEvents } from "~/services/event.server";
 import { getRangeMinMax, getPreviousDay, getNextDay } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
 

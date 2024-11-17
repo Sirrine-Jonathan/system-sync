@@ -1,9 +1,17 @@
-import { Outlet, useLoaderData } from "@remix-run/react";
+import {
+  Outlet,
+  useLoaderData,
+  useRouteError,
+  useMatches,
+} from "@remix-run/react";
 import { getSession, commitSession } from "~/services/session.server";
 import { redirect } from "@remix-run/node";
 import { Header, FALLBACK_IMAGE_URL } from "~/components/Header";
 import { authenticator } from "~/services/auth.server";
 import { useEffect } from "react";
+import { isValidTimeZone } from "~/utils/time";
+import { SignInButton } from "~/components/SignInButton";
+import { DesktopNav } from "~/components/DesktopNav";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await authenticator.isAuthenticated(request);
@@ -15,23 +23,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   // store the access token in the session
   const session = await getSession(request);
   session.set("accessToken", user.accessToken);
+  session.set("timezone", user.timeZone || "UTC");
+  process.env.TZ = user.timeZone || "UTC";
+
+  console.log({ user });
   return new Response(JSON.stringify(user), {
     headers: { "Set-Cookie": await commitSession(session) },
   });
 };
-
-function isValidTimeZone(tz: string) {
-  if (!Intl || !Intl.DateTimeFormat().resolvedOptions().timeZone) {
-    throw new Error("Time zones are not available in this environment");
-  }
-
-  try {
-    Intl.DateTimeFormat(undefined, { timeZone: tz });
-    return true;
-  } catch (ex) {
-    return false;
-  }
-}
 
 export default function Layout() {
   const userStr = useLoaderData<ReturnType<typeof loader>>();
@@ -62,7 +61,47 @@ export default function Layout() {
   return (
     <main className="flex-col">
       <Header imageUrl={user?.photos[0].value || FALLBACK_IMAGE_URL} />
+      <DesktopNav user={user} />
       <Outlet context={user} />
     </main>
   );
 }
+
+export const ErrorBoundary = () => {
+  const error = useRouteError();
+  const matches = useMatches();
+  const leafNode = matches[matches.length - 1];
+  const returnUrl = leafNode.pathname;
+
+  let Component = <div></div>;
+  if (
+    (error &&
+      typeof error === "object" &&
+      "message" in error &&
+      error.message === "User not authenticated") ||
+    error.message === "Unauthorized" ||
+    error.message === "Forbidden" ||
+    error.message === "Not Found" ||
+    error.message === "Invalid Credentials"
+  ) {
+    Component = (
+      <section>
+        <SignInButton type="Google" successRedirect={returnUrl} />
+      </section>
+    );
+  } else {
+    Component = (
+      <section>
+        <h1>Something went wrong</h1>
+        <p>{error?.message}</p>
+      </section>
+    );
+  }
+  return (
+    <main className="flex-col">
+      <Header />
+      <DesktopNav />
+      {Component}
+    </main>
+  );
+};

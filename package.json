@@ -6,7 +6,7 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "NODE_ENV=development node server.js",
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production TZ=UTC node server.js",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "pretty": "prettier --write .",
     "typecheck": "tsc"
@@ -39,7 +39,9 @@
     "react-zoom-pan-pinch": "^3.6.1",
     "remix-auth": "^3.7.0",
     "remix-auth-google": "^2.0.0",
-    "remix-create-express-app": "^0.4.5"
+    "remix-create-express-app": "^0.4.5",
+    "vite-plugin-react-rich-svg": "^1.2.0",
+    "vite-plugin-svgr": "^4.3.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.13.1",

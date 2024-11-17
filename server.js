@@ -57,12 +57,10 @@ app.use(express.static("build/client", { maxAge: "1h" }));
 
 app.use(morgan("tiny"));
 
-app.use()
-
 // handle SSR requests
 app.all("*", remixHandler);
 
 const port = process.env.PORT || 5173;
 
 app.listen(port, () =>
-  console.log(chalk.green(`Express server listening at http://localhost:${port}`)));
+  console.log(chalk.blue.bold('Express server listening at'), chalk.green(`http://localhost:${port}`)));

@@ -12,3 +12,9 @@ export const Avatar = styled.button`
     border-radius: 100px;
   }
 `;
+
+const AvatarDiv = Avatar.withComponent("div");
+
+export const DesktopAvatar = styled(AvatarDiv)`
+  cursor: default;
+`;

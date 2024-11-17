@@ -10,28 +10,29 @@ import { useEffect, useState, useRef, forwardRef } from "react";
 import styled from "@emotion/styled";
 import { authenticator } from "~/services/auth.server";
 import { StyledSelect } from "~/components/styledParts/Select";
+import { StyledForm } from "~/components/styledParts/Form";
 
 const StyledList = styled.ul`
   list-style: none;
   padding: 0;
-  display: grid;
-  gap: 1em;
+  gap: 1rem;
 `;
 
 const StyledItem = styled.li`
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  gap: 1rem;
   border-radius: 5px;
-  padding: 1em;
+  padding: 1rem;
   background: rgba(255, 255, 255, 0.1);
 
   .taskDisplay {
     list-style: none;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    gap: 1em;
+    gap: 1rem;
     font-size: 1.2rem;
     cursor: pointer;
   }
@@ -49,6 +50,7 @@ const StyledItem = styled.li`
     cursor: pointer;
     display: flex;
     align-items: center;
+    margin: 0;
   }
 
   .save,
@@ -56,7 +58,7 @@ const StyledItem = styled.li`
     border: 1px solid white;
     background: transparent;
     border-radius: 5px;
-    padding: 0.5em 1em;
+    padding: 0.5em 1rem;
     cursor: pointer;
     margin: 15px 0 0;
   }
@@ -80,7 +82,7 @@ const StyledItem = styled.li`
     background: transparent;
     border: none;
     border-bottom: 1px solid white;
-    padding: 0.5em;
+    padding: 0.5rem;
     color: white;
     font-size: 1.2rem;
   }
@@ -148,19 +150,22 @@ export const TaskEditor = ({ task }: { task: THydratedTaskModel }) => {
 
   return (
     <StyledItem>
-      <label className="taskDisplay">
-        <div>{task.name}</div>
-        {!isEditMode && (
-          <button className="edit" onClick={() => setIsEditMode(true)}>
+      {!isEditMode && (
+        <label className="taskDisplay">
+          <div>{task.name}</div>
+          <button className="edit" onClick={() => setIsEditMode(!isEditMode)}>
             <img src="/icons/edit.svg" alt="edit" />
           </button>
-        )}
-        {isEditMode && (
-          <button className="close" onClick={() => setIsEditMode(false)}>
+        </label>
+      )}
+      {isEditMode && (
+        <label className="taskDisplay">
+          <div>{task.name}</div>
+          <button className="close" onClick={() => setIsEditMode(!isEditMode)}>
             <img src="/icons/up.svg" alt="close" />
           </button>
-        )}
-      </label>
+        </label>
+      )}
       {isEditMode && (
         <div className="editFormContainer">
           <TaskForm task={task}>
@@ -219,75 +224,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 };
 
-const StyledForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1em;
-  border-radius: 5px;
-  padding: 1em;
-  background: rgba(255, 255, 255, 0.1);
-
-  label {
-    font-size: 0.7rem;
-    color: white;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-  }
-
-  input,
-  textarea {
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid white;
-    padding: 0.5em;
-    color: white;
-    font-size: 1.2rem;
-  }
-
-  input[type="number"] {
-    &:webkit-inner-spin-button {
-      -webkit-appearance: none;
-    }
-
-    &:webkit-outer-spin-button {
-      -webkit-appearance: none;
-    }
-
-    -moz-appearance: textfield;
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-  }
-
-  .inputWithSuffix {
-    display: flex;
-    align-items: end;
-    gap: 0.5em;
-  }
-
-  button {
-    border: 1px solid white;
-    background: transparent;
-    border-radius: 5px;
-    padding: 0.5em 1em;
-    cursor: pointer;
-    margin: 15px 0 0;
-    font-weight: bold;
-    color: white;
-  }
-`;
-
 const StyledControls = styled.section`
   display: flex;
-  gap: 1em;
+  gap: 1rem select {
 
-  select {
   }
 `;
 
@@ -314,21 +254,21 @@ export default function Tasks() {
           <option value="dueThisMonth">Due This Month</option>
         </StyledSelect>
       </StyledControls>
-      <section id="tasks">
+      <div id="tasks">
         <StyledList>
           {tasks.map((task) => (
             <TaskEditor key={task._id.toString()} task={task} />
           ))}
         </StyledList>
-      </section>
-      <section id="add-task">
+      </div>
+      <div id="add-task">
         <h2>Add Task</h2>
         <TaskForm ref={formRef}>
           <button onClick={() => formRef.current?.requestSubmit()}>
             Add Task
           </button>
         </TaskForm>
-      </section>
+      </div>
     </section>
   );
 }

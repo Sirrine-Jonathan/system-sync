@@ -89,13 +89,14 @@ const globalStyles = `
   html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    min-height: 100%;
   }
 
   body {
     background: linear-gradient(#0f0c29, #302b63, #24243e);
     color: white;
     font: 1em "Inter", sans-serif;
+    font-size: 16px;
   }
 
   main {
@@ -105,7 +106,13 @@ const globalStyles = `
   }
 
   main header, main section {
-    padding: 1em;
+    padding: 1rem
+  }
+
+  @media (max-width: 768px) {
+    body {
+      font-size: 12px;
+    }
   }
 `;
 
