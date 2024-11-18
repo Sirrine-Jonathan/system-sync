@@ -1,8 +1,11 @@
 /// <reference types="vite-plugin-svgr/client" />
 
+import { useState } from "react";
 import type { calendar_v3 } from "googleapis";
 import styled from "@emotion/styled";
-import { NavLink } from "@remix-run/react";
+import { Form, NavLink, useFetcher } from "@remix-run/react";
+import { Modal, ModalHeader } from "./Modal";
+import { Button } from "./styledParts/Button";
 
 const StyledEvent = styled.div`
   position: relative;
@@ -55,10 +58,15 @@ const StyledDetails = styled.div`
   }
 `;
 
-const StyledEditButton = styled.a`
+const StyledEventActions = styled.div`
   position: absolute;
   top: 5px;
   right: 5px;
+  display: flex;
+  gap: 1rem;
+`;
+
+const StyledEditButton = styled.a`
   background: transparent;
   border: none;
   color: white;
@@ -72,6 +80,32 @@ const StyledEditButton = styled.a`
   }
 `;
 
+const StyledDeleteButton = styled.button`
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 1em;
+  }
+`;
+
+const StyledDeleteConfirmation = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+`;
+
 export const Event = ({
   event,
   expanded,
@@ -79,7 +113,10 @@ export const Event = ({
   event: calendar_v3.Schema$Event;
   expanded?: boolean;
 }) => {
-  console.log({ event });
+  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
+    useState(false);
+
+  const fetcher = useFetcher();
 
   const start = new Date(event.start?.dateTime || "");
   const end = new Date(event.end?.dateTime || "");
@@ -102,11 +139,33 @@ export const Event = ({
   const startDay = days[start.getDay()];
   const startMonth = months[start.getMonth()];
 
+  const handleDelete = () => {
+    setIsDeleteConfirmModalOpen(true);
+  };
+
   return (
     <StyledEvent className={`event ${startDay}`}>
-      <StyledEditButton href={`/calendar/event/${event.id}/edit`}>
-        {<img src="/icons/edit.svg" alt="edit" />}
-      </StyledEditButton>
+      <Modal isOpen={isDeleteConfirmModalOpen}>
+        <ModalHeader>
+          <div className="modalTitle">Delete Event</div>
+          <div className="modalSubtitle">{event.summary}</div>
+        </ModalHeader>
+        <StyledDeleteConfirmation>
+          <div>Are you sure you want to delete this event?</div>
+          <Form method="post" action={`/calendar/event/${event.id}/delete`}>
+            <Button type="submit">Yes</Button>
+          </Form>
+          <Button onClick={() => setIsDeleteConfirmModalOpen(false)}>No</Button>
+        </StyledDeleteConfirmation>
+      </Modal>
+      <StyledEventActions>
+        <StyledEditButton href={`/calendar/event/${event.id}/edit`}>
+          {<img src="/icons/edit.svg" alt="edit" />}
+        </StyledEditButton>
+        <StyledDeleteButton onClick={handleDelete}>
+          {<img src="/icons/delete.svg" alt="delete" />}
+        </StyledDeleteButton>
+      </StyledEventActions>
       <div className="timeDetails">
         <p className="date">
           {[

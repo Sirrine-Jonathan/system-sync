@@ -97,6 +97,7 @@ const globalStyles = `
     color: white;
     font: 1em "Inter", sans-serif;
     font-size: 16px;
+    font-family: "NotoSans", sans-serif;
   }
 
   main {
@@ -114,6 +115,18 @@ const globalStyles = `
       font-size: 12px;
     }
   }
+
+  @font-face {
+    font-family: "CormantGaramond";
+    font-weight: 400;
+    font-style: normal;
+    src: url("/fonts/Cormant_Garamond/CormorantGaramond-Regular.ttf") format("truetype");
+  }
+
+  @font-face {
+    font-family: "NotoSans";
+    src: url("/fonts/Noto_Sans/static/NotoSans-Regular.ttf") format("truetype");
+  } 
 `;
 
 export default function App() {

@@ -5,15 +5,13 @@ import { FlexContainer } from "./styledParts/FlexContainer";
 import { DesktopOnly } from "./styledParts/DesktopOnly";
 
 const StyledNav = styled.nav`
-  margin: 1rem;
   padding: 1rem;
-  border: 1px solid white;
-  border-radius: 5px;
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0.2),
     rgba(255, 255, 255, 0.1)
   );
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
   a {
     text-decoration: none;
@@ -23,6 +21,8 @@ const StyledNav = styled.nav`
     &.active {
       text-decoration: underline;
       color: gold;
+      pointer-events: none;
+      cursor: default;
     }
 
     &:hover {
@@ -34,9 +34,23 @@ const StyledNav = styled.nav`
   .sectionRight {
     margin-left: auto;
 
-    img {
-      width: 1.5rem;
-      cursor: pointer;
+    a {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 100px;
+      padding: 10px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        width: 1.2rem;
+        cursor: pointer;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.5);
+      }
     }
   }
 `;
@@ -67,21 +81,25 @@ export const DesktopNav = ({ user }: { user: User }) => {
             alignItems="flex-end"
             gap="5px"
           >
-            {user && <DisplayName>{user.displayName}</DisplayName>}
-            {user && <Email>{user.emails?.[0]?.value}</Email>}
-            {user && (
-              <FlexContainer alignItems="flex-start" gap="1em">
-                <a href="/settings">
-                  <img src="/icons/settings.svg" alt="" />
-                </a>
-                <a href="/account">
-                  <img src="/icons/account.svg" alt="" />
-                </a>
-                <a href="/auth/signout">
-                  <img src="/icons/signout.svg" alt="" />
-                </a>
-              </FlexContainer>
-            )}
+            <FlexContainer alignItems="center" gap="2em">
+              <div>
+                {user && <DisplayName>{user.displayName}</DisplayName>}
+                {user && <Email>{user.emails?.[0]?.value}</Email>}
+              </div>
+              {user && (
+                <FlexContainer alignItems="flex-start" gap="1em">
+                  <a href="/settings">
+                    <img src="/icons/settings.svg" alt="" />
+                  </a>
+                  <a href="/account">
+                    <img src="/icons/account.svg" alt="" />
+                  </a>
+                  <a href="/auth/signout">
+                    <img src="/icons/signout.svg" alt="" />
+                  </a>
+                </FlexContainer>
+              )}
+            </FlexContainer>
           </FlexContainer>
         </FlexContainer>
       </StyledNav>

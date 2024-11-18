@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "NODE_ENV=development node server.js",
+    "dev": "DEBUG=OAuth2Strategy NODE_ENV=development node server.js",
     "start": "NODE_ENV=production TZ=UTC node server.js",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "pretty": "prettier --write .",
@@ -36,6 +36,7 @@
     "passport-google-oauth20": "^2.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-toastify": "^10.0.6",
     "react-zoom-pan-pinch": "^3.6.1",
     "remix-auth": "^3.7.0",
     "remix-auth-google": "^2.0.0",

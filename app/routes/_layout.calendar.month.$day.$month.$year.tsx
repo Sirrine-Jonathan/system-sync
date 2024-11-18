@@ -6,15 +6,22 @@ import {
   useParams,
   useNavigate,
   NavLink,
+  useFetcher,
 } from "@remix-run/react";
+import { useCallback, useState } from "react";
 import { Event } from "~/components/Event";
 import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax, getNextMonth, getPreviousMonth } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
+import { Modal, ModalHeader } from "~/components/Modal";
+import { StyledFormContainer } from "~/components/styledParts/Form";
+import { FlexContainer } from "~/components/styledParts/FlexContainer";
+import { Button } from "~/components/styledParts/Button";
+import { useTimezone } from "~/hooks/useTimezone";
 
 export const handle = {
-  title: "Calendar | Month",
+  title: "Month",
 };
 
 export const loader: LoaderFunction = async ({
@@ -24,6 +31,7 @@ export const loader: LoaderFunction = async ({
   | { events: calendar_v3.Schema$Event[]; monthMin: Date; monthMax: Date }
   | undefined
 > => {
+  console.log("calendar month with date loader");
   const { day, month, year } = params;
 
   if (!day || !month || !year) {
@@ -70,6 +78,8 @@ const StyledCalendar = styled.div`
         width: 100%;
         font-size: 0.8rem;
         cursor: pointer;
+        border-top-right-radius: 5px;
+        border-top-left-radius: 5px;
 
         &:hover {
           background: gold;
@@ -89,11 +99,45 @@ const StyledCalendar = styled.div`
 const StyledCalendarDay = styled.li(
   (props: { gridColumnStart?: number | boolean }) => ({
     background: "rgba(255, 255, 255, 0.1)",
-    padding: 2,
+    borderRadius: "5px",
+    paddingBottom: "30px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "5px",
     textAlign: "center",
+    minHeight: "100px",
     gridColumnStart: `${props.gridColumnStart || "unset"}`,
+    position: "relative",
   })
 );
+
+const StyledCreateEventButton = styled.button`
+  position: absolute;
+  bottom: 0;
+  padding: 0.5rem;
+  border: none;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  width: 100%;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: gold;
+  color: black;
+  cursor: pointer;
+
+  img {
+    width: 1.5rem;
+  }
+`;
+
+const StyledCreateEventForm = styled(StyledFormContainer)`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: transparent;
+`;
 
 export default function Calendar() {
   const { events } = useLoaderData<{
@@ -104,11 +148,13 @@ export default function Calendar() {
 
   const navigate = useNavigate();
 
+  const fetcher = useFetcher();
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [modalDate, setModalDate] = useState(() => new Date());
+
   const { day, month, year } = useParams();
-  const tzFromUrl =
-    new URLSearchParams(
-      typeof window !== "undefined" ? window.location.search : "UTC"
-    ).get("tz") || "UTC";
+  const { tzFromUrl } = useTimezone();
 
   const date = new Date();
   date.setHours(0, 0, 0, 0);
@@ -173,6 +219,28 @@ export default function Calendar() {
     navigate(
       `/calendar/month/${previousMonth.getDate()}/${previousMonth.getMonth()}/${previousMonth.getFullYear()}`
     );
+  };
+
+  const handleStartChange = (e) => {
+    console.log("handleStartChange", e.target.value);
+    const date = new Date(e.target.value);
+    setModalDate(date);
+  };
+
+  const getEndDefault = useCallback(() => {
+    const end = new Date(modalDate);
+    const minutes = 30;
+    end.setMinutes(end.getMinutes() + minutes);
+    return end.toISOString().slice(0, 16);
+  }, [modalDate]);
+
+  const handleCreateEventSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    fetcher.submit(e.currentTarget, {
+      method: "post",
+      action: `/calendar/event/create?tz=${tzFromUrl}`,
+    });
   };
 
   return (
@@ -242,13 +310,74 @@ export default function Calendar() {
                       .join(" ")}
                   </NavLink>
                   {getDayContents(thisSquaresDate)}
+                  <StyledCreateEventButton
+                    onClick={() => {
+                      setIsCreateModalOpen(true);
+                      setModalDate(thisSquaresDate);
+                    }}
+                  >
+                    <img src="/icons/add-dark.svg" alt="" />
+                  </StyledCreateEventButton>
                 </StyledCalendarDay>
               );
             })
           }
         </ol>
       </StyledCalendar>
-
+      <Modal isOpen={isCreateModalOpen} setIsOpen={setIsCreateModalOpen}>
+        <ModalHeader>
+          <div className="modalTitle">Create Event</div>
+          <div className="modalSubtitle">Enter event details</div>
+        </ModalHeader>
+        <StyledCreateEventForm>
+          <fetcher.Form method="post" onSubmit={handleCreateEventSubmit}>
+            <label htmlFor="summary">
+              <textarea
+                id="summary"
+                name="summary"
+                placeholder="Summary"
+                required
+              />
+            </label>
+            <label htmlFor="description">
+              <textarea
+                id="description"
+                name="description"
+                placeholder="Description"
+              />
+            </label>
+            <label htmlFor="startDateTime">
+              <input
+                type="datetime-local"
+                id="startDateTime"
+                name="startDateTime"
+                defaultValue={modalDate.toISOString().slice(0, 16)}
+                onChange={handleStartChange}
+                required
+              />
+            </label>
+            <label htmlFor="endDateTime">
+              <input
+                type="datetime-local"
+                id="endDateTime"
+                name="endDateTime"
+                defaultValue={getEndDefault()}
+                required
+              />
+            </label>
+            <FlexContainer justifyContent="flex-end" gap="1em">
+              <Button type="submit">Create</Button>
+              <Button
+                styleType="warning"
+                type="button"
+                onClick={() => setIsCreateModalOpen(false)}
+              >
+                Cancel
+              </Button>
+            </FlexContainer>
+          </fetcher.Form>
+        </StyledCreateEventForm>
+      </Modal>
       <Outlet />
     </div>
   );

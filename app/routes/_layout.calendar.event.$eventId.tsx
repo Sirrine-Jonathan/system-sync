@@ -32,7 +32,7 @@ export default function SingleEvent() {
       <div style={{ flex: "1" }}>
         <Event event={event} expanded />
       </div>
-      <Outlet />
+      <Outlet context={{ event }} />
     </FlexContainer>
   );
 }

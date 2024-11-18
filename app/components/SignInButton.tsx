@@ -35,10 +35,15 @@ export const SignInButton = ({ type, successRedirect }: SignInButtonProps) => {
       text = "Sign in with Facebook";
       break;
   }
+
   return (
     <StyledForm action={action} method="post">
       {successRedirect && (
-        <input type="hidden" name="successRedirect" value={successRedirect} />
+        <input
+          type="hidden"
+          name="successRedirect"
+          value={`${successRedirect}`}
+        />
       )}
       <button>
         <img src={imgSrc} alt="" />

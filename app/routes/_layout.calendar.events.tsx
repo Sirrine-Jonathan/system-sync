@@ -17,7 +17,7 @@ const StyledUpcomingEvents = styled.div`
 `;
 
 export const handle = {
-  title: "Events",
+  title: "Upcoming events",
 };
 
 export const loader: LoaderFunction = async ({

@@ -4,7 +4,8 @@ import { sessionStorage } from "./session.server";
 
 export type User = GoogleProfile & {
   accessToken: string;
-  timeZone: string;
+  refreshToken: string;
+  timeZone?: string;
 };
 
 export const authenticator = new Authenticator<User>(sessionStorage, {
@@ -23,8 +24,9 @@ export const googleStrategy = new GoogleStrategy(
     scope: "profile email https://www.googleapis.com/auth/calendar",
     includeGrantedScopes: true,
   },
-  async ({ profile, accessToken }) => {
-    return { ...profile, accessToken } as User;
+  async ({ profile, accessToken, refreshToken }) => {
+    console.log("googleStrategy", { profile, accessToken, refreshToken });
+    return { ...profile, accessToken, refreshToken } as User;
   }
 );
 

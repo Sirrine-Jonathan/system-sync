@@ -1,12 +1,17 @@
 import type { LoaderFunction } from "@remix-run/node";
-import { useLoaderData, useActionData, Form, NavLink } from "@remix-run/react";
-import { getEvent, updateEvent } from "~/services/event.server";
+import {
+  useActionData,
+  NavLink,
+  useOutletContext,
+  useFetcher,
+} from "@remix-run/react";
+import { updateEvent } from "~/services/event.server";
 import { calendar_v3 } from "googleapis";
 import styled from "@emotion/styled";
-import { StyledForm } from "~/components/styledParts/Form";
+import { StyledFormContainer } from "~/components/styledParts/Form";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
 
-const StyledEventForm = styled(StyledForm)`
+const StyledEventFormContainer = styled(StyledFormContainer)`
   display: flex;
   position: relative;
   a {
@@ -22,18 +27,32 @@ const StyledEventForm = styled(StyledForm)`
   label {
     width: 100%;
   }
+
+  .formTitle {
+    margin-bottom: 1rem;
+  }
+`;
+
+const StyledFormMessage = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  text-align: center;
 `;
 
 export const handle = {
-  title: "Event | Edit",
-};
-
-export const loader: LoaderFunction = async ({ request, params }) => {
-  const { eventId } = params;
-  if (!eventId) {
-    return null;
-  }
-  return await getEvent(request, { eventId });
+  title: "Edit event",
 };
 
 export const action: LoaderFunction = async ({ request, params }) => {
@@ -43,48 +62,31 @@ export const action: LoaderFunction = async ({ request, params }) => {
   }
 
   const formData = await request.formData();
-  const action = formData.get("_action");
 
-  switch (action) {
-    case "updateEvent": {
-      const start = formData.get("start");
-      const end = formData.get("end") as string;
-      const endISO = new Date(end).toISOString();
-      console.log({ start, end });
+  const patch: Partial<calendar_v3.Schema$Event> = {
+    id: eventId,
+  };
 
-      // Validation
-      if (!start || !end) {
-        return { errorMessage: "Missing required fields" };
-      }
-      return await updateEvent(request, {
-        id: eventId,
-        summary: formData.get("summary") as string,
-      });
-    }
-    default:
-      throw new Error("Invalid action");
+  const summary = formData.get("summary") as string;
+  if (summary) {
+    patch.summary = summary;
   }
+
+  const description = formData.get("description") as string;
+  if (description) {
+    patch.description = description;
+  }
+
+  return await updateEvent(request, patch);
 };
 
 export default function EventEdit() {
-  const event = useLoaderData<calendar_v3.Schema$Event>();
+  const { event } = useOutletContext<{ event: calendar_v3.Schema$Event }>();
   const actionData = useActionData();
   const errorMessage = actionData?.errorMessage;
-
-  console.log({ event, actionData });
-
-  const startDateTime = new Date(event.start?.dateTime || "")
-    .toISOString()
-    .slice(0, 16);
-  const endDateTime = new Date(event.end?.dateTime || "")
-    .toISOString()
-    .slice(0, 16);
-
-  console.log({
-    startDateTime,
-    endDateTime,
-    validTime: new Date().toISOString().slice(0, 16),
-  });
+  const fetcher = useFetcher();
+  const startDateTime = event.start?.dateTime?.slice(0, 16);
+  const endDateTime = event.end?.dateTime?.slice(0, 16);
 
   return (
     <FlexContainer
@@ -92,48 +94,58 @@ export default function EventEdit() {
       justifyContent="flex-start"
       alignItems="stretch"
       gap="1em"
+      style={{ flex: "1" }}
     >
-      <StyledEventForm
-        method="post"
-        action={`/calendar/event/${event.id}/edit`}
-      >
-        <NavLink to={`/calendar/event/${event.id}`}>
-          <img src="/icons/close.svg" alt="" />
-        </NavLink>
-        <div className="formTitle">Edit Event</div>
-        <div className="formErrorMessage">{errorMessage}</div>
-        <input type="hidden" name="_action" value="updateEvent" />
-        <input type="hidden" name="_id" value={event.id} />
-        <label>
-          Title
-          <textarea
-            required
-            placeholder="Title"
-            name="summary"
-            defaultValue={event.summary || ""}
-          ></textarea>
-        </label>
-        <label>
-          Start Date
-          <input
-            type="datetime-local"
-            name="start"
-            defaultValue={startDateTime || ""}
-          />
-        </label>
-        <label>
-          End Date
-          <input
-            type="datetime-local"
-            name="end"
-            defaultValue={endDateTime || ""}
-          />
-        </label>
-        <FlexContainer gap="1em">
-          <button type="submit">Save</button>
-          <button type="reset">Reset</button>
-        </FlexContainer>
-      </StyledEventForm>
+      <StyledEventFormContainer>
+        {fetcher.state === "submitting" && (
+          <StyledFormMessage>Saving...</StyledFormMessage>
+        )}
+        <fetcher.Form method="post" action={`/calendar/event/${event.id}/edit`}>
+          <NavLink to={`/calendar/event/${event.id}`}>
+            <img src="/icons/close.svg" alt="" />
+          </NavLink>
+          <div className="formTitle">Edit Event</div>
+          <div className="formErrorMessage">{errorMessage}</div>
+          <input type="hidden" name="_id" value={event.id} />
+          <label>
+            Summary
+            <textarea
+              required
+              placeholder="Summary"
+              name="summary"
+              defaultValue={event.summary || ""}
+            ></textarea>
+          </label>
+          <label>
+            Description
+            <textarea
+              placeholder="Description"
+              name="description"
+              defaultValue={event.description || ""}
+            ></textarea>
+          </label>
+          <label>
+            Start Date
+            <input
+              type="datetime-local"
+              name="start"
+              defaultValue={startDateTime || ""}
+            />
+          </label>
+          <label>
+            End Date
+            <input
+              type="datetime-local"
+              name="end"
+              defaultValue={endDateTime || ""}
+            />
+          </label>
+          <FlexContainer gap="1em">
+            <button type="submit">Save</button>
+            <button type="reset">Reset</button>
+          </FlexContainer>
+        </fetcher.Form>
+      </StyledEventFormContainer>
     </FlexContainer>
   );
 }

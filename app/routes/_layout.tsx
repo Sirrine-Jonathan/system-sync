@@ -15,18 +15,24 @@ import { DesktopNav } from "~/components/DesktopNav";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await authenticator.isAuthenticated(request);
+  const session = await getSession(request);
+  const sessionUser = session.get("user");
+  console.log("layout loader", {
+    user,
+    getSession: await getSession(request),
+    sessionUser,
+  });
 
   if (!user) {
     return redirect("/auth/signin");
   }
 
   // store the access token in the session
-  const session = await getSession(request);
   session.set("accessToken", user.accessToken);
+  session.set("refreshToken", user.refreshToken);
   session.set("timezone", user.timeZone || "UTC");
   process.env.TZ = user.timeZone || "UTC";
 
-  console.log({ user });
   return new Response(JSON.stringify(user), {
     headers: { "Set-Cookie": await commitSession(session) },
   });

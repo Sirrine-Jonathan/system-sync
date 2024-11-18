@@ -1,8 +1,9 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { NavLink, Outlet, useMatches } from "@remix-run/react";
+import { NavLink, Outlet } from "@remix-run/react";
 import { authenticator } from "~/services/auth.server";
 import styled from "@emotion/styled";
+import { useBreadcrumbs } from "~/hooks/useBreadcrumbs";
 
 const StyledTimeUl = styled.ul`
   display: flex;
@@ -26,17 +27,14 @@ const StyledTimeUl = styled.ul`
   }
 `;
 
-interface RouteHandle {
-  title: string;
-}
-
 export const handle = {
   title: "Calendar",
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  console.log("calendar loader");
   authenticator.authenticate("google", request, {
-    failureRedirect: "/auth/signin",
+    failureRedirect: `/auth/signin?redirect=${request.url}`,
   });
 
   // look for month day or week after /calendar/ in url path
@@ -47,7 +45,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       pathSegment === "month" ||
       pathSegment === "week" ||
       pathSegment === "day" ||
-      pathSegment === "event"
+      pathSegment === "event" ||
+      pathSegment === "events"
     ) {
       return true;
     }
@@ -61,19 +60,54 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return redirect("/calendar/month");
 };
 
-export default function Calendar() {
-  const matches = useMatches();
-  const leafRoute = matches[matches.length - 1];
-  const subtitle = leafRoute.handle as RouteHandle | undefined;
-  const isSingleEvent = subtitle?.title.includes("Event");
+const StyledBreadcrumbs = styled.div`
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
 
-  if (isSingleEvent) {
-    return (
-      <section>
-        <Outlet />
-      </section>
-    );
+  &:last-child {
+    text-decoration: underline;
   }
+
+  a {
+    color: white;
+    text-decoration: none;
+  }
+
+  & > .crumb {
+    margin: 0;
+    padding: 0;
+
+    a {
+      margin-left: 10px;
+
+      &:after {
+        position: absolute;
+        content: ">";
+        margin: 0 10px;
+      }
+    }
+  }
+
+  & > .crumb:last-of-type a {
+    display: block;
+    text-decoration: underline;
+
+    &:after {
+      content: "";
+    }
+  }
+
+  & > .crumb:first-of-type a {
+    margin-left: 0;
+  }
+`;
+
+export default function Calendar() {
+  const { breadcrumbs } = useBreadcrumbs();
+
   return (
     <section>
       <StyledTimeUl>
@@ -90,6 +124,15 @@ export default function Calendar() {
           <NavLink to="/calendar/events">Upcoming Events</NavLink>
         </li>
       </StyledTimeUl>
+      <StyledBreadcrumbs>
+        {breadcrumbs
+          .filter((breadcrumb) => breadcrumb.path && breadcrumb.handle)
+          .map((breadcrumb, index) => (
+            <div key={index} className="crumb">
+              <NavLink to={breadcrumb.path}>{breadcrumb.handle.title}</NavLink>
+            </div>
+          ))}
+      </StyledBreadcrumbs>
       <Outlet />
     </section>
   );

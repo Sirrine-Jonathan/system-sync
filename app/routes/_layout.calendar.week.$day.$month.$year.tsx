@@ -9,7 +9,7 @@ import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
 import { DesktopOnly } from "~/components/styledParts/DesktopOnly";
 
 export const handle = {
-  title: "Calendar | Week",
+  title: "Week",
 };
 
 const StyledWeek = styled.div`

@@ -1,6 +1,7 @@
 import { LoaderFunction, redirect } from "@remix-run/node";
 
 export const loader: LoaderFunction = ({ request, params }) => {
+  console.log("calendar month loader");
   const { day, month, year } = params;
   // get timezone from 'tz' param in url or default to UTC
   const url = new URL(request.url);

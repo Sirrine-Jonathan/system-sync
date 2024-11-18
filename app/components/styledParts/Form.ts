@@ -10,6 +10,12 @@ export const StyledForm = styled(Form)`
   padding: 1rem;
   background: rgba(255, 255, 255, 0.1);
 
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
   .formTitle {
     font-size: 1.2rem;
   }
@@ -76,6 +82,14 @@ export const StyledForm = styled(Form)`
     margin: 15px 0 0;
     font-weight: bold;
     color: white;
+
+    &:hover {
+      border-color: gold;
+      background: rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  button[type="submit"] {
   }
 
   .error {
@@ -85,3 +99,5 @@ export const StyledForm = styled(Form)`
     }
   }
 `;
+
+export const StyledFormContainer = StyledForm.withComponent("div");
