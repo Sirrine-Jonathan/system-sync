@@ -6,7 +6,7 @@
   "scripts": {
     "build": "remix vite:build",
     "dev": "DEBUG=OAuth2Strategy NODE_ENV=development node server.js",
-    "start": "NODE_ENV=production TZ=UTC node server.js",
+    "start": "NODE_ENV=production node server.js",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "pretty": "prettier --write .",
     "typecheck": "tsc"
@@ -69,6 +69,7 @@
     "vite-tsconfig-paths": "^4.2.1"
   },
   "engines": {
-    "node": ">=18.20.5"
+    "node": ">=18.20.5",
+    "remix": ">=2.13.1"
   }
 }
