@@ -82,7 +82,7 @@ const StyledCalendar = styled.div`
         border-top-left-radius: 5px;
 
         &:hover {
-          background: gold;
+          background: crimson;
           color: black;
         }
       }
@@ -123,7 +123,7 @@ const StyledCreateEventButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: gold;
+  background: crimson;
   color: black;
   cursor: pointer;
 

@@ -98,6 +98,7 @@ const TaskForm = forwardRef(function taskForm(
 ) {
   return (
     <StyledForm method="post" ref={ref}>
+      <h2>Add Task</h2>
       <input type="hidden" name="_action" value="addTask" />
       <label>
         Task Name
@@ -262,7 +263,6 @@ export default function Tasks() {
         </StyledList>
       </div>
       <div id="add-task">
-        <h2>Add Task</h2>
         <TaskForm ref={formRef}>
           <button onClick={() => formRef.current?.requestSubmit()}>
             Add Task

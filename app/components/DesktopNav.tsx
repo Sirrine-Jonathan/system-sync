@@ -20,14 +20,14 @@ const StyledNav = styled.nav`
 
     &.active {
       text-decoration: underline;
-      color: gold;
+      color: crimson;
       pointer-events: none;
       cursor: default;
     }
 
     &:hover {
       text-decoration: underline;
-      color: gold;
+      color: crimson;
     }
   }
 

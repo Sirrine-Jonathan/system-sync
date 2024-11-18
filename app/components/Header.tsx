@@ -23,7 +23,7 @@ const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: "center";
-  background: linear-gradient(45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.9));
+  background: linear-gradient(45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 1));
 
   h1,
   h2,
@@ -35,7 +35,7 @@ const StyledHeader = styled.header`
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 2rem;
 
     a {
       text-decoration: none;
@@ -104,7 +104,7 @@ const StyledHeader = styled.header`
           width: 100%;
 
           &:hover {
-            color: gold;
+            color: crimson;
           }
 
           img {
@@ -176,9 +176,7 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
         <h1>
           <NavLink to="/dashboard">Become You</NavLink>
         </h1>
-        <h2>
-          {subtitle} - {isMobile ? "Mobile" : "Desktop"}
-        </h2>
+        <h2>{subtitle}</h2>
       </FlexContainer>
       <div className="menuContainer">
         {imageUrl && (

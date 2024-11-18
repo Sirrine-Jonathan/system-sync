@@ -2,7 +2,7 @@ import { createEvent } from "~/services/event.server";
 import { redirect } from "@remix-run/node";
 import type { ActionFunctionArgs } from "@remix-run/node";
 
-function getFormattedDate(date) {
+function getFormattedDate(date: Date) {
   // Format the date to ISO 8601 with the current time zone offset
   const timezoneOffset = -date.getTimezoneOffset(); // in minutes
   const offsetHours = Math.floor(Math.abs(timezoneOffset) / 60);

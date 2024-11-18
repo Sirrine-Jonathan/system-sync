@@ -10,6 +10,10 @@ export const StyledForm = styled(Form)`
   padding: 1rem;
   background: rgba(255, 255, 255, 0.1);
 
+  h2 {
+    margin: 0;
+  }
+
   form {
     display: flex;
     flex-direction: column;
@@ -84,7 +88,7 @@ export const StyledForm = styled(Form)`
     color: white;
 
     &:hover {
-      border-color: gold;
+      border-color: crimson;
       background: rgba(0, 0, 0, 0.2);
     }
   }

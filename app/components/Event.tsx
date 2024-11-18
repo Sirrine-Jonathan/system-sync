@@ -35,7 +35,7 @@ const StyledEvent = styled.div`
       color: white;
 
       &:hover {
-        color: gold;
+        color: crimson;
       }
     }
   }
@@ -48,7 +48,7 @@ const StyledDetails = styled.div`
     word-break: break-all;
 
     &:hover {
-      color: gold;
+      color: crimson;
     }
 
     img {
@@ -60,37 +60,35 @@ const StyledDetails = styled.div`
 
 const StyledEventActions = styled.div`
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: 0;
+  left: 0;
   display: flex;
-  gap: 1rem;
+  height: 25px;
+  width: 100%;
+  justify-content: space-between;
+  padding: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  box-sizing: border-box;
 `;
 
-const StyledEditButton = styled.a`
+const StyledActionButton = styled.a`
   background: transparent;
   border: none;
-  color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  height: 30px;
+  width: 30px;
+  border-radius: 60px;
 
   img {
-    width: 1em;
+    width: 1.2em;
   }
-`;
 
-const StyledDeleteButton = styled.button`
-  background: transparent;
-  border: none;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  img {
-    width: 1em;
+  &:hover {
+    background: #333;
   }
 `;
 
@@ -115,8 +113,6 @@ export const Event = ({
 }) => {
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
     useState(false);
-
-  const fetcher = useFetcher();
 
   const start = new Date(event.start?.dateTime || "");
   const end = new Date(event.end?.dateTime || "");
@@ -159,12 +155,12 @@ export const Event = ({
         </StyledDeleteConfirmation>
       </Modal>
       <StyledEventActions>
-        <StyledEditButton href={`/calendar/event/${event.id}/edit`}>
+        <StyledActionButton href={`/calendar/event/${event.id}/edit`}>
           {<img src="/icons/edit.svg" alt="edit" />}
-        </StyledEditButton>
-        <StyledDeleteButton onClick={handleDelete}>
+        </StyledActionButton>
+        <StyledActionButton onClick={handleDelete}>
           {<img src="/icons/delete.svg" alt="delete" />}
-        </StyledDeleteButton>
+        </StyledActionButton>
       </StyledEventActions>
       <div className="timeDetails">
         <p className="date">

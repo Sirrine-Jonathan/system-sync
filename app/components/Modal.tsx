@@ -76,7 +76,7 @@ const StyledModalHeader = styled.div`
     font-size: 1.3em;
     text-align: center;
     margin: 0;
-    background: gold;
+    background: crimson;
     margin-left: -3rem;
     margin-right: -3rem;
     margin-top: -3rem;

@@ -93,7 +93,9 @@ const globalStyles = `
   }
 
   body {
-    background: linear-gradient(#0f0c29, #302b63, #24243e);
+    background: URL("/images/sand.jpg") no-repeat center center fixed;
+    background-size: cover;
+
     color: white;
     font: 1em "Inter", sans-serif;
     font-size: 16px;
