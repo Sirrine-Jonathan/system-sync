@@ -25,7 +25,6 @@ export const googleStrategy = new GoogleStrategy(
     includeGrantedScopes: true,
   },
   async ({ profile, accessToken, refreshToken }) => {
-    console.log("googleStrategy", { profile, accessToken, refreshToken });
     return { ...profile, accessToken, refreshToken } as User;
   }
 );

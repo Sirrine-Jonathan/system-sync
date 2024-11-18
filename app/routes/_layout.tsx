@@ -16,12 +16,6 @@ import { DesktopNav } from "~/components/DesktopNav";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const user = await authenticator.isAuthenticated(request);
   const session = await getSession(request);
-  const sessionUser = session.get("user");
-  console.log("layout loader", {
-    user,
-    getSession: await getSession(request),
-    sessionUser,
-  });
 
   if (!user) {
     return redirect("/auth/signin");

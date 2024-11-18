@@ -98,7 +98,7 @@ export const createDatabaseSessionStorage = async ({ cookie, host, port }) => {
         ...data,
         "user:displayName": data?.user?.displayName,
       });
-      console.log("db.server.ts createData session", session);
+      console.log("createData session", session);
       return session._id;
     },
     async readData(args) {

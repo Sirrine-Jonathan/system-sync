@@ -32,7 +32,6 @@ export const handle = {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  console.log("calendar loader");
   authenticator.authenticate("google", request, {
     failureRedirect: `/auth/signin?redirect=${request.url}`,
   });

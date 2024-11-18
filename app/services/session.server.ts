@@ -1,5 +1,5 @@
 import { createCookieSessionStorage, type Session } from "@remix-run/node";
-import { createDatabaseSessionStorage } from "./db.server";
+// import { createDatabaseSessionStorage } from "./db.server";
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) throw new Error("SESSION_SECRET must be set");
@@ -14,7 +14,7 @@ export const sessionStorage = createCookieSessionStorage({
     secure: process.env.NODE_ENV === "production",
   },
 });
-
+/*
 export const sessionStorage_database = await createDatabaseSessionStorage({
   cookie: {
     name: "__session",
@@ -28,6 +28,7 @@ export const sessionStorage_database = await createDatabaseSessionStorage({
   host: "localhost",
   port: 5173,
 });
+*/
 
 export const getSession = (request: Request) =>
   sessionStorage.getSession(request.headers.get("Cookie"));

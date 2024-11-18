@@ -11,8 +11,6 @@ export const loader = async () => {
 export default function Users() {
   const users = useLoaderData<ReturnType<typeof loader>>();
 
-  console.log({ users });
-
   return (
     <section id="users">
       {users.map((user) => (

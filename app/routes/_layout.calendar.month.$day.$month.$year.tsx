@@ -31,7 +31,6 @@ export const loader: LoaderFunction = async ({
   | { events: calendar_v3.Schema$Event[]; monthMin: Date; monthMax: Date }
   | undefined
 > => {
-  console.log("calendar month with date loader");
   const { day, month, year } = params;
 
   if (!day || !month || !year) {
@@ -222,7 +221,6 @@ export default function Calendar() {
   };
 
   const handleStartChange = (e) => {
-    console.log("handleStartChange", e.target.value);
     const date = new Date(e.target.value);
     setModalDate(date);
   };

@@ -18,40 +18,10 @@ export const createEvent = async (
   // Initialize Google Calendar API client
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
-  console.log("createEvent resource", resource);
-
-  const stubbedResource = {
-    summary: "Google I/O 2015",
-    location: "800 Howard St., San Francisco, CA 94103",
-    description: "A chance to hear more about Google's developer products.",
-    start: {
-      dateTime: "2015-05-28T09:00:00-07:00",
-      dateTime: "2024-11-05T07:00",
-      timeZone: "America/Los_Angeles",
-    },
-    end: {
-      dateTime: `2015-05-28T17:00:00-07:00`,
-      timeZone: "America/Los_Angeles",
-    },
-    startA: "2024-11-05T07:00",
-    endA: "2024-11-05T07:30",
-    recurrence: ["RRULE:FREQ=DAILY;COUNT=2"],
-    attendees: [{ email: "lpage@example.com" }, { email: "sbrin@example.com" }],
-    reminders: {
-      useDefault: false,
-      overrides: [
-        { method: "email", minutes: 24 * 60 },
-        { method: "popup", minutes: 10 },
-      ],
-    },
-  };
-
   const response = await calendar.events.insert({
     calendarId: "primary",
     resource,
   });
-
-  console.log("createEvent response", response.data.error);
 
   return response.data;
 };
@@ -107,22 +77,17 @@ export const getEvents = async (
   // Get session and access token
   const session = await getSession(request);
   const accessToken = session.get("accessToken");
-  const refreshToken = session.get("refreshToken");
 
-  console.log("getEvents accessToken", accessToken);
-  console.log("getEvents refreshToken", refreshToken);
   if (!accessToken) throw new Error("User not authenticated");
 
   // Set up the OAuth2 client with access token
   const oauth2Client = new google.auth.OAuth2();
   oauth2Client.setCredentials({ access_token: accessToken });
-  if (oauth2Client) console.log("oauth2Client", oauth2Client.credentials);
 
   // Initialize Google Calendar API client
   const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 
   // Fetch primary calendar events
-  console.log("getEvents options", options);
   const response = await calendar.events.list({
     calendarId: "primary",
     timeMin: options.timeMin,
