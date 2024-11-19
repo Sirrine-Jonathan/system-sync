@@ -3,9 +3,7 @@ import { mongoose } from "~/services/db.server";
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true },
   displayName: { type: String, required: true },
-  provider: { type: String, required: true },
-  tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
-  preferences: { type: mongoose.Schema.Types.Mixed, default: {} },
+  accessToken: { type: String, required: false },
 });
 
 // Type of an hydrated document (with all the getters, etc...)

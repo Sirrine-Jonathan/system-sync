@@ -1,7 +1,11 @@
 import { mongoose } from "~/services/db.server";
 
 const TaskSchema = new mongoose.Schema({
-  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  _ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
   name: { type: String, required: true },
   description: { type: String, required: false },
   dueDate: { type: Date, required: false },
@@ -25,19 +29,21 @@ try {
   Task = mongoose.model<THydratedTaskModel>("Task", TaskSchema);
 }
 
-export async function getTasks(): Promise<THydratedTaskModel[]> {
-  const tasks = await Task.find().exec();
+export async function getTasksByOwner({
+  _id,
+}: {
+  _id: string;
+}): Promise<THydratedTaskModel[]> {
+  const tasks = await Task.find({ _ownerId: _id }).exec();
   return tasks;
 }
 
-export async function addTask({
-  name,
-  description,
-  dueDate,
-  duration,
-  priority,
-}: TTaskModel): Promise<THydratedTaskModel> {
+export async function addTask(
+  _id: string,
+  { name, description, dueDate, duration, priority }: TTaskModel
+): Promise<THydratedTaskModel> {
   const task = await Task.create({
+    _ownerId: _id,
     name,
     description,
     dueDate,

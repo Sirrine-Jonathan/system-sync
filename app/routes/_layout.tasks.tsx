@@ -1,12 +1,12 @@
 import { useLoaderData, useActionData, json, Form } from "@remix-run/react";
+import { useEffect, useState, useRef, forwardRef } from "react";
 import {
-  getTasks,
+  getTasksByOwner,
   addTask,
   updateTask,
   deleteTask,
   type THydratedTaskModel,
 } from "~/services/task.server";
-import { useEffect, useState, useRef, forwardRef } from "react";
 import styled from "@emotion/styled";
 import { authenticator } from "~/services/auth.server";
 import { StyledSelect } from "~/components/styledParts/Select";
@@ -92,13 +92,17 @@ export const handle = {
   title: "Tasks",
 };
 
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const user = await authenticator.isAuthenticated(request);
+  return json(await getTasksByOwner({ _id: user._id }));
+};
+
 const TaskForm = forwardRef(function taskForm(
   { task, children }: { task?: THydratedTaskModel; children: React.ReactNode },
   ref: React.ForwardedRef<HTMLFormElement>
 ) {
   return (
     <StyledForm method="post" ref={ref}>
-      <h2>Add Task</h2>
       <input type="hidden" name="_action" value="addTask" />
       <label>
         Task Name
@@ -189,12 +193,8 @@ export const TaskEditor = ({ task }: { task: THydratedTaskModel }) => {
   );
 };
 
-export const loader = async () => {
-  return json(await getTasks());
-};
-
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const owner = authenticator.isAuthenticated(request);
+  const owner = await authenticator.isAuthenticated(request);
   const formData = await request.formData();
   const action = formData.get("_action");
   const id = formData.get("_id");
@@ -204,18 +204,31 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const duration = formData.get("duration");
   const priority = formData.get("priority");
 
+  console.log({ owner });
+
+  let priorityNumber = 0;
+
+  switch (priority) {
+    case "hight":
+      priorityNumber = 0;
+      break;
+    case "medium":
+      priorityNumber = 1;
+      break;
+    case "low":
+      priorityNumber = 2;
+      break;
+  }
+
   switch (action) {
     case "addTask":
-      return await addTask(
-        {
-          name,
-          description,
-          dueDate,
-          duration,
-          priority,
-        },
-        owner._id
-      );
+      return await addTask(owner._id, {
+        name,
+        description,
+        dueDate,
+        duration,
+        priority: priorityNumber,
+      });
     case "updateTask":
       return await updateTask(id, name);
     case "deleteTask":
@@ -227,9 +240,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 const StyledControls = styled.section`
   display: flex;
-  gap: 1rem select {
-
-  }
+  gap: 1rem;
 `;
 
 export default function Tasks() {

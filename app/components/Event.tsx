@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { calendar_v3 } from "googleapis";
 import styled from "@emotion/styled";
-import { Form, NavLink, useFetcher } from "@remix-run/react";
+import { Form, NavLink } from "@remix-run/react";
 import { Modal, ModalHeader } from "./Modal";
 import { Button } from "./styledParts/Button";
 
@@ -65,7 +65,7 @@ const StyledEventActions = styled.div`
   display: flex;
   height: 25px;
   width: 100%;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 5px;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -114,8 +114,19 @@ export const Event = ({
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
     useState(false);
 
-  const start = new Date(event.start?.dateTime || "");
-  const end = new Date(event.end?.dateTime || "");
+  let start = new Date(event.start?.dateTime || "");
+  let end = new Date(event.end?.dateTime || "");
+
+  if (start.toString() === "Invalid Date") {
+    start = new Date(event.start?.date || "");
+  }
+  if (end.toString() === "Invalid Date") {
+    end = new Date(event.end?.date || "");
+  }
+
+  console.log({ start, end });
+
+  const isAllDay = start.toLocaleDateString() === end.toLocaleDateString();
 
   const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   const months = [
@@ -172,8 +183,11 @@ export const Event = ({
             .filter(Boolean)
             .join(" ")}
         </p>
+
         <p className="time">
-          {[start.toLocaleTimeString(), end.toLocaleTimeString()].join(" - ")}
+          {isAllDay
+            ? [start.toLocaleTimeString(), end.toLocaleTimeString()].join(" - ")
+            : "All day"}
         </p>
       </div>
       <h2>

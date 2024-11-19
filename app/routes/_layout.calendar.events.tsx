@@ -52,6 +52,8 @@ export default function Events() {
 
   const limit = parseInt(searchParams.get("limit") || "10");
 
+  console.log({ events });
+
   return (
     <section id="events">
       <header>

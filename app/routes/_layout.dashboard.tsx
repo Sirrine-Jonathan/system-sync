@@ -1,4 +1,4 @@
-import type { User } from "~/services/auth.server";
+import type { THydratedUserModel } from "~/services/user.server";
 import { useOutletContext } from "@remix-run/react";
 
 export const handle = {
@@ -6,13 +6,15 @@ export const handle = {
 };
 
 export default function Dashboard() {
-  const user = useOutletContext<User>();
+  const user = useOutletContext<THydratedUserModel>();
+
+  console.log({ user });
 
   return (
     <main>
       <section>
         {user && <div>{user.displayName}</div>}
-        {user && <div>{user.emails?.[0]?.value}</div>}
+        {user && <div>{user.email}</div>}
       </section>
     </main>
   );

@@ -134,4 +134,6 @@ async function connect() {
   }
   return db;
 }
+connect();
+
 export { mongoose, connect };
