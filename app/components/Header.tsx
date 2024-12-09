@@ -174,7 +174,7 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
         alignItems="flex-start"
       >
         <h1>
-          <NavLink to="/dashboard">Become You</NavLink>
+          <NavLink to="/dashboard">System Sync</NavLink>
         </h1>
         <h2>{subtitle}</h2>
       </FlexContainer>

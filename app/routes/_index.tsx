@@ -4,8 +4,8 @@ import { authenticator } from "~/services/auth.server";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Become You" },
-    { name: "description", content: "Welcome to Become You" },
+    { title: "System Sync" },
+    { name: "description", content: "Welcome to System Sync" },
   ];
 };
 

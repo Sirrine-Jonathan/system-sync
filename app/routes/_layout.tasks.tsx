@@ -1,5 +1,6 @@
 import { useLoaderData, useActionData, json, Form } from "@remix-run/react";
 import { useEffect, useState, useRef, forwardRef } from "react";
+import { LoaderFunctionArgs } from "@remix-run/node";
 import {
   getTasksByOwner,
   addTask,

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { type User } from "~/services/auth.server";
+import { type GoogleUser } from "~/services/auth.server";
 import { NavLink } from "@remix-run/react";
 import { FlexContainer } from "./styledParts/FlexContainer";
 import { DesktopOnly } from "./styledParts/DesktopOnly";
@@ -64,7 +64,7 @@ const Email = styled.div`
   margin-bottom: 5px;
 `;
 
-export const DesktopNav = ({ user }: { user: User }) => {
+export const DesktopNav = ({ user }: { user?: GoogleUser }) => {
   return (
     <DesktopOnly>
       <StyledNav>

@@ -1,9 +1,12 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { redirect } from "@remix-run/node";
-import { NavLink, Outlet } from "@remix-run/react";
+import { redirect, json } from "@remix-run/node";
+import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { authenticator } from "~/services/auth.server";
 import styled from "@emotion/styled";
 import { useBreadcrumbs } from "~/hooks/useBreadcrumbs";
+import { getTasksByOwner } from "~/services/task.server";
+import { Task } from "~/components/Task";
+import { GridContainer } from "~/components/styledParts/GridContainer";
 
 const StyledTimeUl = styled.ul`
   display: flex;
@@ -53,7 +56,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 
   if (isCalendarPageWithTime) {
-    return null;
+    const user = await authenticator.isAuthenticated(request);
+    return json(await getTasksByOwner({ _id: user._id }));
   }
 
   return redirect("/calendar/month");
@@ -106,6 +110,7 @@ const StyledBreadcrumbs = styled.div`
 
 export default function Calendar() {
   const { breadcrumbs } = useBreadcrumbs();
+  const loaderData = useLoaderData();
 
   return (
     <section>
@@ -132,6 +137,16 @@ export default function Calendar() {
             </div>
           ))}
       </StyledBreadcrumbs>
+      <div>
+        <GridContainer
+          templateColumns="repeat(auto-fill, minmax(min(100%, 300px), 1fr))"
+          gap="2em"
+        >
+          {loaderData.map((task) => (
+            <Task key={task._id.toString()} task={task} />
+          ))}
+        </GridContainer>
+      </div>
       <Outlet />
     </section>
   );

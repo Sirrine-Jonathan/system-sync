@@ -6,6 +6,8 @@ import express from "express";
 import morgan from "morgan";
 import session from "express-session";
 import chalk from "chalk";
+import dotenv from "dotenv";
+dotenv.config();
 
 installGlobals();
 
