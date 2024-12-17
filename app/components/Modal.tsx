@@ -8,6 +8,8 @@ const StyledModal = styled.div`
   height: 100%;
   background: rgba(0, 0, 0, 0.8);
   z-index: 999;
+  width: 100%;
+  box-sizing: border-box;
 
   .modal {
     position: absolute;
@@ -15,13 +17,30 @@ const StyledModal = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     background: black;
-    padding: 3rem 3rem 2rem 3rem;
+    padding: 1rem;
     border-radius: 5px;
     max-width: 1200px;
     overflow-y: auto;
+    width: 90%;
+    box-sizing: border-box;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      padding: 0;
+      margin: 0 0 0.5rem 0;
+    }
+
+    p {
+      padding: 0;
+      margin: 0;
+    }
 
     .closeModal {
-      position: fixed;
+      position: absolute;
       top: 10px;
       right: 10px;
       background: #000;
@@ -72,11 +91,10 @@ export const Modal = ({
 
 const StyledModalHeader = styled.div`
   .modalTitle {
-    font-family: "Cormant Garamond", serif;
     font-size: 1.3em;
     text-align: center;
     margin: 0;
-    background: crimson;
+    background: gold;
     margin-left: -3rem;
     margin-right: -3rem;
     margin-top: -3rem;

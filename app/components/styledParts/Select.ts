@@ -12,5 +12,4 @@ export const StyledSelect = styled.select`
 export const StyledOption = styled.option`
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 1.2em;
 `;

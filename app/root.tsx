@@ -23,6 +23,11 @@ export const links: LinksFunction = () => [
     rel: "stylesheet",
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
+  {
+    rel: "icon",
+    href: "/favicon.ico",
+    type: "image/x-icon",
+  },
 ];
 
 interface DocumentProps {
@@ -110,6 +115,17 @@ const globalStyles = `
 
   main header, main section {
     padding: 1rem
+  }
+
+  img {
+    width: 1.5rem;
+    max-width: 100%;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin: 1rem 0;
   }
 
   @media (max-width: 768px) {

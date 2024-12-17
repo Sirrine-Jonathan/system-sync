@@ -18,6 +18,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const user = session.get("user");
 
+  console.log({ userFromSession: user });
+
   if (!user) {
     return redirect("/auth/signin");
   }

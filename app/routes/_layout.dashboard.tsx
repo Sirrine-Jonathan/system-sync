@@ -1,11 +1,20 @@
 import type { THydratedUserModel } from "~/services/user.server";
-import { useLoaderData, useOutletContext } from "@remix-run/react";
+import { useLoaderData, useOutletContext, NavLink } from "@remix-run/react";
 import { LoaderFunction } from "@remix-run/node";
 import { getRangeMinMax } from "~/utils/time";
 import { getEvents } from "~/services/event.server";
-import { authenticator } from "~/services/auth.server";
 import { calendar_v3 } from "googleapis";
 import { Event } from "~/components/Event";
+import {
+  getListsWithTasks,
+  type TaskListWithTasks,
+} from "~/services/task.server";
+import { Section, Large, Highlight } from "~/components/styledParts/Text";
+import { Well } from "~/components/styledParts/Well";
+import { DateTime } from "~/components/DateTime";
+import { FlexContainer } from "~/components/styledParts/FlexContainer";
+import { GridContainer } from "~/components/styledParts/GridContainer";
+import { ListWithTasks } from "~/components/ListWithTasks";
 
 export const handle = {
   title: "Dashboard",
@@ -33,26 +42,101 @@ export const loader: LoaderFunction = async ({ request }) => {
     orderBy: "startTime",
   });
 
-  return events;
+  const lists = await getListsWithTasks(request);
+
+  return { events, lists };
 };
 
 export default function Dashboard() {
   const user = useOutletContext<THydratedUserModel>();
-  const events = useLoaderData<calendar_v3.Schema$Event[]>();
+  const { events, lists } = useLoaderData<{
+    events: calendar_v3.Schema$Event[];
+    lists: TaskListWithTasks[];
+  }>();
 
+  console.log({ events, lists });
+  const numberOfTasks = lists
+    ? lists.reduce((acc, list) => acc + list.tasks?.length, 0)
+    : 0;
 
   return (
     <main>
-      <section>
-        {user && <div>{user.displayName}</div>}
-        {user && <div>{user.email}</div>}
-        <div>
-          <h1>{events.length > 0 ? "You day" : "No events today"}</h1>
-          {events.map((event) => (
-            <Event key={event.id} event={event} />
-          ))}
-        </div>
-      </section>
+      <Section>
+        <Well>
+          {user && (
+            <p>
+              Hello, <Large>{user.displayName}</Large>
+            </p>
+          )}
+          <DateTime />
+        </Well>
+        <hr />
+        <Well>
+          <FlexContainer justifyContent="space-between" alignItems="center">
+            <FlexContainer gap="1em">
+              <img src="/icons/calendar.svg" alt="" />
+              {events.length === 0 ? (
+                <div>You have no events today</div>
+              ) : (
+                <div>
+                  You have {events.length} event{events.length === 1 ? "" : "s"}{" "}
+                  today
+                </div>
+              )}
+            </FlexContainer>
+            <NavLink to="/calendar">
+              <Highlight>View Calendar</Highlight>
+            </NavLink>
+          </FlexContainer>
+          <hr />
+          <FlexContainer justifyContent="space-between" alignItems="center">
+            <FlexContainer gap="1em">
+              <img src="/icons/task.svg" alt="" />
+              {numberOfTasks === 0 ? (
+                <div>You have no tasks</div>
+              ) : (
+                <div>
+                  You have {numberOfTasks} task{numberOfTasks === 1 ? "" : "s"}.
+                </div>
+              )}
+            </FlexContainer>
+            <NavLink to="/tasklists">
+              <Highlight>View Tasks</Highlight>
+            </NavLink>
+          </FlexContainer>
+        </Well>
+        <hr />
+
+        {events.length > 0 && (
+          <div>
+            <FlexContainer justifyContent="space-between" alignItems="center">
+              <h2>Events</h2>
+              <div>{new Date().toLocaleDateString()}</div>
+            </FlexContainer>
+            <FlexContainer
+              flexDirection="column"
+              gap="1em"
+              alignItems="stretch"
+            >
+              {events.map((event) => (
+                <Event key={event.id} event={event} />
+              ))}
+            </FlexContainer>
+            <hr />
+          </div>
+        )}
+        {numberOfTasks && (
+          <div>
+            <h2>Task Lists</h2>
+            <GridContainer gap="1em">
+              {lists.map((list) => (
+                <ListWithTasks key={list.id} taskList={list} />
+              ))}
+            </GridContainer>
+            <hr />
+          </div>
+        )}
+      </Section>
     </main>
   );
 }

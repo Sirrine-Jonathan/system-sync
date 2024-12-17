@@ -6,23 +6,26 @@ import styled from "@emotion/styled";
 import { Form, NavLink } from "@remix-run/react";
 import { Modal, ModalHeader } from "./Modal";
 import { Button } from "./styledParts/Button";
+import { Well } from "./styledParts/Well";
+import { Center } from "./styledParts/Text";
+import { FlexContainer } from "./styledParts/FlexContainer";
 
-const StyledEvent = styled.div`
+const StyledEvent = styled(Well)`
   position: relative;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
-  padding: 1rem;
 
   .timeDetails {
-    min-height: 40px;
-    border-bottom: 1px solid white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
 
     p {
-      margin: 2px 0;
+      margin: 0;
 
       &.date,
       &.time {
-        font-size: 0.8rem;
+        font-size: 0.6rem;
       }
     }
   }
@@ -30,14 +33,18 @@ const StyledEvent = styled.div`
   h2 {
     font-size: 1.2rem;
     margin: 15px 0 0;
+    text-align: center;
 
     a {
       color: white;
-
-      &:hover {
-        color: crimson;
-      }
+      text-decoration: none;
+      color: gold;
     }
+  }
+
+  .eventHeader {
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
   }
 `;
 
@@ -48,7 +55,7 @@ const StyledDetails = styled.div`
     word-break: break-all;
 
     &:hover {
-      color: crimson;
+      color: gold;
     }
 
     img {
@@ -59,17 +66,11 @@ const StyledDetails = styled.div`
 `;
 
 const StyledEventActions = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
   display: flex;
-  height: 25px;
-  width: 100%;
+  flex-direction: row;
+  align-items: center;
   justify-content: flex-end;
-  padding: 5px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  box-sizing: border-box;
+  margin-left: 10px;
 `;
 
 const StyledActionButton = styled.a`
@@ -107,9 +108,11 @@ const StyledDeleteConfirmation = styled.div`
 export const Event = ({
   event,
   expanded,
+  skipDate = false,
 }: {
   event: calendar_v3.Schema$Event;
   expanded?: boolean;
+  skipDate?: boolean;
 }) => {
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
     useState(false);
@@ -123,8 +126,6 @@ export const Event = ({
   if (end.toString() === "Invalid Date") {
     end = new Date(event.end?.date || "");
   }
-
-  console.log({ start, end });
 
   const isAllDay = start.toLocaleDateString() === end.toLocaleDateString();
 
@@ -158,38 +159,48 @@ export const Event = ({
           <div className="modalSubtitle">{event.summary}</div>
         </ModalHeader>
         <StyledDeleteConfirmation>
-          <div>Are you sure you want to delete this event?</div>
+          <Center>
+            Are you sure you want to
+            <br />
+            delete this event?
+          </Center>
           <Form method="post" action={`/calendar/event/${event.id}/delete`}>
             <Button type="submit">Yes</Button>
           </Form>
           <Button onClick={() => setIsDeleteConfirmModalOpen(false)}>No</Button>
         </StyledDeleteConfirmation>
       </Modal>
-      <StyledEventActions>
-        <StyledActionButton href={`/calendar/event/${event.id}/edit`}>
-          {<img src="/icons/edit.svg" alt="edit" />}
-        </StyledActionButton>
-        <StyledActionButton onClick={handleDelete}>
-          {<img src="/icons/delete.svg" alt="delete" />}
-        </StyledActionButton>
-      </StyledEventActions>
-      <div className="timeDetails">
-        <p className="date">
-          {[
-            startDay?.toLocaleUpperCase(),
-            startMonth?.toLocaleUpperCase(),
-            start.getDate(),
-          ]
-            .filter(Boolean)
-            .join(" ")}
-        </p>
+      <FlexContainer justifyContent="space-between" className="eventHeader">
+        <div className="timeDetails">
+          {!skipDate && (
+            <p className="date">
+              {[
+                startDay?.toLocaleUpperCase(),
+                startMonth?.toLocaleUpperCase(),
+                start.getDate(),
+              ]
+                .filter(Boolean)
+                .join(" ")}
+            </p>
+          )}
 
-        <p className="time">
-          {isAllDay
-            ? [start.toLocaleTimeString(), end.toLocaleTimeString()].join(" - ")
-            : "All day"}
-        </p>
-      </div>
+          <p className="time">
+            {isAllDay
+              ? [start.toLocaleTimeString(), end.toLocaleTimeString()].join(
+                  " - "
+                )
+              : "All day"}
+          </p>
+        </div>
+        <StyledEventActions>
+          <StyledActionButton href={`/calendar/event/${event.id}/edit`}>
+            {<img src="/icons/edit.svg" alt="edit" />}
+          </StyledActionButton>
+          <StyledActionButton onClick={handleDelete}>
+            {<img src="/icons/delete.svg" alt="delete" />}
+          </StyledActionButton>
+        </StyledEventActions>
+      </FlexContainer>
       <h2>
         <NavLink to={`/calendar/event/${event.id}`}>{event.summary}</NavLink>
       </h2>

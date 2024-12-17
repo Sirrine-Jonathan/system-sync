@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { type GoogleUser } from "~/services/auth.server";
-import { NavLink } from "@remix-run/react";
 import { FlexContainer } from "./styledParts/FlexContainer";
 import { DesktopOnly } from "./styledParts/DesktopOnly";
+import { StyledNavLink, IconNavLink } from "./styledParts/Links";
 
 const StyledNav = styled.nav`
   padding: 1rem;
@@ -13,45 +13,8 @@ const StyledNav = styled.nav`
   );
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
-  a {
-    text-decoration: none;
-    color: white;
-    font-size: 1rem;
-
-    &.active {
-      text-decoration: underline;
-      color: crimson;
-      pointer-events: none;
-      cursor: default;
-    }
-
-    &:hover {
-      text-decoration: underline;
-      color: crimson;
-    }
-  }
-
   .sectionRight {
     margin-left: auto;
-
-    a {
-      background: rgba(0, 0, 0, 0.3);
-      border-radius: 100px;
-      padding: 10px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-
-      img {
-        width: 1.2rem;
-        cursor: pointer;
-      }
-
-      &:hover {
-        background: rgba(0, 0, 0, 0.5);
-      }
-    }
   }
 `;
 
@@ -69,11 +32,8 @@ export const DesktopNav = ({ user }: { user?: GoogleUser }) => {
     <DesktopOnly>
       <StyledNav>
         <FlexContainer gap="1em">
-          <NavLink to="/dashboard">Dashboard</NavLink>
-          <NavLink to="/tasks">Tasks</NavLink>
-          <NavLink to="/habits">Habits</NavLink>
-          <NavLink to="/calendar">Calendar</NavLink>|
-          <NavLink to="/about">About</NavLink>
+          <StyledNavLink to="/tasklists">Tasks</StyledNavLink>
+          <StyledNavLink to="/calendar/day">Calendar</StyledNavLink>
           <FlexContainer
             className="sectionRight"
             flexDirection="column"
@@ -86,18 +46,22 @@ export const DesktopNav = ({ user }: { user?: GoogleUser }) => {
                 {user && <DisplayName>{user.displayName}</DisplayName>}
                 {user && <Email>{user.emails?.[0]?.value}</Email>}
               </div>
-              {user && (
+              {user ? (
                 <FlexContainer alignItems="flex-start" gap="1em">
-                  <a href="/settings">
+                  <IconNavLink to="/settings">
                     <img src="/icons/settings.svg" alt="" />
-                  </a>
-                  <a href="/account">
+                  </IconNavLink>
+                  <IconNavLink to="/account">
                     <img src="/icons/account.svg" alt="" />
-                  </a>
-                  <a href="/auth/signout">
+                  </IconNavLink>
+                  <IconNavLink to="/auth/signout">
                     <img src="/icons/signout.svg" alt="" />
-                  </a>
+                  </IconNavLink>
                 </FlexContainer>
+              ) : (
+                <IconNavLink to="/auth/signout">
+                  <img src="/icons/signout.svg" alt="" />
+                </IconNavLink>
               )}
             </FlexContainer>
           </FlexContainer>

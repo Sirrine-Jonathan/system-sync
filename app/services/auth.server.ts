@@ -2,11 +2,13 @@ import { Authenticator } from "remix-auth";
 import { GoogleStrategy, GoogleProfile } from "remix-auth-google";
 import { sessionStorage } from "./session.server";
 import { findOrCreateUser } from "./user.server";
+import { mongoose } from "./db.server";
 
 export type GoogleUser = GoogleProfile & {
+  _id: mongoose.Types.ObjectId;
   tokens: {
-    accessToken: string;
-    refreshToken: string | undefined;
+    accessToken: string | null | undefined;
+    refreshToken: string | null | undefined;
   };
   timeZone?: string;
 };
@@ -24,7 +26,8 @@ export const googleStrategy = new GoogleStrategy(
       process.env.NODE_ENV === "production"
         ? "https://system-sync.netlify.app/auth/callback"
         : "http://localhost:5173/auth/callback",
-    scope: "profile email https://www.googleapis.com/auth/calendar",
+    scope:
+      "profile email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/tasks",
     includeGrantedScopes: true,
   },
   async ({ profile, accessToken, refreshToken }) => {
@@ -36,12 +39,15 @@ export const googleStrategy = new GoogleStrategy(
     });
 
     const user: GoogleUser = {
+      _id: dbUser._id,
       ...profile,
       tokens: {
         accessToken,
         refreshToken,
       },
     };
+
+    console.log({ user });
 
     return user;
   }

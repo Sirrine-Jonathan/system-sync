@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/node";
+import { type LoaderFunction } from "@remix-run/node";
 import {
   useActionData,
   NavLink,
@@ -8,10 +8,10 @@ import {
 import { updateEvent } from "~/services/event.server";
 import { calendar_v3 } from "googleapis";
 import styled from "@emotion/styled";
-import { StyledFormContainer } from "~/components/styledParts/Form";
+import { StyledForm } from "~/components/styledParts/Form";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
 
-const StyledEventFormContainer = styled(StyledFormContainer)`
+const StyledEventFormContainer = styled(StyledForm)`
   display: flex;
   position: relative;
   a {
@@ -96,10 +96,7 @@ export default function EventEdit() {
       gap="1em"
       style={{ flex: "1" }}
     >
-      <StyledEventFormContainer>
-        {fetcher.state === "submitting" && (
-          <StyledFormMessage>Saving...</StyledFormMessage>
-        )}
+      <StyledEventFormContainer state={fetcher.state}>
         <fetcher.Form method="post" action={`/calendar/event/${event.id}/edit`}>
           <NavLink to={`/calendar/event/${event.id}`}>
             <img src="/icons/close.svg" alt="" />

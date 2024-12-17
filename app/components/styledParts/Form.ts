@@ -1,14 +1,27 @@
 import styled from "@emotion/styled";
-import { Form } from "@remix-run/react";
 
-export const StyledForm = styled(Form)`
+export const StyledForm = styled.div<{
+  state: "idle" | "submitting" | "loading";
+}>`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 1rem;
   border-radius: 5px;
   padding: 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+
+  background: ${(props) => {
+    switch (props.state) {
+      case "idle":
+        return "transparent";
+      case "submitting":
+        return "black";
+      case "loading":
+        return "gold";
+    }
+  }};
 
   h2 {
     margin: 0;
@@ -18,6 +31,7 @@ export const StyledForm = styled(Form)`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    width: 100%;
   }
 
   .formTitle {
@@ -46,6 +60,7 @@ export const StyledForm = styled(Form)`
     color: white;
     word-break: break-all;
     width: 100%;
+    box-sizing: border-box;
   }
 
   textarea {
@@ -77,31 +92,14 @@ export const StyledForm = styled(Form)`
     gap: 0.5rem;
   }
 
-  button {
-    border: 1px solid white;
-    background: transparent;
-    border-radius: 5px;
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    margin: 15px 0 0;
-    font-weight: bold;
-    color: white;
-
-    &:hover {
-      border-color: crimson;
-      background: rgba(0, 0, 0, 0.2);
-    }
-  }
-
-  button[type="submit"] {
-  }
-
   .error {
     input[required],
     textarea[required] {
       border: 1px solid red;
     }
   }
-`;
 
-export const StyledFormContainer = StyledForm.withComponent("div");
+  .idle {
+    background: red;
+  }
+`;

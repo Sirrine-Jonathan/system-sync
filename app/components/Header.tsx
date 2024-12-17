@@ -34,13 +34,13 @@ const StyledHeader = styled.header`
     margin: 0;
   }
 
+  a {
+    text-decoration: none;
+    color: white;
+  }
+
   h1 {
     font-size: 2rem;
-
-    a {
-      text-decoration: none;
-      color: white;
-    }
   }
 
   h2 {
@@ -104,7 +104,7 @@ const StyledHeader = styled.header`
           width: 100%;
 
           &:hover {
-            color: crimson;
+            color: gold;
           }
 
           img {
@@ -140,6 +140,24 @@ const StyledHeader = styled.header`
       }
     }
   }
+
+  #logo {
+    --width: 70px;
+    width: var(--width);
+    margin: 0 20px 0 0;
+    border-radius: var(--width);
+    border: 3px solid #fff;
+  }
+
+  @media (max-width: 767px) {
+    #logo {
+      --width: 50px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
 `;
 
 export const FALLBACK_IMAGE_URL = "/icons/avatar.svg";
@@ -168,16 +186,19 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
 
   return (
     <StyledHeader>
-      <FlexContainer
-        flexDirection="column"
-        justifyContent="flex-start"
-        alignItems="flex-start"
-      >
-        <h1>
-          <NavLink to="/dashboard">System Sync</NavLink>
-        </h1>
-        <h2>{subtitle}</h2>
-      </FlexContainer>
+      <NavLink to="/dashboard">
+        <FlexContainer justifyContent="flex-start" alignItems="center">
+          <img id="logo" src="/images/logo.png" alt="logo" />
+          <FlexContainer
+            flexDirection="column"
+            justifyContent="flex-start"
+            alignItems="flex-start"
+          >
+            <h1>System Sync</h1>
+            <h2>{subtitle}</h2>
+          </FlexContainer>
+        </FlexContainer>
+      </NavLink>
       <div className="menuContainer">
         {imageUrl && (
           <AvatarTag onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -195,40 +216,13 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
               </button>
               <ul>
                 <li>
-                  <img src="/icons/dashboard.svg" alt="" />
-                  <a href="/dashboard">Dashboard</a>
-                </li>
-
-                <li>
                   <img src="/icons/task.svg" alt="" />
-                  <a href="/tasks">Tasks</a>
+                  <a href="/tasklists">Tasks</a>
                 </li>
-                <li>
-                  <img src="/icons/habit.svg" alt="" />
-                  <a href="/habits">Habits</a>
-                </li>
-                <hr />
                 <li>
                   <img src="/icons/calendar.svg" alt="" />
-                  <a href="/calendar">
-                    Calendar
-                    <ul>
-                      <li>
-                        <a href="/calendar/events">Upcoming Events</a>
-                      </li>
-                      <li>
-                        <a href="/calendar/month">Month</a>
-                      </li>
-                      <li>
-                        <a href="/calendar/week">Week</a>
-                      </li>
-                      <li>
-                        <a href="/calendar/day">Day</a>
-                      </li>
-                    </ul>
-                  </a>
+                  <a href="/calendar/day">Calendar</a>
                 </li>
-                <hr />
                 <li>
                   <img src="/icons/account.svg" alt="" />
                   <a href="/account">Account</a>

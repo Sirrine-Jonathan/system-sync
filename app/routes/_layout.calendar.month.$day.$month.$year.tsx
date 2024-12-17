@@ -15,7 +15,7 @@ import styled from "@emotion/styled";
 import { getRangeMinMax, getNextMonth, getPreviousMonth } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
 import { Modal, ModalHeader } from "~/components/Modal";
-import { StyledFormContainer } from "~/components/styledParts/Form";
+import { StyledForm } from "~/components/styledParts/Form";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
 import { Button } from "~/components/styledParts/Button";
 import { useTimezone } from "~/hooks/useTimezone";
@@ -81,7 +81,7 @@ const StyledCalendar = styled.div`
         border-top-left-radius: 5px;
 
         &:hover {
-          background: crimson;
+          background: gold;
           color: black;
         }
       }
@@ -122,7 +122,7 @@ const StyledCreateEventButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: crimson;
+  background: gold;
   color: black;
   cursor: pointer;
 
@@ -131,7 +131,7 @@ const StyledCreateEventButton = styled.button`
   }
 `;
 
-const StyledCreateEventForm = styled(StyledFormContainer)`
+const StyledCreateEventForm = styled(StyledForm)`
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -198,7 +198,7 @@ export default function Calendar() {
     return (
       <>
         {eventsForDay.map((event) => (
-          <Event key={event.id} event={event} />
+          <Event key={event.id} event={event} skipDate />
         ))}
       </>
     );
@@ -327,7 +327,7 @@ export default function Calendar() {
           <div className="modalTitle">Create Event</div>
           <div className="modalSubtitle">Enter event details</div>
         </ModalHeader>
-        <StyledCreateEventForm>
+        <StyledCreateEventForm state={fetcher.state}>
           <fetcher.Form method="post" onSubmit={handleCreateEventSubmit}>
             <label htmlFor="summary">
               <textarea

@@ -2,33 +2,13 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { redirect, json } from "@remix-run/node";
 import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { authenticator } from "~/services/auth.server";
-import styled from "@emotion/styled";
 import { useBreadcrumbs } from "~/hooks/useBreadcrumbs";
-import { getTasksByOwner } from "~/services/task.server";
-import { Task } from "~/components/Task";
+import { getListsWithTasks } from "~/services/task.server";
 import { GridContainer } from "~/components/styledParts/GridContainer";
-
-const StyledTimeUl = styled.ul`
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-  padding: 0;
-
-  li {
-    a {
-      color: white;
-      text-decoration: none;
-
-      &.active {
-        text-decoration: underline;
-      }
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-`;
+import { Well } from "~/components/styledParts/Well";
+import { Breadcrumbs } from "~/components/Breadcrumbs";
+import { FlexContainer } from "~/components/styledParts/FlexContainer";
+import { Diminished, Large, Small } from "~/components/styledParts/Text";
 
 export const handle = {
   title: "Calendar",
@@ -56,94 +36,87 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   });
 
   if (isCalendarPageWithTime) {
-    const user = await authenticator.isAuthenticated(request);
-    return json(await getTasksByOwner({ _id: user._id }));
+    return json(await getListsWithTasks(request));
   }
 
   return redirect("/calendar/month");
 };
 
-const StyledBreadcrumbs = styled.div`
-  display: flex;
-  gap: 1rem;
-  list-style: none;
-  padding: 0;
-  margin: 0 0 1rem 0;
-
-  &:last-child {
-    text-decoration: underline;
-  }
-
-  a {
-    color: white;
-    text-decoration: none;
-  }
-
-  & > .crumb {
-    margin: 0;
-    padding: 0;
-
-    a {
-      margin-left: 10px;
-
-      &:after {
-        position: absolute;
-        content: ">";
-        margin: 0 10px;
-      }
-    }
-  }
-
-  & > .crumb:last-of-type a {
-    display: block;
-    text-decoration: underline;
-
-    &:after {
-      content: "";
-    }
-  }
-
-  & > .crumb:first-of-type a {
-    margin-left: 0;
-  }
-`;
-
 export default function Calendar() {
   const { breadcrumbs } = useBreadcrumbs();
   const loaderData = useLoaderData();
 
+  const tasks = loaderData.reduce(
+    (acc, list) => [...acc, ...list.tasks],
+    [] as tasks_v1.Schema$Task[]
+  );
+
+  const firstThree = tasks.slice(0, 3);
+
+  const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+
+  const TimingNav = [
+    <NavLink key="month" to="/calendar/month">
+      Month
+    </NavLink>,
+    <NavLink key="week" to="/calendar/week">
+      Week
+    </NavLink>,
+    <NavLink key="day" to="/calendar/day">
+      Day
+    </NavLink>,
+  ];
+  switch (lastBreadcrumb.handle.title) {
+    case "Month":
+      TimingNav[0] = (
+        <NavLink key="month" to="/calendar/month" className="current">
+          Month
+        </NavLink>
+      );
+      break;
+    case "Week":
+      TimingNav[1] = (
+        <NavLink key="week" to="/calendar/week" className="current">
+          Week
+        </NavLink>
+      );
+      break;
+    case "Day":
+      TimingNav[2] = (
+        <NavLink key="day" to="/calendar/day" className="current">
+          Day
+        </NavLink>
+      );
+      break;
+  }
+
   return (
     <section>
-      <StyledTimeUl>
-        <li>
-          <NavLink to="/calendar/month">Month</NavLink>
-        </li>
-        <li>
-          <NavLink to="/calendar/week">Week</NavLink>
-        </li>
-        <li>
-          <NavLink to="/calendar/day">Day</NavLink>
-        </li>
-        <li>
-          <NavLink to="/calendar/events">Upcoming Events</NavLink>
-        </li>
-      </StyledTimeUl>
-      <StyledBreadcrumbs>
-        {breadcrumbs
-          .filter((breadcrumb) => breadcrumb.path && breadcrumb.handle)
-          .map((breadcrumb, index) => (
-            <div key={index} className="crumb">
-              <NavLink to={breadcrumb.path}>{breadcrumb.handle.title}</NavLink>
-            </div>
-          ))}
-      </StyledBreadcrumbs>
+      <Breadcrumbs>
+        <NavLink to="/">Dashboard</NavLink>
+        <NavLink to="/calendar">Calendar</NavLink>
+        <FlexContainer gap="1em">{TimingNav}</FlexContainer>
+      </Breadcrumbs>
       <div>
         <GridContainer
           templateColumns="repeat(auto-fill, minmax(min(100%, 300px), 1fr))"
           gap="2em"
         >
-          {loaderData.map((task) => (
-            <Task key={task._id.toString()} task={task} />
+          {firstThree.map((task) => (
+            <Well key={task.id}>
+              <FlexContainer
+                flexDirection="column"
+                alignItems="flex-start"
+                justifyContent="space-between"
+                gap="1em"
+                fullHeight
+              >
+                <div>{task.title}</div>
+                <Diminished>
+                  <Small>{task.listTitle}</Small>
+                </Diminished>
+              </FlexContainer>
+            </Well>
           ))}
         </GridContainer>
       </div>
