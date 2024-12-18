@@ -18,9 +18,7 @@ export const handle = {
 export const loader: LoaderFunction = async ({
   request,
   params,
-}): Promise<
-  { events: calendar_v3.Schema$Event[]; dayMin: Date; dayMax: Date } | undefined
-> => {
+}): Promise<calendar_v3.Schema$Event[] | undefined> => {
   const { day, month, year } = params;
 
   if (!day || !month || !year) {
@@ -31,26 +29,17 @@ export const loader: LoaderFunction = async ({
     new Date(Number(year), Number(month) - 1, Number(day))
   );
 
-  const events = await getEvents(request, {
+  return await getEvents(request, {
     timeMin: dayMin.toISOString(),
     timeMax: dayMax.toISOString(),
     singleEvents: true,
     orderBy: "startTime",
   });
-
-  return {
-    events,
-    dayMin,
-    dayMax,
-  };
 };
 
 export default function Calendar() {
   const navigate = useNavigate();
-  const { events, dayMin, dayMax } = useLoaderData<
-    | { events: calendar_v3.Schema$Event[]; dayMin: Date; dayMax: Date }
-    | undefined
-  >();
+  const events = useLoaderData<calendar_v3.Schema$Event[] | undefined>();
   const { day, month, year } = useParams();
   const tzFromUrl =
     new URLSearchParams(
