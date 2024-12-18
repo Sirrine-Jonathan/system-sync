@@ -79,6 +79,7 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
+          <link rel="manifest" href="/manifest.json"></link>
         </head>
         <body>
           {children}
