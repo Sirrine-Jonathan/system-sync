@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Well } from "./styledParts/Well";
 import { FlexContainer } from "./styledParts/FlexContainer";
 import { NavLink } from "@remix-run/react";
+import { Diminished, Small } from "./styledParts/Text";
 
 const ListWithTasksContainer = styled.div`
   display: flex;
@@ -122,7 +123,12 @@ export const ListWithTasks = ({
     <Well>
       <ListWithTasksContainer>
         <button onClick={() => setIsOpen(!isOpen)}>
-          <h3>{taskList.title}</h3>
+          <h3>
+            <Small>
+              <Diminished>Tasks from</Diminished>
+            </Small>{" "}
+            {taskList.title}
+          </h3>
           <img src={isOpen ? "/icons/up.svg" : "/icons/down.svg"} alt="" />
         </button>
         <ul className={isOpen ? "show" : ""}>

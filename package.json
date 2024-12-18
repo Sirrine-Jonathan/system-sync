@@ -17,6 +17,7 @@
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.13.0",
     "@netlify/remix-adapter": "^2.5.1",
+    "@remix-run/dev": "^2.13.1",
     "@remix-run/node": "^2.13.1",
     "@remix-run/react": "^2.13.1",
     "@remix-run/serve": "^2.13.1",
@@ -43,7 +44,6 @@
     "remix-create-express-app": "^0.4.5",
     "vite-plugin-react-rich-svg": "^1.2.0",
     "vite-plugin-svgr": "^4.3.0",
-    "@remix-run/dev": "^2.13.1",
     "vite-tsconfig-paths": "^4.2.1"
   },
   "devDependencies": {

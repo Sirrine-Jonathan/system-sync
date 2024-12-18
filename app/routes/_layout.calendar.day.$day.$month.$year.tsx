@@ -12,7 +12,7 @@ import { getRangeMinMax, getPreviousDay, getNextDay } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
 
 export const handle = {
-  title: "Day",
+  title: "Calendar | Day",
 };
 
 export const loader: LoaderFunction = async ({

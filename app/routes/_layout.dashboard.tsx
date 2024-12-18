@@ -127,13 +127,11 @@ export default function Dashboard() {
         )}
         {numberOfTasks && (
           <div>
-            <h2>Task Lists</h2>
             <GridContainer gap="1em">
               {lists.map((list) => (
                 <ListWithTasks key={list.id} taskList={list} />
               ))}
             </GridContainer>
-            <hr />
           </div>
         )}
       </Section>

@@ -21,7 +21,7 @@ import { Button } from "~/components/styledParts/Button";
 import { useTimezone } from "~/hooks/useTimezone";
 
 export const handle = {
-  title: "Month",
+  title: "Calendar | Month",
 };
 
 export const loader: LoaderFunction = async ({
