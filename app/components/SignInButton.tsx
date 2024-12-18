@@ -1,13 +1,14 @@
 import { Form } from "@remix-run/react";
 import styled from "@emotion/styled";
 
-const StyledForm = styled(Form)`
+const ButtonForm = styled(Form)`
   button {
     display: flex;
     align-items: center;
     margin: 20px auto;
     padding: 0.5em 1rem;
     border-radius: 5px;
+    border: none;
     cursor: pointer;
 
     img {
@@ -37,7 +38,7 @@ export const SignInButton = ({ type, successRedirect }: SignInButtonProps) => {
   }
 
   return (
-    <StyledForm action={action} method="post">
+    <ButtonForm action={action} method="post">
       {successRedirect && (
         <input
           type="hidden"
@@ -49,6 +50,6 @@ export const SignInButton = ({ type, successRedirect }: SignInButtonProps) => {
         <img src={imgSrc} alt="" />
         {text}
       </button>
-    </StyledForm>
+    </ButtonForm>
   );
 };
