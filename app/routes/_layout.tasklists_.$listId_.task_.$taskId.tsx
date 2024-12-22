@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLoaderData, NavLink, Form } from "@remix-run/react";
+import { useLoaderData, NavLink } from "@remix-run/react";
 import {
   getTaskInList,
   TaskInList,
@@ -8,17 +8,18 @@ import {
   deleteTask,
 } from "~/services/task.server";
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Breadcrumbs } from "~/components/Breadcrumbs";
+import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
 import {
-  IconNavLink,
-  StandardLink,
-  StandardLink,
+  StyledNavLink,
+  StyledLink,
   StyledExternalLink,
+  StyledBigLink,
 } from "~/components/styledParts/Links";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
 import {
   IconNavButton,
-  StandardButton,
+  StyledBigButton,
+  StyledButton,
 } from "~/components/styledParts/Buttons";
 import { Modal } from "~/components/Modal";
 import { StyledForm } from "~/components/styledParts/Form";
@@ -101,21 +102,21 @@ export default function ViewTask() {
         alignItems="center"
         padding="0 0 1em 0"
       >
-        <IconNavButton
+        <StyledBigButton
           onClick={() => setIsDeleteConfirmationModalOpen(true)}
           danger
         >
           <span>Delete Task</span>
           <img src="/icons/trash.svg" alt="" />
-        </IconNavButton>
-        <IconNavLink to={`/tasklists/${list.id}/task/${task.id}/edit`}>
+        </StyledBigButton>
+        <StyledBigLink to={`/tasklists/${list.id}/task/${task.id}/edit`}>
           <span>Edit Task</span>
           <img src="/icons/edit.svg" alt="" />
-        </IconNavLink>
-        <IconNavButton onClick={() => setIsScheduleModalOpen(true)}>
+        </StyledBigLink>
+        <StyledBigButton onClick={() => setIsScheduleModalOpen(true)}>
           <span>Schedule Task</span>
           <img src="/icons/calendar.svg" alt="" />
-        </IconNavButton>
+        </StyledBigButton>
         <Modal isOpen={isScheduleModalOpen} setIsOpen={setIsScheduleModalOpen}>
           <h2>Schedule Task</h2>
           <p>Pick a date to schedule this task</p>
@@ -131,15 +132,15 @@ export default function ViewTask() {
               alignItems="center"
               fullWidth
             >
-              <StandardButton
+              <StyledButton
                 type="submit"
                 onClick={() => setIsScheduleModalOpen(false)}
               >
                 Schedule
-              </StandardButton>
-              <StandardButton onClick={() => setIsScheduleModalOpen(false)}>
+              </StyledButton>
+              <StyledButton onClick={() => setIsScheduleModalOpen(false)}>
                 Cancel
-              </StandardButton>
+              </StyledButton>
             </FlexContainer>
           </StyledForm>
         </Modal>
@@ -154,14 +155,14 @@ export default function ViewTask() {
             justifyContent="flex-end"
             alignItems="center"
           >
-            <StandardLink to={`/tasklists/${list.id}/task/${task.id}/delete`}>
+            <StyledLink to={`/tasklists/${list.id}/task/${task.id}/delete`}>
               Delete
-            </StandardLink>
-            <StandardButton
+            </StyledLink>
+            <StyledButton
               onClick={() => setIsDeleteConfirmationModalOpen(false)}
             >
               Cancel
-            </StandardButton>
+            </StyledButton>
           </FlexContainer>
         </Modal>
       </FlexContainer>

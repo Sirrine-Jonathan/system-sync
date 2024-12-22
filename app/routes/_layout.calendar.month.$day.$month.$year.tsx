@@ -9,7 +9,7 @@ import {
   useFetcher,
 } from "@remix-run/react";
 import { useCallback, useState } from "react";
-import { Event } from "~/components/Event";
+import { Event } from "~/components/Events/Event";
 import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax, getNextMonth, getPreviousMonth } from "~/utils/time";
@@ -17,7 +17,7 @@ import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
 import { Modal, ModalHeader } from "~/components/Modal";
 import { StyledForm } from "~/components/styledParts/Form";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
-import { Button } from "~/components/styledParts/Button";
+import { StyledButton } from "~/components/styledParts/Buttons";
 import { useTimezone } from "~/hooks/useTimezone";
 
 export const handle = {
@@ -28,7 +28,11 @@ export const loader: LoaderFunction = async ({
   request,
   params,
 }): Promise<
-  | { events: calendar_v3.Schema$Event[]; monthMin: Date; monthMax: Date }
+  | {
+      events: calendar_v3.Schema$Event[] | undefined;
+      monthMin: Date;
+      monthMax: Date;
+    }
   | undefined
 > => {
   const { day, month, year } = params;
@@ -64,7 +68,8 @@ const StyledCalendar = styled.div`
     margin: 0;
     gap: 5px;
     max-width: 100%;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: visible;
 
     .day {
       a.title {
@@ -140,7 +145,7 @@ const StyledCreateEventForm = styled(StyledForm)`
 
 export default function Calendar() {
   const { events } = useLoaderData<{
-    events: GoogleApis.Calendar_v3.Schema.Event[];
+    events: calendar_v3.Schema$Event[];
     monthMin: Date;
     monthMax: Date;
   }>();
@@ -364,14 +369,14 @@ export default function Calendar() {
               />
             </label>
             <FlexContainer justifyContent="flex-end" gap="1em">
-              <Button type="submit">Create</Button>
-              <Button
+              <StyledButton type="submit">Create</StyledButton>
+              <StyledButton
                 styleType="warning"
                 type="button"
                 onClick={() => setIsCreateModalOpen(false)}
               >
                 Cancel
-              </Button>
+              </StyledButton>
             </FlexContainer>
           </fetcher.Form>
         </StyledCreateEventForm>

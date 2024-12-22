@@ -2,57 +2,26 @@ import { type LoaderFunction } from "@remix-run/node";
 import {
   useActionData,
   NavLink,
-  useOutletContext,
   useFetcher,
+  useLoaderData,
 } from "@remix-run/react";
-import { updateEvent } from "~/services/event.server";
+import { getEvent, updateEvent } from "~/services/event.server";
 import { calendar_v3 } from "googleapis";
-import styled from "@emotion/styled";
 import { StyledForm } from "~/components/styledParts/Form";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
-
-const StyledEventFormContainer = styled(StyledForm)`
-  display: flex;
-  position: relative;
-  a {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-
-    img {
-      width: 1rem;
-    }
-  }
-
-  label {
-    width: 100%;
-  }
-
-  .formTitle {
-    margin-bottom: 1rem;
-  }
-`;
-
-const StyledFormMessage = styled.div`
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: red;
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-  text-align: center;
-`;
+import { StyledButton } from "~/components/styledParts/Buttons";
+import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
 
 export const handle = {
   title: "Edit event",
+};
+
+export const loader: LoaderFunction = async ({ request, params }) => {
+  const { eventId } = params;
+  if (!eventId) {
+    return null;
+  }
+  return await getEvent(request, { eventId });
 };
 
 export const action: LoaderFunction = async ({ request, params }) => {
@@ -81,7 +50,7 @@ export const action: LoaderFunction = async ({ request, params }) => {
 };
 
 export default function EventEdit() {
-  const { event } = useOutletContext<{ event: calendar_v3.Schema$Event }>();
+  const event = useLoaderData<calendar_v3.Schema$Event>();
   const actionData = useActionData();
   const errorMessage = actionData?.errorMessage;
   const fetcher = useFetcher();
@@ -89,21 +58,18 @@ export default function EventEdit() {
   const endDateTime = event.end?.dateTime?.slice(0, 16);
 
   return (
-    <FlexContainer
-      flexDirection="column"
-      justifyContent="flex-start"
-      alignItems="stretch"
-      gap="1em"
-      style={{ flex: "1" }}
-    >
-      <StyledEventFormContainer state={fetcher.state}>
+    <section>
+      <Breadcrumbs>
+        <NavLink to="/">Dashboard</NavLink>
+        <NavLink to="/events">Events</NavLink>
+        <NavLink to={`/event/${event.id}`}>{event.summary}</NavLink>
+        <NavLink to={`/event/${event.id}/edit`} className="current">
+          Edit
+        </NavLink>
+      </Breadcrumbs>
+      <StyledForm state={fetcher.state}>
         <fetcher.Form method="post" action={`/calendar/event/${event.id}/edit`}>
-          <NavLink to={`/calendar/event/${event.id}`}>
-            <img src="/icons/close.svg" alt="" />
-          </NavLink>
-          <div className="formTitle">Edit Event</div>
           <div className="formErrorMessage">{errorMessage}</div>
-          <input type="hidden" name="_id" value={event.id} />
           <label>
             Summary
             <textarea
@@ -128,6 +94,7 @@ export default function EventEdit() {
               name="start"
               defaultValue={startDateTime || ""}
             />
+            <img src="/icons/calendar.svg" alt="open datepicker" />
           </label>
           <label>
             End Date
@@ -136,13 +103,13 @@ export default function EventEdit() {
               name="end"
               defaultValue={endDateTime || ""}
             />
+            <img src="/icons/calendar.svg" alt="open datepicker" />
           </label>
-          <FlexContainer gap="1em">
-            <button type="submit">Save</button>
-            <button type="reset">Reset</button>
+          <FlexContainer justifyContent="flex-end">
+            <StyledButton type="submit">Save</StyledButton>
           </FlexContainer>
         </fetcher.Form>
-      </StyledEventFormContainer>
-    </FlexContainer>
+      </StyledForm>
+    </section>
   );
 }

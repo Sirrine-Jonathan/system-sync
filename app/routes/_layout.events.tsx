@@ -6,7 +6,7 @@ import {
 } from "@remix-run/react";
 import { calendar_v3 } from "googleapis";
 import { getEvents } from "~/services/event.server";
-import { Event } from "~/components/Event";
+import { Event } from "~/components/Events/Event";
 import { StyledOption, StyledSelect } from "~/components/styledParts/Select";
 import styled from "@emotion/styled";
 

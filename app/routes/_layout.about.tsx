@@ -1,6 +1,6 @@
-import type { User } from "~/services/auth.server";
+import type { GoogleUser } from "~/services/auth.server";
 import { useOutletContext } from "@remix-run/react";
-import { SignInButton } from "~/components/SignInButton";
+import { SignInButton } from "~/components/Auth/SignInButton";
 import styled from "@emotion/styled";
 
 export const handle = {
@@ -18,7 +18,7 @@ const ContactLink = styled.a`
 `;
 
 export default function About() {
-  const user = useOutletContext<User>();
+  const user = useOutletContext<GoogleUser>();
 
   return (
     <main>

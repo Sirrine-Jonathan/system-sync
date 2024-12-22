@@ -4,7 +4,7 @@ import { LoaderFunction } from "@remix-run/node";
 import { getRangeMinMax } from "~/utils/time";
 import { getEvents } from "~/services/event.server";
 import { calendar_v3 } from "googleapis";
-import { Event } from "~/components/Event";
+import { Event } from "~/components/Events/Event";
 import {
   getListsWithTasks,
   type TaskListWithTasks,
@@ -14,7 +14,8 @@ import { Well } from "~/components/styledParts/Well";
 import { DateTime } from "~/components/DateTime";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
 import { GridContainer } from "~/components/styledParts/GridContainer";
-import { ListWithTasks } from "~/components/ListWithTasks";
+import { TaskRow } from "~/components/Tasks/TaskRow";
+import { List } from "~/components/Tasks/List";
 
 export const handle = {
   title: "Dashboard",
@@ -54,7 +55,6 @@ export default function Dashboard() {
     lists: TaskListWithTasks[];
   }>();
 
-  console.log({ events, lists });
   const numberOfTasks = lists
     ? lists.reduce((acc, list) => acc + list.tasks?.length, 0)
     : 0;
@@ -72,7 +72,11 @@ export default function Dashboard() {
         </Well>
         <hr />
         <Well>
-          <FlexContainer justifyContent="space-between" alignItems="center">
+          <FlexContainer
+            justifyContent="space-between"
+            alignItems="center"
+            fullWidth
+          >
             <FlexContainer gap="1em">
               <img src="/icons/calendar.svg" alt="" />
               {events.length === 0 ? (
@@ -89,7 +93,11 @@ export default function Dashboard() {
             </NavLink>
           </FlexContainer>
           <hr />
-          <FlexContainer justifyContent="space-between" alignItems="center">
+          <FlexContainer
+            justifyContent="space-between"
+            alignItems="center"
+            fullWidth
+          >
             <FlexContainer gap="1em">
               <img src="/icons/task.svg" alt="" />
               {numberOfTasks === 0 ? (
@@ -129,7 +137,13 @@ export default function Dashboard() {
           <div>
             <GridContainer gap="1em">
               {lists.map((list) => (
-                <ListWithTasks key={list.id} taskList={list} />
+                <List key={list.id} taskList={list}>
+                  {list.tasks.map((task) => (
+                    <li key={task.id}>
+                      <TaskRow task={task} showListName />
+                    </li>
+                  ))}
+                </List>
               ))}
             </GridContainer>
           </div>

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 
-export const FlexContainer = styled.div<{
+export type FlexContainerProps = {
   justifyContent?: string;
   alignItems?: string;
   flexDirection?: string;
@@ -8,7 +8,9 @@ export const FlexContainer = styled.div<{
   padding?: string;
   fullWidth?: boolean;
   fullHeight?: boolean;
-}>`
+};
+
+export const FlexContainer = styled.div<FlexContainerProps>`
 	display: flex;
 	flex-direction: ${(props) => props.flexDirection || "row"};
 	justify-content: ${(props) => props.justifyContent || "flex-start"};

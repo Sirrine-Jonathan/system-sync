@@ -1,13 +1,13 @@
-import type { User } from "~/services/auth.server";
+import { type GoogleUser } from "~/services/auth.server";
 import { useOutletContext } from "@remix-run/react";
-import { SignOutButton } from "~/components/SignOutButton";
+import { SignOutButton } from "~/components/Auth/SignOutButton";
 
 export const handle = {
   title: "Account",
 };
 
 export default function Account() {
-  const user = useOutletContext<User>();
+  const user = useOutletContext<GoogleUser>();
 
   return (
     <main>

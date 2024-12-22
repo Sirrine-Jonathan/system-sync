@@ -1,5 +1,5 @@
-import { Header } from "~/components/Header";
-import { SignInButton } from "~/components/SignInButton";
+import { Header } from "~/components/Nav/Header";
+import { SignInButton } from "~/components/Auth/SignInButton";
 
 export const handle = {
   title: "Sign in",

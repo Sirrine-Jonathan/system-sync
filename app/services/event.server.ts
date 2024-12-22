@@ -1,14 +1,11 @@
 import { getSession } from "./session.server";
 import { google, calendar_v3 } from "googleapis";
 
-// UNTESTED
-export const createEvent = async (
-  request: Request,
-  resource: calendar_v3.Schema$Event
-) => {
+const getService = async (request: Request) => {
   // Get session and access token
   const session = await getSession(request);
   const accessToken = session.get("accessToken");
+
   if (!accessToken) throw new Error("User not authenticated");
 
   // Set up the OAuth2 client with access token
@@ -16,9 +13,17 @@ export const createEvent = async (
   oauth2Client.setCredentials({ access_token: accessToken });
 
   // Initialize Google Calendar API client
-  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+  return google.calendar({ version: "v3", auth: oauth2Client });
+};
 
-  const response = await calendar.events.insert({
+export const createEvent = async (
+  request: Request,
+  resource: calendar_v3.Schema$Event
+) => {
+  // Initialize Google Calendar API client
+  const googleService = await getService(request);
+
+  const response = await googleService.events.insert({
     calendarId: "primary",
     resource,
   });
@@ -36,17 +41,7 @@ export const updateEvent = async (
   const eventId = patch.id;
   delete patch.id;
 
-  // Get session and access token
-  const session = await getSession(request);
-  const accessToken = session.get("accessToken");
-  if (!accessToken) throw new Error("User not authenticated");
-
-  // Set up the OAuth2 client with access token
-  const oauth2Client = new google.auth.OAuth2();
-  oauth2Client.setCredentials({ access_token: accessToken });
-
-  // Initialize Google Calendar API client
-  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+  const googleService = await getService(request);
 
   const event = await getEvent(request, { eventId });
 
@@ -55,7 +50,7 @@ export const updateEvent = async (
     ...patch,
   };
 
-  const response = await calendar.events.update({
+  const response = await googleService.events.update({
     calendarId: "primary",
     eventId,
     resource,
@@ -74,21 +69,10 @@ export const getEvents = async (
     orderBy?: string;
   }
 ) => {
-  // Get session and access token
-  const session = await getSession(request);
-  const accessToken = session.get("accessToken");
-
-  if (!accessToken) throw new Error("User not authenticated");
-
-  // Set up the OAuth2 client with access token
-  const oauth2Client = new google.auth.OAuth2();
-  oauth2Client.setCredentials({ access_token: accessToken });
-
-  // Initialize Google Calendar API client
-  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+  const googleService = await getService(request);
 
   // Fetch primary calendar events
-  const response = await calendar.events.list({
+  const response = await googleService.events.list({
     calendarId: "primary",
     timeMin: options.timeMin,
     timeMax: options.timeMax,
@@ -105,18 +89,10 @@ export const getEvent = async (
   options: { eventId: string }
 ) => {
   const { eventId } = options;
-  // Get session and access token
-  const session = await getSession(request);
-  const accessToken = session.get("accessToken");
-  if (!accessToken) throw new Error("User not authenticated");
 
-  // Set up the OAuth2 client with access token
-  const oauth2Client = new google.auth.OAuth2();
-  oauth2Client.setCredentials({ access_token: accessToken });
+  const googleService = await getService(request);
 
-  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-
-  const response = await calendar.events.get({
+  const response = await googleService.events.get({
     calendarId: "primary",
     eventId,
   });
@@ -129,19 +105,10 @@ export const deleteEvent = async (
   options: { eventId: string }
 ) => {
   const { eventId } = options;
-  // Get session and access token
-  const session = await getSession(request);
-  const accessToken = session.get("accessToken");
-  if (!accessToken) throw new Error("User not authenticated");
 
-  // Set up the OAuth2 client with access token
-  const oauth2Client = new google.auth.OAuth2();
-  oauth2Client.setCredentials({ access_token: accessToken });
+  const googleService = await getService(request);
 
-  // Initialize Google Calendar API client
-  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
-
-  const response = await calendar.events.delete({
+  const response = await googleService.events.delete({
     calendarId: "primary",
     eventId,
   });

@@ -8,11 +8,11 @@ export type TaskWithListTitle = tasks_v1.Schema$Task & {
 };
 
 export type TaskListWithTasks = tasks_v1.Schema$TaskList & {
-  tasks: TaskWithList[];
+  tasks: TaskWithListTitle[];
 };
 
 export type TaskInList = tasks_v1.Schema$TaskList & {
-  task: TaskWithList;
+  task: TaskWithListTitle;
 };
 
 const getService = async (request: Request) => {
@@ -87,39 +87,51 @@ export const getTaskById = async (
     .then((res) => res.data);
 };
 
-export const getListsWithTasks = async (request: Request) => {
-  const allTasks: TaskListWithTasks[] = [];
-  const lists = await getLists(request);
+export type GetListsOptions = {
+  tasklist?: string;
+  limit?: number;
+  search?: string;
+};
 
-  if (!lists) {
-    throw new Error("Lists not found");
-  }
+export const getListsWithTasks = async (
+  request: Request,
+  options?: GetListsOptions
+) => {
+  let filteredLists: TaskListWithTasks[] = [];
 
-  const promises: Promise<tasks_v1.Schema$Task[] | undefined>[] = [];
-
-  for (const list of lists) {
-    if (!list.id) {
-      throw new Error("List ID is required");
-    }
-    promises.push(getTasksForList(request, { tasklist: list.id }));
-  }
-
-  const tasks = await Promise.all(promises);
-  for (let i = 0; i < tasks.length; i++) {
-    const tasksForList = tasks[i];
-    const tasksForListWithListTitle = tasksForList?.map((task) => ({
-      ...task,
-      listTitle: lists[i].title,
-      listId: lists[i].id,
-    }));
-    if (tasksForList) {
-      allTasks.push({
-        ...lists[i],
-        tasks: tasksForListWithListTitle || [],
+  if (options?.tasklist) {
+    const list = await getListByIdWithTasks(request, options.tasklist);
+    if (list) {
+      filteredLists.push({
+        ...list,
       });
     }
+  } else {
+    const lists = await getLists(request);
+
+    for (const list of lists || []) {
+      if (!list.id) {
+        continue;
+      }
+      const listWithTasks = await getListByIdWithTasks(request, list.id);
+      if (listWithTasks) {
+        filteredLists.push({
+          ...listWithTasks,
+        });
+      }
+    }
   }
-  return allTasks;
+
+  if (options?.search) {
+    filteredLists = filteredLists.map((list) => ({
+      ...list,
+      tasks: list.tasks.filter((task) =>
+        task.title.toLowerCase().includes(options.search.toLowerCase())
+      ),
+    }));
+  }
+
+  return filteredLists;
 };
 
 export const getListByIdWithTasks = async (
@@ -128,7 +140,12 @@ export const getListByIdWithTasks = async (
 ): Promise<TaskListWithTasks> => {
   const list = await getListById(request, id);
   const tasks = await getTasksForList(request, { tasklist: id });
-  return { ...list, tasks: tasks || [] };
+  const tasksWithListTitle = tasks?.map((task) => ({
+    ...task,
+    listTitle: list.title,
+    listId: list.id,
+  }));
+  return { ...list, tasks: tasksWithListTitle || [] };
 };
 
 export const getTaskInList = async (
@@ -274,6 +291,28 @@ export const markIncomplete = async (
   request: Request,
   options: { taskId: string; tasklist: string }
 ) => updateTaskStatus(request, { ...options, status: "needsAction" });
+
+export const toggleTask = async (
+  request: Request,
+  options: { taskId: string; tasklist: string }
+) => {
+  const { taskId, tasklist } = options;
+  if (!taskId) {
+    throw new Error("Task ID is required");
+  }
+  if (!tasklist) {
+    throw new Error("Tasklist ID is required");
+  }
+  const task = await getTaskById(request, { taskId, tasklist });
+  if (!task) {
+    throw new Error("Task not found");
+  }
+  if (task.status === "completed") {
+    return markIncomplete(request, { taskId, tasklist });
+  } else {
+    return markComplete(request, { taskId, tasklist });
+  }
+};
 
 export const deleteTask = async (
   request: Request,

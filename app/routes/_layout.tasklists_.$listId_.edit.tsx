@@ -1,14 +1,13 @@
 import { NavLink, useLoaderData, useFetcher } from "@remix-run/react";
-import { Breadcrumbs } from "~/components/Breadcrumbs";
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 import {
   getListByIdWithTasks,
   type TaskListWithTasks,
 } from "~/services/task.server";
 import { StyledForm } from "~/components/styledParts/Form";
-import { StandardButton } from "~/components/styledParts/Buttons";
+import { StyledButton } from "~/components/styledParts/Buttons";
 import { updateTaskList } from "~/services/task.server";
-import { redirect } from "@remix-run/node";
 
 export const handle = {
   title: "Edit Task List",
@@ -64,7 +63,7 @@ export default function EditTaskList() {
             name="title"
             defaultValue={list.title || ""}
           />
-          <StandardButton type="submit">Save</StandardButton>
+          <StyledButton type="submit">Save</StyledButton>
         </fetcher.Form>
       </StyledForm>
     </section>

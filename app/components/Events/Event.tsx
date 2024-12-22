@@ -3,15 +3,29 @@
 import { useState } from "react";
 import type { calendar_v3 } from "googleapis";
 import styled from "@emotion/styled";
-import { Form, NavLink } from "@remix-run/react";
-import { Modal, ModalHeader } from "./Modal";
-import { Button } from "./styledParts/Button";
-import { Well } from "./styledParts/Well";
-import { Center } from "./styledParts/Text";
-import { FlexContainer } from "./styledParts/FlexContainer";
+import { NavLink, useNavigate } from "@remix-run/react";
+import { Well } from "../styledParts/Well";
+import { FlexContainer } from "../styledParts/FlexContainer";
+import {
+  Callout,
+  CalloutContent,
+  CalloutTrigger,
+  CalloutAction,
+} from "../Callout";
+import { DeleteEventConfirmation } from "./DeleteEventConfirmation";
 
 const StyledEvent = styled(Well)`
   position: relative;
+
+  .summary {
+    display: block;
+    font-size: 0.8rem;
+    color: gold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 10vw;
+  }
 
   .timeDetails {
     display: flex;
@@ -19,6 +33,8 @@ const StyledEvent = styled(Well)`
     justify-content: space-between;
     align-items: center;
     flex: 1;
+    margin-right: 1.5rem;
+    margin-bottom: 0.5rem;
 
     p {
       margin: 0;
@@ -45,6 +61,13 @@ const StyledEvent = styled(Well)`
   .eventHeader {
     border-bottom: 1px solid white;
     padding-bottom: 5px;
+    margin-bottom: 5px;
+  }
+
+  .callout {
+    position: absolute;
+    top: 5px;
+    right: 5px;
   }
 `;
 
@@ -65,55 +88,16 @@ const StyledDetails = styled.div`
   }
 `;
 
-const StyledEventActions = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  margin-left: 10px;
-`;
-
-const StyledActionButton = styled.a`
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 30px;
-  width: 30px;
-  border-radius: 60px;
-
-  img {
-    width: 1.2em;
-  }
-
-  &:hover {
-    background: #333;
-  }
-`;
-
-const StyledDeleteConfirmation = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-`;
-
 export const Event = ({
   event,
-  expanded,
+  expanded = false,
   skipDate = false,
 }: {
   event: calendar_v3.Schema$Event;
   expanded?: boolean;
   skipDate?: boolean;
 }) => {
+  const navigate = useNavigate();
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
     useState(false);
 
@@ -147,30 +131,18 @@ export const Event = ({
   const startDay = days[start.getDay()];
   const startMonth = months[start.getMonth()];
 
-  const handleDelete = () => {
-    setIsDeleteConfirmModalOpen(true);
-  };
-
   return (
     <StyledEvent className={`event ${startDay}`}>
-      <Modal isOpen={isDeleteConfirmModalOpen}>
-        <ModalHeader>
-          <div className="modalTitle">Delete Event</div>
-          <div className="modalSubtitle">{event.summary}</div>
-        </ModalHeader>
-        <StyledDeleteConfirmation>
-          <Center>
-            Are you sure you want to
-            <br />
-            delete this event?
-          </Center>
-          <Form method="post" action={`/calendar/event/${event.id}/delete`}>
-            <Button type="submit">Yes</Button>
-          </Form>
-          <Button onClick={() => setIsDeleteConfirmModalOpen(false)}>No</Button>
-        </StyledDeleteConfirmation>
-      </Modal>
-      <FlexContainer justifyContent="space-between" className="eventHeader">
+      <DeleteEventConfirmation
+        isOpen={isDeleteConfirmModalOpen}
+        setIsOpen={setIsDeleteConfirmModalOpen}
+        event={event}
+      />
+      <FlexContainer
+        justifyContent="space-between"
+        alignItems="center"
+        className="eventHeader"
+      >
         <div className="timeDetails">
           {!skipDate && (
             <p className="date">
@@ -192,18 +164,25 @@ export const Event = ({
               : "All day"}
           </p>
         </div>
-        <StyledEventActions>
-          <StyledActionButton href={`/calendar/event/${event.id}/edit`}>
-            {<img src="/icons/edit.svg" alt="edit" />}
-          </StyledActionButton>
-          <StyledActionButton onClick={handleDelete}>
-            {<img src="/icons/delete.svg" alt="delete" />}
-          </StyledActionButton>
-        </StyledEventActions>
+        <Callout>
+          <CalloutTrigger>
+            <img src="/icons/menu.svg" alt="" />
+          </CalloutTrigger>
+          <CalloutContent preferredDirection="bottom">
+            <CalloutAction onClick={() => setIsDeleteConfirmModalOpen(true)}>
+              <img src="/icons/delete.svg" alt="" />
+              Delete
+            </CalloutAction>
+            <CalloutAction onClick={() => navigate(`/event/${event.id}/edit`)}>
+              <img src="/icons/edit.svg" alt="" />
+              Edit
+            </CalloutAction>
+          </CalloutContent>
+        </Callout>
       </FlexContainer>
-      <h2>
-        <NavLink to={`/calendar/event/${event.id}`}>{event.summary}</NavLink>
-      </h2>
+      <NavLink to={`/event/${event.id}`} className="summary">
+        {event.summary}
+      </NavLink>
       {expanded && (
         <>
           <StyledDetails

@@ -1,5 +1,5 @@
 import { NavLink } from "@remix-run/react";
-import { Breadcrumbs } from "~/components/Breadcrumbs";
+import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
 
 export const handle = {
   title: "Habits",

@@ -1,12 +1,13 @@
-import { useLoaderData, NavLink } from "@remix-run/react";
+import { useLoaderData, NavLink, useFetcher } from "@remix-run/react";
 import { getTaskInList, TaskInList } from "~/services/task.server";
 import { LoaderFunctionArgs } from "@remix-run/node";
-import { Breadcrumbs } from "~/components/Breadcrumbs";
-import { IconNavLink } from "~/components/styledParts/Links";
+import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
+import { StyledForm } from "~/components/styledParts/Form";
+import { StyledButton } from "~/components/styledParts/Buttons";
 
 export const handle = {
-  title: "Task",
+  title: "Edit Task",
 };
 
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -29,6 +30,8 @@ export default function ViewTask() {
   const list = useLoaderData<TaskInList>();
   const task = list.task;
 
+  const fetcher = useFetcher();
+
   if (!list) {
     return <p>No task found</p>;
   }
@@ -39,21 +42,36 @@ export default function ViewTask() {
         <NavLink to="/">Dashboard</NavLink>
         <NavLink to="/tasklists">Task Lists</NavLink>
         <NavLink to={`/tasklists/${list.id}`}>{list.title}</NavLink>
+        <NavLink to={`/tasklists/${list.id}/task/${task.id}`}>
+          {task.title}
+        </NavLink>
         <NavLink
-          to={`/tasklists/${list.id}/task/${task.id}`}
+          to={`/tasklists/${list.id}/task/${task.id}/edit`}
           className="current"
         >
-          {task.title} - Edit
+          Edit
         </NavLink>
       </Breadcrumbs>
-      <FlexContainer justifyContent="space-between" alignItems="center">
-        <h1>{task.title}</h1>
-        <div className="sectionRight">
-          <IconNavLink to={`/tasklists/${list.id}/task/${task.id}`}>
-            <img src="/icons/close.svg" alt="" />
-          </IconNavLink>
-        </div>
-      </FlexContainer>
+      <StyledForm state={fetcher.state}>
+        <fetcher.Form method="post" action={`/tasklists/${list.id}/task`}>
+          <label htmlFor="title">Title</label>
+          <input
+            id="title"
+            type="text"
+            name="title"
+            defaultValue={task.title || ""}
+          />
+          <label htmlFor="notes">Notes</label>
+          <textarea
+            id="notes"
+            name="notes"
+            defaultValue={task.notes || ""}
+          ></textarea>
+          <FlexContainer justifyContent="flex-end">
+            <StyledButton type="submit">Save</StyledButton>
+          </FlexContainer>
+        </fetcher.Form>
+      </StyledForm>
     </section>
   );
 }

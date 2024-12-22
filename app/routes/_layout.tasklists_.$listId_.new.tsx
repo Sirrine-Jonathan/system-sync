@@ -1,6 +1,6 @@
 import { useLoaderData, NavLink, useFetcher } from "@remix-run/react";
 import { getListById, createTask } from "~/services/task.server";
-import { Breadcrumbs } from "~/components/Breadcrumbs";
+import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
 import { StyledForm } from "~/components/styledParts/Form";
 import {
   ActionFunctionArgs,
@@ -8,7 +8,7 @@ import {
   redirect,
 } from "@remix-run/node";
 import { tasks_v1 } from "googleapis";
-import { Button } from "~/components/styledParts/Button";
+import { StyledButton } from "~/components/styledParts/Buttons";
 
 export const handle = {
   title: "Task",
@@ -68,7 +68,7 @@ export default function ViewTask() {
           <input id="title" type="text" name="title" />
           <label htmlFor="notes">Notes</label>
           <textarea id="notes" name="notes" />
-          <Button type="submit">Create</Button>
+          <StyledButton type="submit">Create</StyledButton>
         </fetcher.Form>
       </StyledForm>
     </section>

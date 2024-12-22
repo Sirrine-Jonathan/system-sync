@@ -1,4 +1,4 @@
-import { FlexContainer } from "./styledParts/FlexContainer";
+import { FlexContainer } from "../styledParts/FlexContainer";
 import { useIsSignedIn } from "~/hooks/useIsSignedIn";
 import styled from "@emotion/styled";
 

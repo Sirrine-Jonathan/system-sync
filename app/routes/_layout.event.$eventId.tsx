@@ -2,7 +2,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { getEvent } from "~/services/event.server";
 import { calendar_v3 } from "googleapis";
-import { Event } from "~/components/Event";
+import { Event } from "~/components/Events/Event";
 import { FlexContainer } from "~/components/styledParts/FlexContainer";
 import { useIsMobile } from "~/hooks/useIsMobile";
 

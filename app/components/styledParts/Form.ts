@@ -10,6 +10,7 @@ export const StyledForm = styled.div<{
   border-radius: 5px;
   padding: 1rem;
   width: 100%;
+  margin: 0 auto;
   box-sizing: border-box;
 
   background: ${(props) => {
@@ -83,6 +84,19 @@ export const StyledForm = styled.div<{
     &::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
+    }
+  }
+
+  input[type="datetime-local"] {
+    &::-webkit-calendar-picker-indicator {
+      opacity: 0;
+    }
+
+    & + img {
+      position: absolute;
+      right: 0;
+      bottom: 5px;
+      pointer-events: none;
     }
   }
 

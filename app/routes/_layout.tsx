@@ -4,13 +4,12 @@ import {
   useRouteError,
   useMatches,
 } from "@remix-run/react";
-import { json, redirect, type LoaderFunctionArgs } from "@remix-run/node";
-import { Header, FALLBACK_IMAGE_URL } from "~/components/Header";
-import { type GoogleUser } from "~/services/auth.server";
+import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
+import { Header, FALLBACK_IMAGE_URL } from "~/components/Nav/Header";
 import { useEffect } from "react";
 import { isValidTimeZone } from "~/utils/time";
-import { SignInButton } from "~/components/SignInButton";
-import { DesktopNav } from "~/components/DesktopNav";
+import { SignInButton } from "~/components/Auth/SignInButton";
+import { DesktopNav } from "~/components/Nav/DesktopNav";
 import { getSession } from "~/services/session.server";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

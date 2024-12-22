@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useMatches } from "@remix-run/react";
-import { FlexContainer } from "./styledParts/FlexContainer";
-import { Avatar, DesktopAvatar } from "./styledParts/Avatar";
+import { FlexContainer } from "../styledParts/FlexContainer";
+import { Avatar, DesktopAvatar } from "../styledParts/Avatar";
 
 import styled from "@emotion/styled";
-import { MobileOnly } from "./styledParts/MobileOnly";
+import { MobileOnly } from "../styledParts/MobileOnly";
 import { useIsMobile } from "~/hooks/useIsMobile";
-import { SignOutButton } from "./SignOutButton";
+import { SignOutButton } from "../Auth/SignOutButton";
 
 interface RouteHandle {
   title: string;

@@ -31,3 +31,7 @@ export const Section = styled.section`
 export const Center = styled.div`
   text-align: center;
 `;
+
+export const Strikethrough = styled.span`
+  text-decoration: line-through;
+`;

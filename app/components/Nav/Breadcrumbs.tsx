@@ -27,14 +27,14 @@ const StyledBreadcrumbs = styled.div`
         color: white;
         text-decoration: none;
 
-        &:not(.current):hover {
+        &:hover {
           color: gold;
         }
 
         &.current {
-          color: #bbb;
           pointer-events: none;
           cursor: default;
+          color: gold;
         }
       }
 

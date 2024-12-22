@@ -1,4 +1,4 @@
-import type { THydratedTaskModel } from "~/services/task.server";
+import type { TaskInList } from "~/services/task.server";
 import { Well } from "~/components/styledParts/Well";
 import styled from "@emotion/styled";
 
@@ -14,12 +14,10 @@ const StyledWell = styled(Well)`
   }
 `;
 
-export const Task = ({ task }: { task: THydratedTaskModel }) => {
+export const Task = ({ task }: { task: TaskInList }) => {
   return (
     <StyledWell>
-      <div className="taskName">{task.name}</div>
-      <div className="taskDescription">{task.description}</div>
-      <div className="taskDuration">{task.duration}</div>
+      <div className="taskName">{task.title}</div>
     </StyledWell>
   );
 };

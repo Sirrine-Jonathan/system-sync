@@ -1,7 +1,7 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { calendar_v3 } from "googleapis";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import { Event } from "~/components/Event";
+import { Event } from "~/components/Events/Event";
 import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax } from "~/utils/time";
@@ -21,20 +21,22 @@ const StyledWeek = styled.div`
   padding-bottom: 1rem
 `;
 
-const StyledDay = styled.div(
-  (props: {
-    gridColumnStart?: number | boolean;
-    children?: React.ReactNode;
-  }) => ({
-    padding: 2,
-    gridColumnStart: props.gridColumnStart,
-  })
-);
+const StyledDay = styled.div<{ gridColumnStart?: number | boolean }>`
+  padding: 2;
+  grid-column-start: ${(props) => props.gridColumnStart};
+`;
 
 export const loader: LoaderFunction = async ({
   request,
   params,
-}): Promise<calendar_v3.Schema$Event[] | undefined> => {
+}): Promise<
+  | {
+      events: calendar_v3.Schema$Event[] | undefined;
+      weekMin: Date;
+      weekMax: Date;
+    }
+  | undefined
+> => {
   const { day, month, year } = params;
 
   if (!day || !month || !year) {

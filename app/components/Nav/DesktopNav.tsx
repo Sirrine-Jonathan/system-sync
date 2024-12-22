@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { type GoogleUser } from "~/services/auth.server";
-import { FlexContainer } from "./styledParts/FlexContainer";
-import { DesktopOnly } from "./styledParts/DesktopOnly";
-import { StyledNavLink, IconNavLink } from "./styledParts/Links";
+import { FlexContainer } from "../styledParts/FlexContainer";
+import { DesktopOnly } from "../styledParts/DesktopOnly";
+import { StyledNavLink, StyledIconLink } from "../styledParts/Links";
 
 const StyledNav = styled.nav`
   padding: 1rem;
@@ -11,7 +11,6 @@ const StyledNav = styled.nav`
     rgba(255, 255, 255, 0.2),
     rgba(255, 255, 255, 0.1)
   );
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
 
   .sectionRight {
     margin-left: auto;
@@ -31,9 +30,11 @@ export const DesktopNav = ({ user }: { user?: GoogleUser }) => {
   return (
     <DesktopOnly>
       <StyledNav>
-        <FlexContainer gap="1em">
-          <StyledNavLink to="/tasklists">Tasks</StyledNavLink>
-          <StyledNavLink to="/calendar/day">Calendar</StyledNavLink>
+        <FlexContainer gap="1em" justifyContent="flex-start">
+          <FlexContainer gap="1em">
+            <StyledNavLink to="/tasklists">Tasks</StyledNavLink>
+            <StyledNavLink to="/calendar/day">Calendar</StyledNavLink>
+          </FlexContainer>
           <FlexContainer
             className="sectionRight"
             flexDirection="column"
@@ -48,20 +49,20 @@ export const DesktopNav = ({ user }: { user?: GoogleUser }) => {
               </div>
               {user ? (
                 <FlexContainer alignItems="flex-start" gap="1em">
-                  <IconNavLink to="/settings">
+                  <StyledIconLink to="/settings">
                     <img src="/icons/settings.svg" alt="" />
-                  </IconNavLink>
-                  <IconNavLink to="/account">
+                  </StyledIconLink>
+                  <StyledIconLink to="/account">
                     <img src="/icons/account.svg" alt="" />
-                  </IconNavLink>
-                  <IconNavLink to="/auth/signout">
+                  </StyledIconLink>
+                  <StyledIconLink to="/auth/signout">
                     <img src="/icons/signout.svg" alt="" />
-                  </IconNavLink>
+                  </StyledIconLink>
                 </FlexContainer>
               ) : (
-                <IconNavLink to="/auth/signout">
+                <StyledIconLink to="/auth/signout">
                   <img src="/icons/signout.svg" alt="" />
-                </IconNavLink>
+                </StyledIconLink>
               )}
             </FlexContainer>
           </FlexContainer>
