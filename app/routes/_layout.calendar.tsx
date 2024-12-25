@@ -55,7 +55,6 @@ export default function Calendar() {
           <NavLink to="/calendar/day">Day</NavLink>
         </FlexContainer>
       </Breadcrumbs>
-      <TaskGrid collapsable />
       <Outlet />
     </section>
   );

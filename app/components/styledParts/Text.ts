@@ -35,3 +35,11 @@ export const Center = styled.div`
 export const Strikethrough = styled.span`
   text-decoration: line-through;
 `;
+
+export const OneLine = styled.div`
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;

@@ -5,7 +5,6 @@ import { StyledButton } from "./Buttons";
 export const StyledLink = styled(NavLink)`
   color: white;
   text-decoration: none;
-  font-size: 1rem;
   transition: color 0.2s ease-in-out;
   background: transparent;
 

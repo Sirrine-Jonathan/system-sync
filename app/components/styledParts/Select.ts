@@ -6,7 +6,7 @@ export const StyledSelect = styled.select`
   border-bottom: 1px solid white;
   padding: 0.5rem;
   color: white;
-  font-size: 1.2rem;
+  box-sizing: border-box;
 `;
 
 export const StyledOption = styled.option`

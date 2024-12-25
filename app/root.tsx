@@ -96,15 +96,15 @@ const globalStyles = `
     margin: 0;
     padding: 0;
     min-height: 100%;
+    box-sizing: border-box;
   }
 
   body {
+    background-color: #000;
     background: URL("/images/sand.jpg") no-repeat center center fixed;
     background-size: cover;
-
     color: white;
     font: 1em "Inter", sans-serif;
-    font-size: 16px;
     font-family: "NotoSans", sans-serif;
   }
 
@@ -115,7 +115,7 @@ const globalStyles = `
   }
 
   main header, main section {
-    padding: 1rem
+    padding: 0.7rem
   }
 
   img {
@@ -127,6 +127,14 @@ const globalStyles = `
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin: 1rem 0;
+  }
+
+
+
+  @media (min-width: 769px) {
+    body {
+      font-size: 14px;
+    }
   }
 
   @media (max-width: 768px) {

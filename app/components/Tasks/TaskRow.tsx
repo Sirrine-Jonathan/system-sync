@@ -4,12 +4,12 @@ import {
   FlexContainer,
   type FlexContainerProps,
 } from "../styledParts/FlexContainer";
-import { NavLink } from "@remix-run/react";
 import styled from "@emotion/styled";
 import { Diminished, Small, Strikethrough } from "../styledParts/Text";
 import { ToggleTaskCheckbox } from "./Toggle";
 import { StyledIconButton } from "../styledParts/Buttons";
 import { DeleteTaskConfirmation } from "./DeleteTaskConfirmation";
+import { StyledNavLink } from "../styledParts/Links";
 
 const StyledRow = styled(FlexContainer)`
   .taskListTitle {
@@ -32,14 +32,8 @@ const StyledRow = styled(FlexContainer)`
     margin-right: 1rem;
   }
 
-  a {
-    color: white;
-    text-decoration: none;
-    font-size: 1.2rem;
-
-    &:hover {
-      text-decoration: underline;
-    }
+  .deleteTask {
+    flex-shrink: 0;
   }
 `;
 
@@ -54,7 +48,7 @@ export const TaskRow = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   return (
-    <StyledRow justifyContent="space-between" {...props}>
+    <StyledRow justifyContent="space-between" alignItems="center" {...props}>
       <ToggleTaskCheckbox task={task} />
       <div className="taskContainer">
         <FlexContainer
@@ -62,7 +56,7 @@ export const TaskRow = ({
           alignItems="flex-end"
           justifyContent="stretch"
         >
-          <NavLink
+          <StyledNavLink
             to={`/tasklists/${task.listId}/task/${task.id}`}
             className="taskTitle"
           >
@@ -71,19 +65,23 @@ export const TaskRow = ({
             ) : (
               task.title
             )}
-          </NavLink>
+          </StyledNavLink>
           {showListName && (
-            <NavLink to={`/tasklists/${task.listId}`} className="taskListTitle">
+            <StyledNavLink
+              to={`/tasklists/${task.listId}`}
+              className="taskListTitle"
+            >
               <Small>
                 <Diminished>{task.listTitle}</Diminished>
               </Small>
-            </NavLink>
+            </StyledNavLink>
           )}
         </FlexContainer>
       </div>
       <StyledIconButton
         onClick={() => setIsDeleteConfirmationOpen(true)}
         context="danger"
+        className="deleteTask"
       >
         <img src="/icons/delete.svg" alt="" />
       </StyledIconButton>

@@ -6,19 +6,15 @@ import {
   useParams,
   useNavigate,
   NavLink,
-  useFetcher,
 } from "@remix-run/react";
-import { useCallback, useState } from "react";
-import { Event } from "~/components/Events/Event";
+import { useState } from "react";
+import { EventDot } from "~/components/Events/EventDot";
 import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax, getNextMonth, getPreviousMonth } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
-import { Modal, ModalHeader } from "~/components/Modal";
-import { StyledForm } from "~/components/styledParts/Form";
-import { FlexContainer } from "~/components/styledParts/FlexContainer";
-import { StyledButton } from "~/components/styledParts/Buttons";
 import { useTimezone } from "~/hooks/useTimezone";
+import { CreateEventModal } from "~/components/Events/CreateEventModal";
 
 export const handle = {
   title: "Calendar | Month",
@@ -62,11 +58,11 @@ export const loader: LoaderFunction = async ({
 const StyledCalendar = styled.div`
   .calendar {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(10px, 1fr));
     list-style: none;
     padding: 0;
     margin: 0;
-    gap: 5px;
+    gap: 3px;
     max-width: 100%;
     overflow-x: auto;
     overflow-y: visible;
@@ -80,7 +76,7 @@ const StyledCalendar = styled.div`
         margin: 0;
         padding: 10px 0;
         width: 100%;
-        font-size: 0.8rem;
+        font-size: 12px;
         cursor: pointer;
         border-top-right-radius: 5px;
         border-top-left-radius: 5px;
@@ -93,23 +89,22 @@ const StyledCalendar = styled.div`
     }
 
     .dayName {
-      margin-left: 30px;
-      margin-bottom: 30px;
       position: relative;
+      text-align: center;
+      box-sizing: border-box;
     }
   }
 `;
 
-const StyledCalendarDay = styled.li(
-  (props: { gridColumnStart?: number | boolean }) => ({
-    background: "rgba(255, 255, 255, 0.1)",
+const StyledCalendarDay = styled.li<{ gridColumnStart?: number | boolean }>(
+  (props) => ({
+    background: "rgba(0, 0, 0, 0.8)",
     borderRadius: "5px",
     paddingBottom: "30px",
     display: "flex",
     flexDirection: "column",
     gap: "5px",
     textAlign: "center",
-    minHeight: "100px",
     gridColumnStart: `${props.gridColumnStart || "unset"}`,
     position: "relative",
   })
@@ -123,7 +118,7 @@ const StyledCreateEventButton = styled.button`
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   width: 100%;
-  height: 25px;
+  height: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,15 +127,8 @@ const StyledCreateEventButton = styled.button`
   cursor: pointer;
 
   img {
-    width: 1.5rem;
+    width: 1rem;
   }
-`;
-
-const StyledCreateEventForm = styled(StyledForm)`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  background: transparent;
 `;
 
 export default function Calendar() {
@@ -151,9 +139,6 @@ export default function Calendar() {
   }>();
 
   const navigate = useNavigate();
-
-  const fetcher = useFetcher();
-
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [modalDate, setModalDate] = useState(() => new Date());
 
@@ -203,7 +188,7 @@ export default function Calendar() {
     return (
       <>
         {eventsForDay.map((event) => (
-          <Event key={event.id} event={event} skipDate />
+          <EventDot key={event.id} event={event} />
         ))}
       </>
     );
@@ -223,27 +208,6 @@ export default function Calendar() {
     navigate(
       `/calendar/month/${previousMonth.getDate()}/${previousMonth.getMonth()}/${previousMonth.getFullYear()}`
     );
-  };
-
-  const handleStartChange = (e) => {
-    const date = new Date(e.target.value);
-    setModalDate(date);
-  };
-
-  const getEndDefault = useCallback(() => {
-    const end = new Date(modalDate);
-    const minutes = 30;
-    end.setMinutes(end.getMinutes() + minutes);
-    return end.toISOString().slice(0, 16);
-  }, [modalDate]);
-
-  const handleCreateEventSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    fetcher.submit(e.currentTarget, {
-      method: "post",
-      action: `/calendar/event/create?tz=${tzFromUrl}`,
-    });
   };
 
   return (
@@ -304,13 +268,7 @@ export default function Calendar() {
                     className="title"
                     to={`/calendar/day/${thisSquaresDate.getDate()}/${thisSquaresDate.getMonth() + 1}/${thisSquaresDate.getFullYear()}`}
                   >
-                    {[
-                      startDay?.toLocaleUpperCase(),
-                      startMonth?.toLocaleUpperCase(),
-                      thisSquaresDate.getDate(),
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
+                    {[thisSquaresDate.getDate()].filter(Boolean).join(" ")}
                   </NavLink>
                   {getDayContents(thisSquaresDate)}
                   <StyledCreateEventButton
@@ -327,60 +285,12 @@ export default function Calendar() {
           }
         </ol>
       </StyledCalendar>
-      <Modal isOpen={isCreateModalOpen} setIsOpen={setIsCreateModalOpen}>
-        <ModalHeader>
-          <div className="modalTitle">Create Event</div>
-          <div className="modalSubtitle">Enter event details</div>
-        </ModalHeader>
-        <StyledCreateEventForm state={fetcher.state}>
-          <fetcher.Form method="post" onSubmit={handleCreateEventSubmit}>
-            <label htmlFor="summary">
-              <textarea
-                id="summary"
-                name="summary"
-                placeholder="Summary"
-                required
-              />
-            </label>
-            <label htmlFor="description">
-              <textarea
-                id="description"
-                name="description"
-                placeholder="Description"
-              />
-            </label>
-            <label htmlFor="startDateTime">
-              <input
-                type="datetime-local"
-                id="startDateTime"
-                name="startDateTime"
-                defaultValue={modalDate.toISOString().slice(0, 16)}
-                onChange={handleStartChange}
-                required
-              />
-            </label>
-            <label htmlFor="endDateTime">
-              <input
-                type="datetime-local"
-                id="endDateTime"
-                name="endDateTime"
-                defaultValue={getEndDefault()}
-                required
-              />
-            </label>
-            <FlexContainer justifyContent="flex-end" gap="1em">
-              <StyledButton type="submit">Create</StyledButton>
-              <StyledButton
-                styleType="warning"
-                type="button"
-                onClick={() => setIsCreateModalOpen(false)}
-              >
-                Cancel
-              </StyledButton>
-            </FlexContainer>
-          </fetcher.Form>
-        </StyledCreateEventForm>
-      </Modal>
+      <CreateEventModal
+        isOpen={isCreateModalOpen}
+        setIsOpen={setIsCreateModalOpen}
+        startDate={modalDate}
+        setStartDate={setModalDate}
+      />
       <Outlet />
     </div>
   );

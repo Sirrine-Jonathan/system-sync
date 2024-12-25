@@ -1,9 +1,39 @@
 import styled from "@emotion/styled";
-import { Base, Levels } from "./Base";
+import { Base } from "./Base";
 
-export const StyledButton = styled.button`
+export const StyledButton = styled.button<{
+  context?: "standard" | "danger" | "warning" | "transparent";
+}>`
   ${Base}
-  ${Levels}
+  border-color: ${(props) => {
+    switch (props.context) {
+      case "danger":
+        return "red";
+      case "warning":
+        return "orange";
+      case "transparent":
+        return "white";
+      default:
+        return "white";
+    }
+  }};
+
+  color: ${(props) => {
+    switch (props.context) {
+      case "danger":
+        return "red";
+      case "warning":
+        return "orange";
+      case "transparent":
+        return "white";
+      default:
+        return "white";
+    }
+  }};
+
+  &:hover {
+    backdrop-filter: brightness(0.5);
+  }
 `;
 
 export const StyledIconButton = styled.button<{

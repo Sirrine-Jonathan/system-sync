@@ -13,6 +13,7 @@ const StyledBreadcrumbs = styled.div`
     justify-content: flex-start;
     flex-wrap: wrap;
     gap: 10px;
+    font-size: 0.8em;
 
     li {
       display: flex;

@@ -1,5 +1,6 @@
 import type { THydratedUserModel } from "~/services/user.server";
-import { useLoaderData, useOutletContext, NavLink } from "@remix-run/react";
+import { useLoaderData, useOutletContext } from "@remix-run/react";
+import { authenticator } from "~/services/auth.server";
 import { LoaderFunction } from "@remix-run/node";
 import { getRangeMinMax } from "~/utils/time";
 import { getEvents } from "~/services/event.server";
@@ -16,12 +17,17 @@ import { FlexContainer } from "~/components/styledParts/FlexContainer";
 import { GridContainer } from "~/components/styledParts/GridContainer";
 import { TaskRow } from "~/components/Tasks/TaskRow";
 import { List } from "~/components/Tasks/List";
+import { StyledNavLink } from "~/components/styledParts/Links";
 
 export const handle = {
   title: "Dashboard",
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  await authenticator.isAuthenticated(request, {
+    failureRedirect: "/auth/signin",
+  });
+
   const url = new URL(request.url);
   const timezone = url.searchParams.get("tz") || "UTC";
   new Intl.DateTimeFormat("en-US", {
@@ -88,9 +94,9 @@ export default function Dashboard() {
                 </div>
               )}
             </FlexContainer>
-            <NavLink to="/calendar">
+            <StyledNavLink to="/calendar">
               <Highlight>View Calendar</Highlight>
-            </NavLink>
+            </StyledNavLink>
           </FlexContainer>
           <hr />
           <FlexContainer
@@ -108,9 +114,9 @@ export default function Dashboard() {
                 </div>
               )}
             </FlexContainer>
-            <NavLink to="/tasklists">
+            <StyledNavLink to="/tasklists">
               <Highlight>View Tasks</Highlight>
-            </NavLink>
+            </StyledNavLink>
           </FlexContainer>
         </Well>
         <hr />
@@ -127,7 +133,7 @@ export default function Dashboard() {
               alignItems="stretch"
             >
               {events.map((event) => (
-                <Event key={event.id} event={event} />
+                <Event key={event.id} event={event} calloutDirection="left" />
               ))}
             </FlexContainer>
             <hr />

@@ -11,6 +11,13 @@ export const Avatar = styled.button`
     border: 3px solid white;
     border-radius: 100px;
   }
+
+  @media (max-width: 767px) {
+    & img {
+      width: 40px;
+      aspect-ratio: 1;
+    }
+  }
 `;
 
 const AvatarDiv = Avatar.withComponent("div");

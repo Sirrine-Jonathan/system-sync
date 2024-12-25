@@ -25,8 +25,6 @@ export const TaskGrid = ({
   }>();
   const { lists, listsForFilter } = fetcher?.data || {};
 
-  console.log({ lists, listsForFilter, status: fetcher.state });
-
   const refresh = useCallback(() => {
     const searchParams = new URLSearchParams();
 
@@ -64,10 +62,11 @@ export const TaskGrid = ({
 
   return (
     <>
-      <StyledForm state="idle">
+      <StyledForm state="idle" style={{ padding: "1rem 0" }}>
         <FlexContainer
           justifyContent="space-between"
           alignItems="center"
+          gap="1em"
           fullWidth
         >
           {expanded && (
@@ -119,6 +118,7 @@ export const TaskGrid = ({
                 setExpanded(!expanded);
               }}
               size="normal"
+              style={{ alignSelf: "flex-start" }}
             >
               {expanded ? (
                 <img src="/icons/minus.svg" alt="Hide tasks" />
@@ -135,8 +135,8 @@ export const TaskGrid = ({
           {fetcher.state === "idle" && noResults && <None />}
           {fetcher.state === "idle" && !noResults && (
             <GridContainer
-              templateColumns="repeat(auto-fill, minmax(min(100%, 300px), 1fr))"
-              gap="2em"
+              templateColumns="repeat(auto-fill, minmax(min(50%, 100px), 1fr))"
+              gap="1em"
             >
               {lists &&
                 lists.map(({ tasks = [] }) =>

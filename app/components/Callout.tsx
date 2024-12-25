@@ -22,6 +22,7 @@ export const CalloutProvider = ({
   children: React.ReactNode;
 }) => {
   const [isCalloutOpen, setIsCalloutOpen] = useState(false);
+
   return (
     <CalloutContext.Provider value={[isCalloutOpen, setIsCalloutOpen]}>
       {children}
@@ -31,6 +32,25 @@ export const CalloutProvider = ({
 
 export const CalloutTrigger = ({ children }: { children: React.ReactNode }) => {
   const [isCalloutOpen, setIsCalloutOpen] = useContext(CalloutContext);
+
+  const closeCallout = useCallback(
+    (e: MouseEvent) => {
+      if (!isCalloutOpen) return;
+      const target = e.target as HTMLElement;
+      if (target.closest(".callout")) return;
+      setIsCalloutOpen(false);
+    },
+    [isCalloutOpen, setIsCalloutOpen]
+  );
+
+  useEffect(() => {
+    document.addEventListener("click", closeCallout);
+
+    return () => {
+      document.removeEventListener("click", closeCallout);
+    };
+  }, [closeCallout]);
+
   return (
     <StyledIconButton
       onClick={() => setIsCalloutOpen(!isCalloutOpen)}

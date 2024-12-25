@@ -13,6 +13,11 @@ const StyledHeader = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  a {
+    text-decoration: none;
+    color: white;
+  }
+
   a:hover {
     text-decoration: underline;
     color: gold;

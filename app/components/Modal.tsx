@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { StyledIconButton } from "./styledParts/Buttons";
 
 const StyledModal = styled.div`
   position: fixed;
@@ -9,7 +10,6 @@ const StyledModal = styled.div`
   background: rgba(0, 0, 0, 0.8);
   z-index: 999;
   width: 100%;
-  box-sizing: border-box;
 
   .modal {
     position: absolute;
@@ -17,12 +17,9 @@ const StyledModal = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     background: black;
-    padding: 1rem;
     border-radius: 5px;
+    width: 95%;
     max-width: 1200px;
-    overflow-y: auto;
-    width: 90%;
-    box-sizing: border-box;
 
     h1,
     h2,
@@ -41,23 +38,12 @@ const StyledModal = styled.div`
 
     .closeModal {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #000;
-      width: 30px;
-      height: 30px;
-      padding: 0;
-      border-radius: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: none;
-      color: white;
-      cursor: pointer;
+      top: 3px;
+      right: 3px;
       z-index: 1;
 
       &:hover {
-        background: #333;
+        background: #eee;
       }
 
       img {
@@ -81,9 +67,13 @@ export const Modal = ({
   return (
     <StyledModal {...rest}>
       <div className="modal">
-        <button className="closeModal" onClick={() => setIsOpen(false)}>
-          <img src="/icons/close.svg" alt="close" />
-        </button>
+        <StyledIconButton
+          className="closeModal"
+          onClick={() => setIsOpen(false)}
+          context="transparent"
+        >
+          <img src="/icons/close-dark.svg" alt="close" />
+        </StyledIconButton>
         {children}
       </div>
     </StyledModal>
@@ -91,15 +81,14 @@ export const Modal = ({
 };
 
 const StyledModalHeader = styled.div`
+  border-radius: 5px;
+
   .modalTitle {
+    border-radius: 5px 5px 0 0;
     font-size: 1.3em;
     text-align: center;
     margin: 0;
     background: gold;
-    margin-left: -3rem;
-    margin-right: -3rem;
-    margin-top: -3rem;
-    margin-bottom: 2rem;
     height: 30px;
     padding: 0.5rem;
     color: black;
@@ -130,4 +119,13 @@ export const ModalHeader = ({ children }: { children: React.ReactNode }) => {
       <div className="modalHeaderTitles">{children}</div>
     </StyledModalHeader>
   );
+};
+
+const StyledModalContent = styled.div`
+  padding: 1rem;
+  border-radius: 0 0 5px 5px;
+`;
+
+export const ModalContent = ({ children }: { children: React.ReactNode }) => {
+  return <StyledModalContent>{children}</StyledModalContent>;
 };

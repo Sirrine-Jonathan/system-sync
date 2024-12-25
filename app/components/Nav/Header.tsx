@@ -155,7 +155,11 @@ const StyledHeader = styled.header`
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
+    }
+
+    h2 {
+      font-size: 0.8rem;
     }
   }
 `;
@@ -188,7 +192,6 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
     <StyledHeader>
       <NavLink to="/dashboard">
         <FlexContainer justifyContent="flex-start" alignItems="center">
-          <img id="logo" src="/images/logo.png" alt="logo" />
           <FlexContainer
             flexDirection="column"
             justifyContent="flex-start"

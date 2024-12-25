@@ -1,5 +1,3 @@
-/// <reference types="vite-plugin-svgr/client" />
-
 import { useState } from "react";
 import type { calendar_v3 } from "googleapis";
 import styled from "@emotion/styled";
@@ -13,9 +11,11 @@ import {
   CalloutAction,
 } from "../Callout";
 import { DeleteEventConfirmation } from "./DeleteEventConfirmation";
+import { Strikethrough } from "../styledParts/Text";
 
-const StyledEvent = styled(Well)`
+const StyledEvent = styled(Well)<{ past: boolean }>`
   position: relative;
+  background: {({ past }) => (past ? "purple" : "red")} !important;
 
   .summary {
     display: block;
@@ -24,7 +24,7 @@ const StyledEvent = styled(Well)`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 10vw;
+    max-width: 100%;
   }
 
   .timeDetails {
@@ -92,10 +92,12 @@ export const Event = ({
   event,
   expanded = false,
   skipDate = false,
+  calloutDirection = "top",
 }: {
   event: calendar_v3.Schema$Event;
   expanded?: boolean;
   skipDate?: boolean;
+  calloutDirection?: "top" | "bottom" | "left" | "right";
 }) => {
   const navigate = useNavigate();
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
@@ -131,8 +133,10 @@ export const Event = ({
   const startDay = days[start.getDay()];
   const startMonth = months[start.getMonth()];
 
+  const isPastDate = end < new Date();
+
   return (
-    <StyledEvent className={`event ${startDay}`}>
+    <StyledEvent className={`event ${startDay}`} past={isPastDate}>
       <DeleteEventConfirmation
         isOpen={isDeleteConfirmModalOpen}
         setIsOpen={setIsDeleteConfirmModalOpen}
@@ -168,7 +172,7 @@ export const Event = ({
           <CalloutTrigger>
             <img src="/icons/menu.svg" alt="" />
           </CalloutTrigger>
-          <CalloutContent preferredDirection="bottom">
+          <CalloutContent preferredDirection={calloutDirection || "top"}>
             <CalloutAction onClick={() => setIsDeleteConfirmModalOpen(true)}>
               <img src="/icons/delete.svg" alt="" />
               Delete
@@ -181,7 +185,8 @@ export const Event = ({
         </Callout>
       </FlexContainer>
       <NavLink to={`/event/${event.id}`} className="summary">
-        {event.summary}
+        {isPastDate && <Strikethrough>{event.summary}</Strikethrough>}
+        {!isPastDate && event.summary}
       </NavLink>
       {expanded && (
         <>

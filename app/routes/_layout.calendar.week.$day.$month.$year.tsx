@@ -6,24 +6,38 @@ import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
-import { DesktopOnly } from "~/components/styledParts/DesktopOnly";
 
 export const handle = {
   title: "Calendar | Week",
 };
 
 const StyledWeek = styled.div`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1rem
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   max-width: 100%;
   overflow: auto;
-  padding-bottom: 1rem
+  padding-bottom: 1rem;
 `;
 
 const StyledDay = styled.div<{ gridColumnStart?: number | boolean }>`
-  padding: 2;
-  grid-column-start: ${(props) => props.gridColumnStart};
+  position: relative;
+  background: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  display: flex;
+  padding: 25px 5px 0 5px;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 40px;
+
+  .dayHeader {
+    font-weight: bold;
+    margin-bottom: 1rem;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    height: 20px;
+  }
 `;
 
 export const loader: LoaderFunction = async ({
@@ -93,24 +107,21 @@ export default function Calendar() {
       <StyledWeek>
         {Array.from({ length: 7 }, (_, i) => (
           <StyledDay key={i} gridColumnStart={i + 1}>
-            <DesktopOnly>
+            <div className="dayHeader">
               <span>{daysOfTheWeek[i]}</span>
               {" | "}
-            </DesktopOnly>
-            <span>{weekMin.getDate() + i}</span>
+              <span>{weekMin.getDate() + i}</span>
+            </div>
+            {eventsWithStartDate
+              .filter((event) => {
+                const eventStart = new Date(event.start?.dateTime || "");
+                return eventStart.getDate() === weekMin.getDate() + i;
+              })
+              .map((event) => (
+                <Event key={event.id} event={event} />
+              ))}
           </StyledDay>
         ))}
-        {eventsWithStartDate &&
-          eventsWithStartDate.map((event) => (
-            <StyledDay
-              key={event.id}
-              gridColumnStart={
-                new Date(event.start?.dateTime || "").getDay() + 1
-              }
-            >
-              <Event key={event.id} event={event} />
-            </StyledDay>
-          ))}
       </StyledWeek>
       <Outlet />
     </div>
