@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react";
+import { Form, useFetcher } from "@remix-run/react";
 import { Modal, ModalHeader } from "../Modal";
 import { StyledButton } from "../styledParts/Buttons";
 import { Center } from "../styledParts/Text";
@@ -25,6 +25,7 @@ export const DeleteTaskConfirmation = ({
   setIsOpen: (isOpen: boolean) => void;
   task: TaskWithListTitle;
 }) => {
+  const fetcher = useFetcher();
   return (
     <Modal
       isOpen={isOpen}
@@ -41,9 +42,18 @@ export const DeleteTaskConfirmation = ({
           <br />
           delete this task?
         </Center>
-        <Form method="post" action={`/tasks/${task.id}/delete`}>
+        <fetcher.Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            fetcher.submit(e.currentTarget, {
+              method: "post",
+              action: `/tasklists/${task.listId}/task/${task.id}/delete`,
+            });
+            setIsOpen(false);
+          }}
+        >
           <StyledButton type="submit">Yes</StyledButton>
-        </Form>
+        </fetcher.Form>
         <StyledButton onClick={() => setIsOpen(false)}>No</StyledButton>
       </StyledDeleteConfirmation>
     </Modal>

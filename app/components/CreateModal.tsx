@@ -1,0 +1,78 @@
+import { useState } from "react";
+import { Modal, ModalHeader } from "./Modal";
+import { FlexContainer } from "./styledParts/FlexContainer";
+import { StyledButton, StyledIconButton } from "./styledParts/Buttons";
+import { CreateEventForm } from "./Events/CreateEventForm";
+import { CreateTaskForm } from "./Tasks/CreateTaskForm";
+import { tasks_v1 } from "googleapis";
+
+export const CreateModal = ({
+  isOpen,
+  setIsOpen,
+  lists,
+}: {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  lists?: tasks_v1.Schema$TaskList[];
+}) => {
+  const [createType, setCreateType] = useState<"event" | "task">("event");
+
+  const createTypeTitleMap = {
+    event: "Event",
+    task: "Task",
+  };
+
+  return (
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+      <ModalHeader>
+        <div className="modalTitle">
+          Create {createTypeTitleMap[createType]}
+        </div>
+      </ModalHeader>
+      <FlexContainer justifyContent="center" gap="1em" padding="1em">
+        <StyledButton
+          onClick={() => setCreateType("event")}
+          context={createType === "event" ? "attention" : undefined}
+        >
+          Event
+        </StyledButton>
+        <div>or</div>
+        <StyledButton
+          onClick={() => setCreateType("task")}
+          context={createType === "task" ? "attention" : undefined}
+        >
+          Task
+        </StyledButton>
+      </FlexContainer>
+
+      {createType === "event" && <CreateEventForm />}
+
+      {createType === "task" && (
+        <CreateTaskForm
+          {...(lists ? { lists } : {})}
+          onSubmit={() => setIsOpen(false)}
+        />
+      )}
+    </Modal>
+  );
+};
+
+export const CreateModalButton = ({
+  lists,
+}: {
+  lists?: tasks_v1.Schema$TaskList[];
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <StyledIconButton
+        onClick={() => setIsOpen(true)}
+        context="attention"
+        size="large"
+      >
+        <img src="/icons/plus-dark.svg" alt="" />
+      </StyledIconButton>
+      <CreateModal isOpen={isOpen} setIsOpen={setIsOpen} lists={lists} />
+    </>
+  );
+};

@@ -7,6 +7,7 @@ import styled from "@emotion/styled";
 import { MobileOnly } from "../styledParts/MobileOnly";
 import { useIsMobile } from "~/hooks/useIsMobile";
 import { SignOutButton } from "../Auth/SignOutButton";
+import { Small } from "../styledParts/Text";
 
 interface RouteHandle {
   title: string;
@@ -22,7 +23,7 @@ const useSubtitle = () => {
 const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
-  align-items: "center";
+  align-items: center;
   background: linear-gradient(45deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 1));
 
   h1,
@@ -36,7 +37,7 @@ const StyledHeader = styled.header`
 
   a {
     text-decoration: none;
-    color: white;
+    color: var(--color-white);
   }
 
   h1 {
@@ -64,7 +65,7 @@ const StyledHeader = styled.header`
     padding: 1rem;
     list-style: none;
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    color: white;
+    color: var(--color-white);
     z-index: 1;
     height: 100%;
     box-sizing: border-box;
@@ -98,13 +99,13 @@ const StyledHeader = styled.header`
         }
 
         a {
-          color: white;
+          color: var(--color-white);
           text-decoration: none;
           transition: color 0.2s ease-in-out;
           width: 100%;
 
           &:hover {
-            color: gold;
+            color: var(--accent-color);
           }
 
           img {
@@ -122,7 +123,7 @@ const StyledHeader = styled.header`
       background: transparent;
       border: 1px solid transparent;
       border-radius: 100px;
-      color: white;
+      color: var(--color-white);
       cursor: pointer;
       width: 1.5rem;
       height: 1.5rem;
@@ -136,7 +137,7 @@ const StyledHeader = styled.header`
       }
 
       &:hover {
-        border-color: white;
+        border-color: var(--color-white);
       }
     }
   }
@@ -146,7 +147,7 @@ const StyledHeader = styled.header`
     width: var(--width);
     margin: 0 20px 0 0;
     border-radius: var(--width);
-    border: 3px solid #fff;
+    border: 3px solid var(--color-white);
   }
 
   @media (max-width: 767px) {
@@ -159,7 +160,7 @@ const StyledHeader = styled.header`
     }
 
     h2 {
-      font-size: 0.8rem;
+      font-size: 0.7rem;
     }
   }
 `;
@@ -191,15 +192,13 @@ export const Header = ({ imageUrl }: { imageUrl?: string }) => {
   return (
     <StyledHeader>
       <NavLink to="/dashboard">
-        <FlexContainer justifyContent="flex-start" alignItems="center">
-          <FlexContainer
-            flexDirection="column"
-            justifyContent="flex-start"
-            alignItems="flex-start"
-          >
-            <h1>System Sync</h1>
-            <h2>{subtitle}</h2>
-          </FlexContainer>
+        <FlexContainer
+          flexDirection="column"
+          justifyContent="flex-start"
+          alignItems="flex-start"
+        >
+          <h1>System Sync</h1>
+          <Small>{subtitle}</Small>
         </FlexContainer>
       </NavLink>
       <div className="menuContainer">

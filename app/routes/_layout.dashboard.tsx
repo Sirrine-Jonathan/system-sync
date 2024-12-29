@@ -1,6 +1,5 @@
-import type { THydratedUserModel } from "~/services/user.server";
 import { useLoaderData, useOutletContext } from "@remix-run/react";
-import { authenticator } from "~/services/auth.server";
+import { authenticator, GoogleUser } from "~/services/auth.server";
 import { LoaderFunction } from "@remix-run/node";
 import { getRangeMinMax } from "~/utils/time";
 import { getEvents } from "~/services/event.server";
@@ -18,6 +17,7 @@ import { GridContainer } from "~/components/styledParts/GridContainer";
 import { TaskRow } from "~/components/Tasks/TaskRow";
 import { List } from "~/components/Tasks/List";
 import { StyledNavLink } from "~/components/styledParts/Links";
+import { CreateModalButton } from "~/components/CreateModal";
 
 export const handle = {
   title: "Dashboard",
@@ -55,7 +55,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Dashboard() {
-  const user = useOutletContext<THydratedUserModel>();
+  const { displayName } = useOutletContext<GoogleUser>();
+
   const { events, lists } = useLoaderData<{
     events: calendar_v3.Schema$Event[];
     lists: TaskListWithTasks[];
@@ -69,12 +70,17 @@ export default function Dashboard() {
     <main>
       <Section>
         <Well>
-          {user && (
-            <p>
-              Hello, <Large>{user.displayName}</Large>
-            </p>
-          )}
-          <DateTime />
+          <FlexContainer justifyContent="space-between" alignItems="center">
+            <FlexContainer
+              flexDirection="column"
+              alignItems="flex-start"
+              gap="1em"
+            >
+              <Large>Hello, {displayName}</Large>
+              <DateTime />
+            </FlexContainer>
+            <CreateModalButton lists={lists} />
+          </FlexContainer>
         </Well>
         <hr />
         <Well>

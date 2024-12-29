@@ -20,7 +20,7 @@ export const StyledForm = styled.div<{
       case "submitting":
         return "black";
       case "loading":
-        return "gold";
+        return "var(--accent-color)";
     }
   }};
 
@@ -45,7 +45,7 @@ export const StyledForm = styled.div<{
 
   label {
     font-size: 0.7rem;
-    color: white;
+    color: var(--color-white);
     position: relative;
     display: flex;
     flex-direction: column;
@@ -56,9 +56,9 @@ export const StyledForm = styled.div<{
   textarea {
     background: transparent;
     border: none;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--color-white);
     padding: 0.5rem;
-    color: white;
+    color: var(--color-white);
     word-break: break-all;
     width: 100%;
     box-sizing: border-box;
@@ -104,6 +104,15 @@ export const StyledForm = styled.div<{
     display: flex;
     align-items: end;
     gap: 0.5rem;
+  }
+
+  select {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-white);
+    padding: 0.5rem;
+    color: var(--color-white);
+    box-sizing: border-box;
   }
 
   .error {

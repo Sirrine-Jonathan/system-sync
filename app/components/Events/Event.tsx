@@ -20,7 +20,7 @@ const StyledEvent = styled(Well)<{ past: boolean }>`
   .summary {
     display: block;
     font-size: 0.8rem;
-    color: gold;
+    color: var(--accent-color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -52,14 +52,14 @@ const StyledEvent = styled(Well)<{ past: boolean }>`
     text-align: center;
 
     a {
-      color: white;
+      color: var(--color-white);
       text-decoration: none;
-      color: gold;
+      color: var(--accent-color);
     }
   }
 
   .eventHeader {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--color-white);
     padding-bottom: 5px;
     margin-bottom: 5px;
   }
@@ -74,11 +74,11 @@ const StyledEvent = styled(Well)<{ past: boolean }>`
 const StyledDetails = styled.div`
   margin-top: 1rem;
   a {
-    color: white;
+    color: var(--color-white);
     word-break: break-all;
 
     &:hover {
-      color: gold;
+      color: var(--accent-color);
     }
 
     img {

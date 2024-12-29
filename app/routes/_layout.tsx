@@ -11,6 +11,9 @@ import { isValidTimeZone } from "~/utils/time";
 import { SignInButton } from "~/components/Auth/SignInButton";
 import { DesktopNav } from "~/components/Nav/DesktopNav";
 import { getSession } from "~/services/session.server";
+import { StyledIconLink } from "~/components/styledParts/Links";
+import { MobileOnly } from "~/components/styledParts/MobileOnly";
+import { FlexContainer } from "~/components/styledParts/FlexContainer";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request);
@@ -79,7 +82,14 @@ export const ErrorBoundary = () => {
   ) {
     Component = (
       <section>
-        <SignInButton type="Google" successRedirect={returnUrl} />
+        <FlexContainer gap="1em" justifyContent="center">
+          <SignInButton successRedirect={returnUrl} />
+          <MobileOnly>
+            <StyledIconLink to="/auth/signout">
+              <img src="/icons/signout.svg" alt="" />
+            </StyledIconLink>
+          </MobileOnly>
+        </FlexContainer>
       </section>
     );
   } else {

@@ -1,0 +1,18 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: #1a1a1a;
+}
+
+canvas {
+  display: block;
+}
+
+#container {
+  background: var(--color-black);
+  color: var(--color-white);
+  margin: auto;
+  width: 500px;
+  height: 500px;
+}

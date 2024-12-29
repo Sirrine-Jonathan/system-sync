@@ -9,11 +9,11 @@ export const handle = {
 
 const ContactLink = styled.a`
   text-decoration: underline;
-  color: white;
+  color: var(--color-white);
   transition: color 0.2s ease-in-out;
 
   &:hover {
-    color: gold;
+    color: var(--accent-color);
   }
 `;
 
@@ -22,7 +22,7 @@ export default function About() {
 
   return (
     <main>
-      <section id="about">{!user && <SignInButton type="Google" />}</section>
+      <section id="about">{!user && <SignInButton />}</section>
       <section>
         This is a simple app to help you track your habits, and tasks across
         your calendar.

@@ -1,15 +1,15 @@
 import styled from "@emotion/styled";
 
 export const Well = styled.div`
-  background: rgba(0, 0, 0, 0.8);
+  background: var(--secondary-bg);
   border-radius: 5px;
   padding: 1rem;
-  color: white;
+  color: var(--color-white);
 
   hr {
     margin: 1rem 0;
     border: none;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--color-white);
   }
 `;
 

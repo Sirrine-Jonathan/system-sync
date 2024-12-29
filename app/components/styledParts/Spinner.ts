@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 export const Spinner = styled.div`
   border: 5px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 5px solid gold;
+  border-top: 5px solid var(--accent-color);
   width: 50px;
   height: 50px;
   -webkit-animation: spin 2s linear infinite;

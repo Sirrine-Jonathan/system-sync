@@ -9,7 +9,7 @@ export default function SignIn() {
     <main>
       <Header />
       <section>
-        <SignInButton type="Google" />
+        <SignInButton />
       </section>
     </main>
   );

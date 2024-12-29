@@ -3,13 +3,13 @@ import { NavLink } from "@remix-run/react";
 import { StyledButton } from "./Buttons";
 
 export const StyledLink = styled(NavLink)`
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
   transition: color 0.2s ease-in-out;
   background: transparent;
 
   &:hover {
-    color: gold;
+    color: var(--accent-color);
   }
 `;
 
@@ -17,13 +17,13 @@ export const StyledNavLink = StyledLink.withComponent(NavLink);
 
 export const StyledExternalLink = styled.a`
   text-decoration: none;
-  color: white;
+  color: var(--color-white);
   font-size: 1rem;
   transition: color 0.2s ease-in-out;
   background: transparent;
 
   &:hover {
-    color: gold;
+    color: var(--accent-color);
   }
 
   &:before {
@@ -64,11 +64,11 @@ export const StyledBigLink = styled(NavLink)<{ danger?: boolean }>`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: white;
+  color: var(--color-white);
   gap: 10px;
   font-size: var(--size);
   line-height: var(--size);
-  border: 1px solid white;
+  border: 1px solid var(--color-white);
   cursor: pointer;
   width: max-content;
 
@@ -90,12 +90,19 @@ export const StyledBigLink = styled(NavLink)<{ danger?: boolean }>`
   }
 
   &.active {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--color-white);
     pointer-events: none;
     cursor: default;
   }
 
   @media (max-width: 767px) {
     --size: 0.8rem;
+
+    span {
+      display: none;
+      & + img {
+        padding-right: 0;
+      }
+    }
   }
 `;

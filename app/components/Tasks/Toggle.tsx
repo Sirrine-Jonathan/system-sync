@@ -5,14 +5,14 @@ import { useFetcher } from "@remix-run/react";
 const Toggle = styled.label<{ submitting: boolean; completed: boolean }>`
 
   button[type="submit"]:hover {
-    --background: ${({ completed }) => (completed ? "transparent" : "gold")};
-    --submitting-background: #fff;
+    --background: ${({ completed }) => (completed ? "transparent" : "var(--accent-color)")};
+    --submitting-background: var(--color-white);
     background: ${({ submitting }) => (submitting ? "var(--submitting-background)" : "var(--background)")};
   }
 
   button[type="submit"] {
-    --background: ${({ completed }) => (completed ? "gold" : "transparent")};
-    --submitting-background: #fff;
+    --background: ${({ completed }) => (completed ? "var(--accent-color)" : "transparent")};
+    --submitting-background: var(--color-white);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -21,7 +21,7 @@ const Toggle = styled.label<{ submitting: boolean; completed: boolean }>`
     border-radius: 100px;
     background: ${({ submitting }) => (submitting ? "var(--submitting-background)" : "var(--background)")};
     cursor: pointer;
-    border: 3px solid #fff;
+    border: 3px solid var(--color-white);
     position: relative;
     transition: background 0.2s ease-in-out;
 

@@ -92,6 +92,16 @@ const Document = withEmotionCache(
 );
 
 const globalStyles = `
+  :root {
+    --color-black: #111;
+    --color-white: #eee;
+    --primary-bg: rgba(255, 255, 255, 0.1);
+    --secondary-bg:  rgba(0, 0, 0, 0.5);
+    --accent-color: gold;
+    --subtle-color: rgba(255, 255, 255, 0.1);
+    --vertical-padding: 0.5rem;
+    --horizontal-padding: 0.5rem;
+  }
   html, body {
     margin: 0;
     padding: 0;
@@ -100,10 +110,10 @@ const globalStyles = `
   }
 
   body {
-    background-color: #000;
-    background: URL("/images/sand.jpg") no-repeat center center fixed;
+    background-color: var(--color-black);
+    background: URL("/images/forest-fog.jpg") no-repeat center center fixed;
     background-size: cover;
-    color: white;
+    color: var(--color-white);
     font: 1em "Inter", sans-serif;
     font-family: "NotoSans", sans-serif;
   }
@@ -115,7 +125,7 @@ const globalStyles = `
   }
 
   main header, main section {
-    padding: 0.7rem
+    padding: var(--vertical-padding) var(--horizontal-padding);
   }
 
   img {
@@ -125,8 +135,8 @@ const globalStyles = `
 
   hr {
     border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 1rem 0;
+    border-top: 1px solid var(--subtle-color);
+    margin: var(--vertical-padding) 0;
   }
 
 

@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from "react";
 import styled from "@emotion/styled";
 import { StyledIconButton } from "./styledParts/Buttons";
 
@@ -10,16 +11,21 @@ const StyledModal = styled.div`
   background: rgba(0, 0, 0, 0.8);
   z-index: 999;
   width: 100%;
+  box-sizing: border-box;
 
   .modal {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: black;
+    background: var(--color-black);
     border-radius: 5px;
     width: 95%;
     max-width: 1200px;
+    height: 70%;
+    max-height: 800px;
+    overflow: auto;
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
 
     h1,
     h2,
@@ -38,9 +44,9 @@ const StyledModal = styled.div`
 
     .closeModal {
       position: absolute;
-      top: 3px;
-      right: 3px;
-      z-index: 1;
+      right: 0;
+      transform: translate(-100%, 0%);
+      z-index: 200;
 
       &:hover {
         background: #eee;
@@ -63,7 +69,37 @@ export const Modal = ({
   setIsOpen: (isOpen: boolean) => void;
   children: React.ReactNode;
 } & React.ComponentProps<"div">) => {
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    },
+    [setIsOpen]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
+  useEffect(() => {
+    // close if click outside of modal
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest(".modal")) return;
+      setIsOpen(false);
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  });
+
   if (!isOpen) return null;
+
   return (
     <StyledModal {...rest}>
       <div className="modal">
@@ -88,10 +124,10 @@ const StyledModalHeader = styled.div`
     font-size: 1.3em;
     text-align: center;
     margin: 0;
-    background: gold;
+    background: var(--accent-color);
     height: 30px;
     padding: 0.5rem;
-    color: black;
+    color: var(--color-black);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -99,17 +135,9 @@ const StyledModalHeader = styled.div`
   }
 
   .modalSubtitle {
-    margin-top: -2rem;
-    margin-bottom: 1rem;
-
-    margin-left: -3rem;
-    margin-right: -3rem;
-    font-weight: bold;
-    height: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8em;
+    padding: 0.5rem;
+    margin: 0;
+    text-align: center;
   }
 `;
 

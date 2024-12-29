@@ -14,7 +14,7 @@ export const Small = styled.span`
 
 export const Highlight = styled.span`
   font-weight: bold;
-  color: gold;
+  color: var(--accent-color);
 `;
 
 export const Diminished = styled.span`

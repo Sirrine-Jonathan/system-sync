@@ -9,12 +9,14 @@ import {
 } from "@remix-run/react";
 import { useState } from "react";
 import { EventDot } from "~/components/Events/EventDot";
+import { Event } from "~/components/Events/Event";
 import { getEvents } from "~/services/event.server";
 import styled from "@emotion/styled";
 import { getRangeMinMax, getNextMonth, getPreviousMonth } from "~/utils/time";
 import { StyledCalenderHeader } from "~/components/styledParts/CalendarHeader";
 import { useTimezone } from "~/hooks/useTimezone";
 import { CreateEventModal } from "~/components/Events/CreateEventModal";
+import { useIsMobile } from "~/hooks/useIsMobile";
 
 export const handle = {
   title: "Calendar | Month",
@@ -70,7 +72,7 @@ const StyledCalendar = styled.div`
     .day {
       a.title {
         display: block;
-        color: white;
+        color: var(--color-white);
         text-decoration: none;
         text-align: center;
         margin: 0;
@@ -82,8 +84,8 @@ const StyledCalendar = styled.div`
         border-top-left-radius: 5px;
 
         &:hover {
-          background: gold;
-          color: black;
+          background: var(--accent-color);
+          color: var(--color-black);
         }
       }
     }
@@ -122,8 +124,8 @@ const StyledCreateEventButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: gold;
-  color: black;
+  background: var(--accent-color);
+  color: var(--color-black);
   cursor: pointer;
 
   img {
@@ -138,6 +140,7 @@ export default function Calendar() {
     monthMax: Date;
   }>();
 
+  const { isMobile } = useIsMobile();
   const navigate = useNavigate();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [modalDate, setModalDate] = useState(() => new Date());
@@ -187,9 +190,13 @@ export default function Calendar() {
 
     return (
       <>
-        {eventsForDay.map((event) => (
-          <EventDot key={event.id} event={event} />
-        ))}
+        {eventsForDay.map((event) =>
+          isMobile ? (
+            <EventDot key={event.id} event={event} />
+          ) : (
+            <Event key={event.id} event={event} />
+          )
+        )}
       </>
     );
   };

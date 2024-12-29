@@ -20,7 +20,7 @@ const colorIdMap: { [key: string]: string } = {
   16: "teal",
   17: "navy",
   18: "maroon",
-  19: "gold",
+  19: "var(--accent-color)",
   20: "silver",
   21: "violet",
   22: "indigo",

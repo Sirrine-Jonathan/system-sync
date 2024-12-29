@@ -25,17 +25,17 @@ const StyledBreadcrumbs = styled.div`
       }
 
       a {
-        color: white;
+        color: var(--color-white);
         text-decoration: none;
 
         &:hover {
-          color: gold;
+          color: var(--accent-color);
         }
 
         &.current {
           pointer-events: none;
           cursor: default;
-          color: gold;
+          color: var(--accent-color);
         }
       }
 

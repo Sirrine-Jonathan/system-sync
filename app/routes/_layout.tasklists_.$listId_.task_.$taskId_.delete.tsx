@@ -1,6 +1,6 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, redirect } from "@remix-run/node";
 import { deleteTask } from "~/services/task.server";
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
+export const action = async ({ request, params }: ActionFunctionArgs) => {
   const { listId, taskId } = params;
   if (!listId) {
     throw new Error("List ID is required");
@@ -8,6 +8,5 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!taskId) {
     throw new Error("Task ID is required");
   }
-  await deleteTask(request, { taskId, tasklist: listId });
-  return redirect(`/tasklists/${listId}`);
+  return await deleteTask(request, { taskId, tasklist: listId });
 };

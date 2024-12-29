@@ -22,7 +22,7 @@ const StyledRow = styled(FlexContainer)`
       rgba(0, 0, 0, 0.1),
       rgba(255, 255, 255, 0.2)
     );
-    color: #fff;
+    color: var(--color-white);
     text-decoration: none;
     padding: 1rem;
     border-radius: 8px;

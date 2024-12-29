@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 const StyledLink = styled.a`
   display: block;
   text-decoration: none;
-  color: white;
+  color: var(--color-white);
 
   img {
     width: 1.5rem;

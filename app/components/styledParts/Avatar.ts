@@ -8,14 +8,15 @@ export const Avatar = styled.button`
   & img {
     width: 50px;
     aspect-ratio: 1;
-    border: 3px solid white;
+    border: 3px solid var(--color-white);
     border-radius: 100px;
   }
 
   @media (max-width: 767px) {
     & img {
-      width: 40px;
+      width: 25px;
       aspect-ratio: 1;
+      border: 2px solid var(--color-white);
     }
   }
 `;

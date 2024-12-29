@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Base } from "./Base";
 
 export const StyledButton = styled.button<{
-  context?: "standard" | "danger" | "warning" | "transparent";
+  context?: "standard" | "danger" | "warning" | "transparent" | "attention";
 }>`
   ${Base}
   border-color: ${(props) => {
@@ -13,6 +13,8 @@ export const StyledButton = styled.button<{
         return "orange";
       case "transparent":
         return "white";
+      case "attention":
+        return "var(--accent-color)";
       default:
         return "white";
     }
@@ -26,6 +28,8 @@ export const StyledButton = styled.button<{
         return "orange";
       case "transparent":
         return "white";
+      case "attention":
+        return "var(--accent-color)";
       default:
         return "white";
     }
@@ -37,12 +41,13 @@ export const StyledButton = styled.button<{
 `;
 
 export const StyledIconButton = styled.button<{
-  context?: "standard" | "danger" | "warning" | "transparent";
+  context?: "standard" | "danger" | "warning" | "transparent" | "attention";
   size?: "small" | "normal" | "large";
 }>`
   --bg-standard: rgba(255, 255, 255, 0.1);
   --bg-danger: rgba(255, 0, 0, 0.8);
   --bg-warning: rgba(255, 165, 0, 0.1);
+  --bg-attention: var(--accent-color);
   --bg-transparent: transparent;
   --small: 15px;
   --normal: 30px;
@@ -71,6 +76,8 @@ export const StyledIconButton = styled.button<{
         return "var(--bg-warning);";
       case "transparent":
         return "var(--bg-transparent);";
+      case "attention":
+        return "var(--bg-attention);";
       default:
         return "var(--bg-standard);";
     }
@@ -91,7 +98,7 @@ export const StyledIconButton = styled.button<{
       case "normal":
         return "padding: 0.5rem;";
       case "large":
-        return "padding: 1rem;";
+        return "padding: 0.5rem;";
       default:
         return "padding: 0.5rem;";
     }
@@ -106,7 +113,7 @@ export const StyledIconButton = styled.button<{
         case "normal":
           return "width: 1rem;";
         case "large":
-          return "width: 1.5rem;";
+          return "width: 2rem;";
         default:
           return "width: 1rem;";
       }
@@ -129,11 +136,11 @@ export const IconNavButton = styled.button<{ danger?: boolean }>`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: white;
+  color: var(--color-white);
   gap: 10px;
   font-size: var(--size);
   line-height: var(--size);
-  border: 1px solid white;
+  border: 1px solid var(--color-white);
   cursor: pointer;
 
   img {
@@ -169,11 +176,11 @@ export const StyledBigButton = styled(StyledButton)<{ danger?: boolean }>`
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: white;
+  color: var(--color-white);
   gap: 10px;
   font-size: var(--size);
   line-height: var(--size);
-  border: 1px solid black;
+  border: 1px solid var(--color-black);
   cursor: pointer;
 
   img {
@@ -195,5 +202,9 @@ export const StyledBigButton = styled(StyledButton)<{ danger?: boolean }>`
 
   @media (max-width: 767px) {
     --size: 0.8rem;
+
+    span {
+      display: none;
+    }
   }
 `;

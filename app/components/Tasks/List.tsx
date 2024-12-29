@@ -15,12 +15,12 @@ const StyledHeader = styled.div`
 
   a {
     text-decoration: none;
-    color: white;
+    color: var(--color-white);
   }
 
   a:hover {
     text-decoration: underline;
-    color: gold;
+    color: var(--accent-color);
   }
 `;
 
@@ -43,7 +43,7 @@ export const List = ({
   taskList,
   children,
 }: {
-  taskList: TaskListWithTasks | tasks_v1.Schema$TaskList;
+  taskList: TaskListWithTasks;
   children: React.ReactNode;
 }) => {
   const [isOpen, setIsOpen] = useState(true);
@@ -59,11 +59,14 @@ export const List = ({
         <StyledHeader>
           <Link to={`/tasklists/${taskList.id}`}>
             <Small>
-              <Diminished>Tasks from</Diminished>
+              <Diminished>{taskList?.tasks.length || 0} Tasks from</Diminished>
             </Small>{" "}
             <Large>{taskList.title}</Large>
           </Link>
-          <StyledIconButton onClick={() => setIsOpen(!isOpen)} transparent>
+          <StyledIconButton
+            onClick={() => setIsOpen(!isOpen)}
+            context="transparent"
+          >
             <img src={isOpen ? "/icons/up.svg" : "/icons/down.svg"} alt="" />
           </StyledIconButton>
         </StyledHeader>

@@ -6,7 +6,7 @@ const ButtonForm = styled(Form)`
     display: flex;
     align-items: center;
     margin: 20px auto;
-    padding: 0.5em 1rem;
+    padding: 0.5rem 1rem;
     border-radius: 5px;
     border: none;
     cursor: pointer;
@@ -17,28 +17,11 @@ const ButtonForm = styled(Form)`
   }
 `;
 interface SignInButtonProps {
-  type: "Google" | "Facebook";
   successRedirect?: string;
 }
-export const SignInButton = ({ type, successRedirect }: SignInButtonProps) => {
-  let action = "/auth/google";
-  let imgSrc = "/icons/google-logo.svg";
-  let text = "Sign in with Google";
-  switch (type.toLowerCase()) {
-    case "google":
-      imgSrc = "/icons/google-logo.svg";
-      action = "/auth/google";
-      text = "Sign in with Google";
-      break;
-    case "facebook":
-      imgSrc = "/icons/facebook-logo.svg";
-      action = "/auth/facebook";
-      text = "Sign in with Facebook";
-      break;
-  }
-
+export const SignInButton = ({ successRedirect }: SignInButtonProps) => {
   return (
-    <ButtonForm action={action} method="post">
+    <ButtonForm action="/auth/google" method="post">
       {successRedirect && (
         <input
           type="hidden"
@@ -47,8 +30,8 @@ export const SignInButton = ({ type, successRedirect }: SignInButtonProps) => {
         />
       )}
       <button>
-        <img src={imgSrc} alt="" />
-        {text}
+        <img src="/icons/google-logo.svg" alt="" />
+        Sign in with Google
       </button>
     </ButtonForm>
   );

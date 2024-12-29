@@ -1,76 +1,50 @@
-import { useLoaderData, NavLink, useFetcher } from "@remix-run/react";
-import { getListById, createTask } from "~/services/task.server";
-import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
-import { StyledForm } from "~/components/styledParts/Form";
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  redirect,
-} from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { NavLink, useLoaderData, useParams } from "@remix-run/react";
 import { tasks_v1 } from "googleapis";
-import { StyledButton } from "~/components/styledParts/Buttons";
+import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
+import { CreateTaskForm } from "~/components/Tasks/CreateTaskForm";
+import { createTask, getLists } from "~/services/task.server";
 
-export const handle = {
-  title: "Task",
-};
-
-export const loader = async ({ request, params }: LoaderFunctionArgs) => {
-  const { listId } = params;
-  if (!listId) {
-    throw new Error("List ID is required");
-  }
-  try {
-    return await getListById(request, listId);
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const lists = await getLists(request);
+  return { lists };
 };
 
 export const action = async ({ request, params }: ActionFunctionArgs) => {
   const { listId } = params;
+
   if (!listId) {
     throw new Error("List ID is required");
   }
-  try {
-    const formData = await request.formData();
-    const title = formData.get("title") as string;
-    const notes = formData.get("notes") as string;
-    if (!title) {
-      throw new Error("Title is required");
-    }
-    await createTask(request, { tasklist: listId, title, notes });
 
-    return redirect(`/tasklists/${listId}`);
-  } catch (error) {
-    console.error(error);
-    return null;
+  const formData = await request.formData();
+  const title = formData.get("title") as string;
+  const notes = formData.get("notes") as string;
+  if (!title) {
+    throw new Error("Title is required");
   }
+
+  const task = await createTask(request, { tasklist: listId, title, notes });
+
+  console.log("task", task);
+
+  return task;
 };
 
-export default function ViewTask() {
-  const list = useLoaderData<tasks_v1.Schema$TaskList>();
-  const fetcher = useFetcher();
+export default function NewTask() {
+  const { listId } = useParams();
+  const { lists } = useLoaderData<{ lists: tasks_v1.Schema$TaskList[] }>();
+
+  const listName = lists?.find((list) => list.id === listId)?.title;
   return (
     <section>
       <Breadcrumbs>
         <NavLink to="/">Dashboard</NavLink>
         <NavLink to="/tasklists">Task Lists</NavLink>
-        <NavLink to={`/tasklists/${list.id}`}>{list.title}</NavLink>
-        <NavLink to={`/tasklists/${list.id}/task/new`} className="current">
-          New
-        </NavLink>
+        <NavLink to={`/tasklists/${listId}`}>{listName}</NavLink>
+        <span>New Task</span>
       </Breadcrumbs>
-      <h2>Create a new task for {list.title}</h2>
-      <StyledForm state={fetcher.state}>
-        <fetcher.Form method="post" action={`/tasklists/${list.id}/new`}>
-          <label htmlFor="title">Title</label>
-          <input id="title" type="text" name="title" />
-          <label htmlFor="notes">Notes</label>
-          <textarea id="notes" name="notes" />
-          <StyledButton type="submit">Create</StyledButton>
-        </fetcher.Form>
-      </StyledForm>
+      <CreateTaskForm lists={lists} />
     </section>
   );
 }

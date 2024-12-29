@@ -68,8 +68,19 @@ const StyledCalloutContent = styled.div<{
 }>`
   --offset: 0.5rem;
   --arrow-size: calc(var(--offset) + 0.1rem);
+
   position: absolute;
   display: ${(props) => (props.isOpen ? "flex" : "none")};
+  padding: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  color: var(--color-white);
+  transition: all 0.3s ease-in-out;
+  z-index: 999;
+  width: max-content;
+  gap: 0.5rem;
+
   ${(props) => {
     switch (props.direction) {
       case "top":
@@ -140,19 +151,6 @@ const StyledCalloutContent = styled.div<{
       }
     }}
   }
-
-  padding: 0.5rem;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  background: rgb(0, 0, 0);
-  border-radius: 5px;
-  box-shadow: 0 2px 4px 3px rgba(0, 0, 0, 0.5);
-  border: 1px solid white;
-  color: white;
-  transition: all 0.3s ease-in-out;
-  z-index: 999;
-  width: max-content;
 `;
 
 export const CalloutContent = ({
@@ -238,16 +236,17 @@ export const CalloutContent = ({
 };
 
 const StyledCalloutAction = styled.button`
-  background: transparent;
+  background: var(--color-black);
+  box-shadow: 0 2px 4px 3px rgba(0, 0, 0, 0.5);
   border: none;
   cursor: pointer;
-  color: white;
+  color: var(--color-white);
   font-size: 1rem;
   transition: color 0.2s ease-in-out;
   width: 100%;
   text-align: left;
-  border-top: 1px solid white;
-  padding: 1rem 0.5rem;
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -258,12 +257,8 @@ const StyledCalloutAction = styled.button`
     width: 1rem;
   }
 
-  &:first-of-type {
-    border-top: none;
-  }
-
   &:hover {
-    color: gold;
+    color: var(--accent-color);
   }
 `;
 

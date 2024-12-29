@@ -1,5 +1,4 @@
-import { useLoaderData, useActionData, NavLink } from "@remix-run/react";
-import { useEffect, useRef } from "react";
+import { useLoaderData, NavLink } from "@remix-run/react";
 import { LoaderFunctionArgs } from "@remix-run/node";
 import { getListsWithTasks, TaskListWithTasks } from "~/services/task.server";
 import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
@@ -7,23 +6,18 @@ import { FlexContainer } from "~/components/styledParts/FlexContainer";
 import { StyledBigLink } from "~/components/styledParts/Links";
 import { ListBlock } from "~/components/Tasks/ListBlock";
 import { GridContainer } from "~/components/styledParts/GridContainer";
+import { List } from "~/components/Tasks/List";
 
 export const handle = {
   title: "Task Lists",
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return getListsWithTasks(request);
+  return await getListsWithTasks(request);
 };
 
 export default function Tasklist() {
   const lists = useLoaderData<TaskListWithTasks[]>();
-  const actionData = useActionData();
-  const formRef = useRef<HTMLFormElement>(null);
-
-  useEffect(() => {
-    formRef.current?.reset();
-  }, [actionData]);
 
   return (
     <section id="tasklist">
