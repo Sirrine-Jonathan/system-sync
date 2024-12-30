@@ -1,17 +1,17 @@
-import { useState } from "react";
-import type { calendar_v3 } from "googleapis";
-import styled from "@emotion/styled";
-import { NavLink, useNavigate } from "@remix-run/react";
-import { Well } from "../styledParts/Well";
-import { FlexContainer } from "../styledParts/FlexContainer";
+import { useState } from 'react'
+import type { calendar_v3 } from 'googleapis'
+import styled from '@emotion/styled'
+import { NavLink, useLocation, useNavigate } from '@remix-run/react'
+import { Well } from '../styledParts/Well'
+import { FlexContainer } from '../styledParts/FlexContainer'
 import {
-  Callout,
-  CalloutContent,
-  CalloutTrigger,
-  CalloutAction,
-} from "../Callout";
-import { DeleteEventConfirmation } from "./DeleteEventConfirmation";
-import { Strikethrough } from "../styledParts/Text";
+    Callout,
+    CalloutContent,
+    CalloutTrigger,
+    CalloutAction,
+} from '../Callout'
+import { DeleteEventConfirmation } from './DeleteEventConfirmation'
+import { Strikethrough } from '../styledParts/Text'
 
 const StyledEvent = styled(Well)<{ past: boolean }>`
   position: relative;
@@ -69,140 +69,154 @@ const StyledEvent = styled(Well)<{ past: boolean }>`
     top: 5px;
     right: 5px;
   }
-`;
+`
 
 const StyledDetails = styled.div`
-  margin-top: 1rem;
-  a {
-    color: var(--color-white);
-    word-break: break-all;
+    margin-top: 1rem;
+    a {
+        color: var(--color-white);
+        word-break: break-all;
 
-    &:hover {
-      color: var(--accent-color);
-    }
+        &:hover {
+            color: var(--accent-color);
+        }
 
-    img {
-      margin-left: 0.5rem;
-      width: 1rem;
+        img {
+            margin-left: 0.5rem;
+            width: 1rem;
+        }
     }
-  }
-`;
+`
 
 export const Event = ({
-  event,
-  expanded = false,
-  skipDate = false,
-  calloutDirection = "top",
+    event,
+    expanded = false,
+    skipDate = false,
+    calloutDirection = 'top',
 }: {
-  event: calendar_v3.Schema$Event;
-  expanded?: boolean;
-  skipDate?: boolean;
-  calloutDirection?: "top" | "bottom" | "left" | "right";
+    event: calendar_v3.Schema$Event
+    expanded?: boolean
+    skipDate?: boolean
+    calloutDirection?: 'top' | 'bottom' | 'left' | 'right'
 }) => {
-  const navigate = useNavigate();
-  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
-    useState(false);
+    const location = useLocation()
+    const navigate = useNavigate()
+    const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
+        useState(false)
 
-  let start = new Date(event.start?.dateTime || "");
-  let end = new Date(event.end?.dateTime || "");
+    let start = new Date(event.start?.dateTime || '')
+    let end = new Date(event.end?.dateTime || '')
 
-  if (start.toString() === "Invalid Date") {
-    start = new Date(event.start?.date || "");
-  }
-  if (end.toString() === "Invalid Date") {
-    end = new Date(event.end?.date || "");
-  }
+    if (start.toString() === 'Invalid Date') {
+        start = new Date(event.start?.date || '')
+    }
+    if (end.toString() === 'Invalid Date') {
+        end = new Date(event.end?.date || '')
+    }
 
-  const isAllDay = start.toLocaleDateString() === end.toLocaleDateString();
+    const isAllDay = start.toLocaleDateString() === end.toLocaleDateString()
 
-  const days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
-  const months = [
-    "jan",
-    "feb",
-    "mar",
-    "apr",
-    "may",
-    "jun",
-    "jul",
-    "aug",
-    "sep",
-    "oct",
-    "nov",
-    "dec",
-  ];
-  const startDay = days[start.getDay()];
-  const startMonth = months[start.getMonth()];
+    const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+    const months = [
+        'jan',
+        'feb',
+        'mar',
+        'apr',
+        'may',
+        'jun',
+        'jul',
+        'aug',
+        'sep',
+        'oct',
+        'nov',
+        'dec',
+    ]
+    const startDay = days[start.getDay()]
+    const startMonth = months[start.getMonth()]
 
-  const isPastDate = end < new Date();
+    const isPastDate = end < new Date()
 
-  return (
-    <StyledEvent className={`event ${startDay}`} past={isPastDate}>
-      <DeleteEventConfirmation
-        isOpen={isDeleteConfirmModalOpen}
-        setIsOpen={setIsDeleteConfirmModalOpen}
-        event={event}
-      />
-      <FlexContainer
-        justifyContent="space-between"
-        alignItems="center"
-        className="eventHeader"
-      >
-        <div className="timeDetails">
-          {!skipDate && (
-            <p className="date">
-              {[
-                startDay?.toLocaleUpperCase(),
-                startMonth?.toLocaleUpperCase(),
-                start.getDate(),
-              ]
-                .filter(Boolean)
-                .join(" ")}
-            </p>
-          )}
+    return (
+        <StyledEvent className={`event ${startDay}`} past={isPastDate}>
+            <DeleteEventConfirmation
+                isOpen={isDeleteConfirmModalOpen}
+                setIsOpen={setIsDeleteConfirmModalOpen}
+                event={event}
+            />
+            <FlexContainer
+                justifyContent="space-between"
+                alignItems="center"
+                className="eventHeader"
+            >
+                <div className="timeDetails">
+                    {!skipDate && (
+                        <p className="date">
+                            {[
+                                startDay?.toLocaleUpperCase(),
+                                startMonth?.toLocaleUpperCase(),
+                                start.getDate(),
+                            ]
+                                .filter(Boolean)
+                                .join(' ')}
+                        </p>
+                    )}
 
-          <p className="time">
-            {isAllDay
-              ? [start.toLocaleTimeString(), end.toLocaleTimeString()].join(
-                  " - "
-                )
-              : "All day"}
-          </p>
-        </div>
-        <Callout>
-          <CalloutTrigger>
-            <img src="/icons/menu.svg" alt="" />
-          </CalloutTrigger>
-          <CalloutContent preferredDirection={calloutDirection || "top"}>
-            <CalloutAction onClick={() => setIsDeleteConfirmModalOpen(true)}>
-              <img src="/icons/delete.svg" alt="" />
-              Delete
-            </CalloutAction>
-            <CalloutAction onClick={() => navigate(`/event/${event.id}/edit`)}>
-              <img src="/icons/edit.svg" alt="" />
-              Edit
-            </CalloutAction>
-          </CalloutContent>
-        </Callout>
-      </FlexContainer>
-      <NavLink to={`/event/${event.id}`} className="summary">
-        {isPastDate && <Strikethrough>{event.summary}</Strikethrough>}
-        {!isPastDate && event.summary}
-      </NavLink>
-      {expanded && (
-        <>
-          <StyledDetails
-            dangerouslySetInnerHTML={{ __html: event.description || "" }}
-          />
-          <StyledDetails>
-            {event.htmlLink && (
-              <a href={event.htmlLink}>
-                View on Google Calendar{" "}
-                <img src="/icons/external-link.svg" alt="" />
-              </a>
+                    <p className="time">
+                        {isAllDay
+                            ? [
+                                  start.toLocaleTimeString(),
+                                  end.toLocaleTimeString(),
+                              ].join(' - ')
+                            : 'All day'}
+                    </p>
+                </div>
+                <Callout>
+                    <CalloutTrigger>
+                        <img src="/icons/menu.svg" alt="" />
+                    </CalloutTrigger>
+                    <CalloutContent
+                        preferredDirection={calloutDirection || 'top'}
+                    >
+                        <CalloutAction
+                            onClick={() => setIsDeleteConfirmModalOpen(true)}
+                        >
+                            <img src="/icons/delete.svg" alt="" />
+                            Delete
+                        </CalloutAction>
+                        <CalloutAction
+                            onClick={() => navigate(`/event/${event.id}/edit`)}
+                        >
+                            <img src="/icons/edit.svg" alt="" />
+                            Edit
+                        </CalloutAction>
+                    </CalloutContent>
+                </Callout>
+            </FlexContainer>
+            <NavLink
+                to={`/event/${event.id}`}
+                className="summary"
+                state={{ returnUrl: location.pathname }}
+            >
+                {isPastDate && <Strikethrough>{event.summary}</Strikethrough>}
+                {!isPastDate && event.summary}
+            </NavLink>
+            {expanded && (
+                <>
+                    <StyledDetails
+                        dangerouslySetInnerHTML={{
+                            __html: event.description || '',
+                        }}
+                    />
+                    <StyledDetails>
+                        {event.htmlLink && (
+                            <a href={event.htmlLink}>
+                                View on Google Calendar{' '}
+                                <img src="/icons/external-link.svg" alt="" />
+                            </a>
+                        )}
+                    </StyledDetails>
+                </>
             )}
-          </StyledDetails>
-        </>
-      )}
-    </StyledEvent>
-  );
-};
+        </StyledEvent>
+    )
+}

@@ -1,7 +1,7 @@
 export const handle = {
-  title: "Settings",
-};
+    title: 'Settings',
+}
 
 export default function Settings() {
-  return <section id="settings"></section>;
+    return <section id="settings"></section>
 }

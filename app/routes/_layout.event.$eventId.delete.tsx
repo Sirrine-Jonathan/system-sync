@@ -1,13 +1,13 @@
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { deleteEvent } from "~/services/event.server";
+import { ActionFunctionArgs, redirect } from '@remix-run/node'
+import { deleteEvent } from '~/services/event.server'
 export const action = async ({ request, params }: ActionFunctionArgs) => {
-  const { eventId } = params;
+    const { eventId } = params
 
-  if (!eventId) {
-    return null;
-  }
+    if (!eventId) {
+        return null
+    }
 
-  await deleteEvent(request, { eventId });
+    await deleteEvent(request, { eventId })
 
-  return redirect(`/calendar`);
-};
+    return redirect(`/calendar`)
+}

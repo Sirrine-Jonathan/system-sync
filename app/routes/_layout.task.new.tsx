@@ -1,13 +1,13 @@
 export const loader = async () => {
-  return null;
-};
+    return null
+}
 
 export const action = async () => {
-  return null;
-};
+    return null
+}
 
 const NewTaskDefaultList = () => {
-  return null;
-};
+    return null
+}
 
-export default NewTaskDefaultList;
+export default NewTaskDefaultList

@@ -1,7 +1,7 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 
 export const DesktopOnly = styled.span`
-  @media (max-width: 767px) {
-    display: none;
-  }
-`;
+    @media (max-width: 767px) {
+        display: none;
+    }
+`

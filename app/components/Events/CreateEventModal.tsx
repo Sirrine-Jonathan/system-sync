@@ -1,19 +1,18 @@
-import { Modal, ModalHeader } from "../Modal";
-import { CreateEventForm } from "./CreateEventForm";
+import { Modal } from '../Modal'
+import { CreateEventForm } from './CreateEventForm'
 
 export const CreateEventModal = ({
-  isOpen,
-  setIsOpen,
+    isOpen,
+    setIsOpen,
+    defaultStart,
 }: {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+    isOpen: boolean
+    setIsOpen: (isOpen: boolean) => void
+    defaultStart?: Date | null
 }) => {
-  return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <ModalHeader>
-        <div className="modalTitle">Create Event</div>
-      </ModalHeader>
-      <CreateEventForm />
-    </Modal>
-  );
-};
+    return (
+        <Modal isOpen={isOpen} setIsOpen={setIsOpen} title="Create Event">
+            <CreateEventForm defaultStart={defaultStart} />
+        </Modal>
+    )
+}

@@ -5,4 +5,4 @@ export const Base = `
 	padding: 0.5rem 1rem;
 	color: var(--color-white);
 	cursor: pointer;
-`;
+`

@@ -1,104 +1,109 @@
 import {
-  Links,
-  Meta,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-} from "@remix-run/react";
-import { useContext, useEffect, useRef } from "react";
-import type { LinksFunction } from "@remix-run/node";
-import { withEmotionCache, Global } from "@emotion/react";
+    Links,
+    Meta,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+} from '@remix-run/react'
+import { useContext, useEffect, useRef } from 'react'
+import type { LinksFunction } from '@remix-run/node'
+import { withEmotionCache, Global } from '@emotion/react'
 
-import ClientStyleContext from "~/styles/client.context";
-import ServerStyleContext from "~/styles/server.context";
+import ClientStyleContext from '~/styles/client.context'
+import ServerStyleContext from '~/styles/server.context'
 
 export const links: LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-  {
-    rel: "icon",
-    href: "/favicon.ico",
-    type: "image/x-icon",
-  },
-];
+    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+    {
+        rel: 'preconnect',
+        href: 'https://fonts.gstatic.com',
+        crossOrigin: 'anonymous',
+    },
+    {
+        rel: 'stylesheet',
+        href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
+    },
+    {
+        rel: 'icon',
+        href: '/images/logo.png',
+        type: 'image/png',
+    },
+]
 
 interface DocumentProps {
-  children: React.ReactNode;
-  title?: string;
+    children: React.ReactNode
+    title?: string
 }
 
 const Document = withEmotionCache(
-  ({ children, title }: DocumentProps, emotionCache) => {
-    const serverStyleData = useContext(ServerStyleContext);
-    const clientStyleData = useContext(ClientStyleContext);
-    const reinjectStylesRef = useRef(true);
-    // Only executed on client
-    // When a top level ErrorBoundary or CatchBoundary are rendered,
-    // the document head gets removed, so we have to create the style tags
-    useEffect(() => {
-      if (!reinjectStylesRef.current) {
-        return;
-      }
-      // re-link sheet container
-      emotionCache.sheet.container = document.head;
+    ({ children, title }: DocumentProps, emotionCache) => {
+        const serverStyleData = useContext(ServerStyleContext)
+        const clientStyleData = useContext(ClientStyleContext)
+        const reinjectStylesRef = useRef(true)
+        // Only executed on client
+        // When a top level ErrorBoundary or CatchBoundary are rendered,
+        // the document head gets removed, so we have to create the style tags
+        useEffect(() => {
+            if (!reinjectStylesRef.current) {
+                return
+            }
+            // re-link sheet container
+            emotionCache.sheet.container = document.head
 
-      // re-inject tags
-      const tags = emotionCache.sheet.tags;
-      emotionCache.sheet.flush();
-      tags.forEach((tag) => {
-        emotionCache.sheet._insertTag(tag);
-      });
+            // re-inject tags
+            const tags = emotionCache.sheet.tags
+            emotionCache.sheet.flush()
+            tags.forEach((tag) => {
+                emotionCache.sheet._insertTag(tag)
+            })
 
-      // reset cache to re-apply global styles
-      clientStyleData.reset();
-      // ensure we only do this once per mount
-      reinjectStylesRef.current = false;
-    }, [clientStyleData, emotionCache.sheet]);
+            // reset cache to re-apply global styles
+            clientStyleData.reset()
+            // ensure we only do this once per mount
+            reinjectStylesRef.current = false
+        }, [clientStyleData, emotionCache.sheet])
 
-    return (
-      <html lang="en">
-        <head>
-          {title ? <title>{title}</title> : null}
-          <meta charSet="utf-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <Meta />
-          <Links />
-          {serverStyleData?.map(({ key, ids, css }) => (
-            <style
-              key={key}
-              data-emotion={`${key} ${ids.join(" ")}`}
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: css }}
-            />
-          ))}
-          <link rel="manifest" href="/manifest.json"></link>
-        </head>
-        <body>
-          {children}
-          <ScrollRestoration />
-          <Scripts />
-        </body>
-      </html>
-    );
-  }
-);
+        return (
+            <html lang="en">
+                <head>
+                    {title ? <title>{title}</title> : null}
+                    <meta charSet="utf-8" />
+                    <meta
+                        name="viewport"
+                        content="width=device-width, initial-scale=1"
+                    />
+                    <Meta />
+                    <Links />
+                    {serverStyleData?.map(({ key, ids, css }) => (
+                        <style
+                            key={key}
+                            data-emotion={`${key} ${ids.join(' ')}`}
+                            // eslint-disable-next-line react/no-danger
+                            dangerouslySetInnerHTML={{ __html: css }}
+                        />
+                    ))}
+                    <link rel="manifest" href="/manifest.json"></link>
+                </head>
+                <body>
+                    {children}
+                    <ScrollRestoration />
+                    <Scripts />
+                </body>
+            </html>
+        )
+    }
+)
 
 const globalStyles = `
   :root {
-    --color-black: #111;
-    --color-white: #eee;
-    --primary-bg: rgba(255, 255, 255, 0.1);
-    --secondary-bg:  rgba(0, 0, 0, 0.5);
-    --accent-color: gold;
-    --subtle-color: rgba(255, 255, 255, 0.1);
+    --color-black: #111111;
+    --color-white: #eeeeee;
+    --primary-bg: #e1d2b7;
+    --primary-bg-dark:rgb(29, 27, 23);
+    --secondary-bg:  #3d4c72;
+    --accent-color: #f6b32b;
+    --strong-color: #a04029;
+    --subtle-color: #90a46d;
     --vertical-padding: 0.5rem;
     --horizontal-padding: 0.5rem;
   }
@@ -110,8 +115,8 @@ const globalStyles = `
   }
 
   body {
-    background-color: var(--color-black);
-    background: URL("/images/forest-fog.jpg") no-repeat center center fixed;
+    background-color: var(--primary-bg-dark);
+    // background: URL("/images/forest-fog.jpg") no-repeat center center fixed;
     background-size: cover;
     color: var(--color-white);
     font: 1em "Inter", sans-serif;
@@ -124,7 +129,7 @@ const globalStyles = `
     height: 100%;
   }
 
-  main header, main section {
+  main section {
     padding: var(--vertical-padding) var(--horizontal-padding);
   }
 
@@ -164,13 +169,13 @@ const globalStyles = `
     font-family: "NotoSans";
     src: url("/fonts/Noto_Sans/static/NotoSans-Regular.ttf") format("truetype");
   } 
-`;
+`
 
 export default function App() {
-  return (
-    <Document>
-      <Global styles={globalStyles} />
-      <Outlet />
-    </Document>
-  );
+    return (
+        <Document>
+            <Global styles={globalStyles} />
+            <Outlet />
+        </Document>
+    )
 }

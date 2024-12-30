@@ -1,45 +1,45 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled'
 
 export const Large = styled.span`
-  font-size: 1.8em;
-`;
+    font-size: 1.2rem;
+`
 
 export const Medium = styled.span`
-  font-size: 1.2em;
-`;
+    font-size: 1rem;
+`
 
 export const Small = styled.span`
-  font-size: 0.8em;
-`;
+    font-size: 0.8rem;
+`
 
 export const Highlight = styled.span`
-  font-weight: bold;
-  color: var(--accent-color);
-`;
+    font-weight: bold;
+    color: var(--accent-color);
+`
 
 export const Diminished = styled.span`
-  font-weight: normal;
-  color: #ccc;
-`;
+    font-weight: normal;
+    color: #ccc;
+`
 
 export const Section = styled.section`
-  p {
-    margin: 0 0 1rem 0;
-  }
-`;
+    p {
+        margin: 0 0 1rem 0;
+    }
+`
 
 export const Center = styled.div`
-  text-align: center;
-`;
+    text-align: center;
+`
 
 export const Strikethrough = styled.span`
-  text-decoration: line-through;
-`;
+    text-decoration: line-through;
+`
 
 export const OneLine = styled.div`
-  display: block;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`

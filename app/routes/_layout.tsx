@@ -1,109 +1,109 @@
 import {
-  Outlet,
-  useLoaderData,
-  useRouteError,
-  useMatches,
-} from "@remix-run/react";
-import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
-import { Header, FALLBACK_IMAGE_URL } from "~/components/Nav/Header";
-import { useEffect } from "react";
-import { isValidTimeZone } from "~/utils/time";
-import { SignInButton } from "~/components/Auth/SignInButton";
-import { DesktopNav } from "~/components/Nav/DesktopNav";
-import { getSession } from "~/services/session.server";
-import { StyledIconLink } from "~/components/styledParts/Links";
-import { MobileOnly } from "~/components/styledParts/MobileOnly";
-import { FlexContainer } from "~/components/styledParts/FlexContainer";
+    Outlet,
+    useLoaderData,
+    useRouteError,
+    useMatches,
+} from '@remix-run/react'
+import { redirect, type LoaderFunctionArgs } from '@remix-run/node'
+import { Header, FALLBACK_IMAGE_URL } from '~/components/Nav/Header'
+import { useEffect } from 'react'
+import { isValidTimeZone } from '~/utils/time'
+import { SignInButton } from '~/components/Auth/SignInButton'
+import { DesktopNav } from '~/components/Nav/DesktopNav'
+import { getSession } from '~/services/session.server'
+import { StyledIconLink } from '~/components/styledParts/Links'
+import { MobileOnly } from '~/components/styledParts/MobileOnly'
+import { FlexContainer } from '~/components/styledParts/FlexContainer'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const session = await getSession(request);
+    const session = await getSession(request)
 
-  const user = session.get("user");
+    const user = session.get('user')
 
-  console.log({ userFromSession: user });
+    console.log({ userFromSession: user })
 
-  if (!user) {
-    return redirect("/auth/signin");
-  }
+    if (!user) {
+        return redirect('/auth/signin')
+    }
 
-  return user;
-};
+    return user
+}
 
 export default function Layout() {
-  const user = useLoaderData<ReturnType<typeof loader>>();
+    const user = useLoaderData<ReturnType<typeof loader>>()
 
-  // add timezone to the url
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const url = new URL(window.location.href);
-      const tz = url.searchParams.get("tz");
-      if (tz && isValidTimeZone(tz)) {
-        return;
-      }
+    // add timezone to the url
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const url = new URL(window.location.href)
+            const tz = url.searchParams.get('tz')
+            if (tz && isValidTimeZone(tz)) {
+                return
+            }
 
-      // prefer timezone on user obj if any
-      if (user.timezone && isValidTimeZone(user.timezone)) {
-        url.searchParams.set("tz", user.timezone);
-        window.history.replaceState({}, "", url);
-        return;
-      }
+            // prefer timezone on user obj if any
+            if (user.timezone && isValidTimeZone(user.timezone)) {
+                url.searchParams.set('tz', user.timezone)
+                window.history.replaceState({}, '', url)
+                return
+            }
 
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      url.searchParams.set("tz", timezone);
-      window.history.replaceState({}, "", url);
-    }
-  }, [user.timezone]);
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+            url.searchParams.set('tz', timezone)
+            window.history.replaceState({}, '', url)
+        }
+    }, [user.timezone])
 
-  return (
-    <main className="flex-col">
-      <Header imageUrl={user?.photos?.[0].value || FALLBACK_IMAGE_URL} />
-      <DesktopNav user={user} />
-      <Outlet context={user} />
-    </main>
-  );
+    return (
+        <main className="flex-col">
+            <Header imageUrl={user?.photos?.[0].value || FALLBACK_IMAGE_URL} />
+            <DesktopNav user={user} />
+            <Outlet context={user} />
+        </main>
+    )
 }
 
 export const ErrorBoundary = () => {
-  const error = useRouteError();
-  const matches = useMatches();
-  const leafNode = matches[matches.length - 1];
-  const returnUrl = leafNode.pathname;
+    const error = useRouteError()
+    const matches = useMatches()
+    const leafNode = matches[matches.length - 1]
+    const returnUrl = leafNode.pathname
 
-  let Component = <div></div>;
-  if (
-    (error &&
-      typeof error === "object" &&
-      "message" in error &&
-      error.message === "User not authenticated") ||
-    error.message === "Unauthorized" ||
-    error.message === "Forbidden" ||
-    error.message === "Not Found" ||
-    error.message === "Invalid Credentials"
-  ) {
-    Component = (
-      <section>
-        <FlexContainer gap="1em" justifyContent="center">
-          <SignInButton successRedirect={returnUrl} />
-          <MobileOnly>
-            <StyledIconLink to="/auth/signout">
-              <img src="/icons/signout.svg" alt="" />
-            </StyledIconLink>
-          </MobileOnly>
-        </FlexContainer>
-      </section>
-    );
-  } else {
-    Component = (
-      <section>
-        <p>{error?.message}</p>
-      </section>
-    );
-  }
-  return (
-    <main className="flex-col">
-      <Header />
-      <DesktopNav />
-      {Component}
-    </main>
-  );
-};
+    let Component = <div></div>
+    if (
+        (error &&
+            typeof error === 'object' &&
+            'message' in error &&
+            error.message === 'User not authenticated') ||
+        error.message === 'Unauthorized' ||
+        error.message === 'Forbidden' ||
+        error.message === 'Not Found' ||
+        error.message === 'Invalid Credentials'
+    ) {
+        Component = (
+            <section>
+                <FlexContainer gap="1em" justifyContent="center">
+                    <SignInButton successRedirect={returnUrl} />
+                    <MobileOnly>
+                        <StyledIconLink to="/auth/signout">
+                            <img src="/icons/signout.svg" alt="" />
+                        </StyledIconLink>
+                    </MobileOnly>
+                </FlexContainer>
+            </section>
+        )
+    } else {
+        Component = (
+            <section>
+                <p>{error?.message}</p>
+            </section>
+        )
+    }
+    return (
+        <main className="flex-col">
+            <Header />
+            <DesktopNav />
+            {Component}
+        </main>
+    )
+}

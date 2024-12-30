@@ -1,61 +1,58 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { redirect, json } from "@remix-run/node";
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
-import { authenticator } from "~/services/auth.server";
-import { getListsWithTasks, TaskListWithTasks } from "~/services/task.server";
-import { GridContainer } from "~/components/styledParts/GridContainer";
-import { Breadcrumbs } from "~/components/Nav/Breadcrumbs";
-import { FlexContainer } from "~/components/styledParts/FlexContainer";
-import { TaskBlock } from "~/components/Tasks/TaskBlock";
-import { TaskGrid } from "~/components/Tasks/TaskGrid";
+import type { LoaderFunctionArgs } from '@remix-run/node'
+import { redirect, json } from '@remix-run/node'
+import { NavLink, Outlet, useLoaderData } from '@remix-run/react'
+import { authenticator } from '~/services/auth.server'
+import { getListsWithTasks, TaskListWithTasks } from '~/services/task.server'
+import { Breadcrumbs } from '~/components/Nav/Breadcrumbs'
+import { FlexContainer } from '~/components/styledParts/FlexContainer'
 
 export const handle = {
-  title: "Calendar",
-};
+    title: 'Calendar',
+}
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  authenticator.authenticate("google", request, {
-    failureRedirect: `/auth/signin?redirect=${request.url}`,
-  });
+    authenticator.authenticate('google', request, {
+        failureRedirect: `/auth/signin?redirect=${request.url}`,
+    })
 
-  // look for month day or week after /calendar/ in url path
-  const url = new URL(request.url);
-  const path = url.pathname.split("/");
-  const isCalendarPageWithTime = path.some((pathSegment) => {
-    if (
-      pathSegment === "month" ||
-      pathSegment === "week" ||
-      pathSegment === "day" ||
-      pathSegment === "event" ||
-      pathSegment === "events"
-    ) {
-      return true;
+    // look for month day or week after /calendar/ in url path
+    const url = new URL(request.url)
+    const path = url.pathname.split('/')
+    const isCalendarPageWithTime = path.some((pathSegment) => {
+        if (
+            pathSegment === 'month' ||
+            pathSegment === 'week' ||
+            pathSegment === 'day' ||
+            pathSegment === 'event' ||
+            pathSegment === 'events'
+        ) {
+            return true
+        }
+        return false
+    })
+
+    if (isCalendarPageWithTime) {
+        return json(await getListsWithTasks(request))
     }
-    return false;
-  });
 
-  if (isCalendarPageWithTime) {
-    return json(await getListsWithTasks(request));
-  }
-
-  return redirect("/calendar/month");
-};
+    return redirect('/calendar/month')
+}
 
 export default function Calendar() {
-  useLoaderData<TaskListWithTasks[]>();
+    useLoaderData<TaskListWithTasks[]>()
 
-  return (
-    <section>
-      <Breadcrumbs>
-        <NavLink to="/">Dashboard</NavLink>
-        <NavLink to="/calendar">Calendar</NavLink>
-        <FlexContainer gap="1em">
-          <NavLink to="/calendar/month">Month</NavLink>
-          <NavLink to="/calendar/week">Week</NavLink>
-          <NavLink to="/calendar/day">Day</NavLink>
-        </FlexContainer>
-      </Breadcrumbs>
-      <Outlet />
-    </section>
-  );
+    return (
+        <section>
+            <Breadcrumbs>
+                <NavLink to="/">Dashboard</NavLink>
+                <NavLink to="/calendar">Calendar</NavLink>
+                <FlexContainer gap="1em">
+                    <NavLink to="/calendar/month">Month</NavLink>
+                    <NavLink to="/calendar/week">Week</NavLink>
+                    <NavLink to="/calendar/day">Day</NavLink>
+                </FlexContainer>
+            </Breadcrumbs>
+            <Outlet />
+        </section>
+    )
 }

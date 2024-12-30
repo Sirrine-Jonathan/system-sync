@@ -1,119 +1,123 @@
-import { getSession } from "./session.server";
-import { google, calendar_v3 } from "googleapis";
+import { getSession } from './session.server'
+import { google, calendar_v3 } from 'googleapis'
 
 const getService = async (request: Request) => {
-  // Get session and access token
-  const session = await getSession(request);
-  const accessToken = session.get("accessToken");
+    // Get session and access token
+    const session = await getSession(request)
+    const accessToken = session.get('accessToken')
+    const refreshToken = session.get('refreshToken')
 
-  if (!accessToken) throw new Error("User not authenticated");
+    if (!accessToken) throw new Error('User not authenticated')
 
-  console.log("accessToken", accessToken);
+    console.log('accessToken', accessToken)
 
-  // Set up the OAuth2 client with access token
-  const oauth2Client = new google.auth.OAuth2();
-  oauth2Client.setCredentials({ access_token: accessToken });
+    // Set up the OAuth2 client with access token
+    const oauth2Client = new google.auth.OAuth2()
+    oauth2Client.setCredentials({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+    })
 
-  // Initialize Google Calendar API client
-  return google.calendar({ version: "v3", auth: oauth2Client });
-};
+    // Initialize Google Calendar API client
+    return google.calendar({ version: 'v3', auth: oauth2Client })
+}
 
 export const createEvent = async (
-  request: Request,
-  resource: calendar_v3.Schema$Event
+    request: Request,
+    resource: calendar_v3.Schema$Event
 ) => {
-  // Initialize Google Calendar API client
-  const googleService = await getService(request);
+    // Initialize Google Calendar API client
+    const googleService = await getService(request)
 
-  const response = await googleService.events.insert({
-    calendarId: "primary",
-    resource,
-  });
+    const response = await googleService.events.insert({
+        calendarId: 'primary',
+        resource,
+    })
 
-  return response.data;
-};
+    return response.data
+}
 
 export const updateEvent = async (
-  request: Request,
-  patch: calendar_v3.Schema$Event
+    request: Request,
+    patch: calendar_v3.Schema$Event
 ) => {
-  if (!patch.id) {
-    throw new Error("Event ID is required");
-  }
-  const eventId = patch.id;
-  delete patch.id;
+    if (!patch.id) {
+        throw new Error('Event ID is required')
+    }
+    const eventId = patch.id
+    delete patch.id
 
-  const googleService = await getService(request);
+    const googleService = await getService(request)
 
-  const event = await getEvent(request, { eventId });
+    const event = await getEvent(request, { eventId })
 
-  const resource = {
-    ...event,
-    ...patch,
-  };
+    const resource = {
+        ...event,
+        ...patch,
+    }
 
-  const response = await googleService.events.update({
-    calendarId: "primary",
-    eventId,
-    resource,
-  });
+    const response = await googleService.events.update({
+        calendarId: 'primary',
+        eventId,
+        resource,
+    })
 
-  return response.data;
-};
+    return response.data
+}
 
 export const getEvents = async (
-  request: Request,
-  options: {
-    timeMin?: string;
-    timeMax?: string;
-    maxResults?: number;
-    singleEvents?: boolean;
-    orderBy?: string;
-  }
+    request: Request,
+    options: {
+        timeMin?: string
+        timeMax?: string
+        maxResults?: number
+        singleEvents?: boolean
+        orderBy?: string
+    }
 ) => {
-  const googleService = await getService(request);
+    const googleService = await getService(request)
 
-  // Fetch primary calendar events
-  const response = await googleService.events.list({
-    calendarId: "primary",
-    timeMin: options.timeMin,
-    timeMax: options.timeMax,
-    maxResults: options.maxResults,
-    singleEvents: options.singleEvents,
-    orderBy: options.orderBy,
-  });
+    // Fetch primary calendar events
+    const response = await googleService.events.list({
+        calendarId: 'primary',
+        timeMin: options.timeMin,
+        timeMax: options.timeMax,
+        maxResults: options.maxResults,
+        singleEvents: options.singleEvents,
+        orderBy: options.orderBy,
+    })
 
-  return response.data.items; // These are the user’s calendar events
-};
+    return response.data.items // These are the user’s calendar events
+}
 
 export const getEvent = async (
-  request: Request,
-  options: { eventId: string }
+    request: Request,
+    options: { eventId: string }
 ) => {
-  const { eventId } = options;
+    const { eventId } = options
 
-  const googleService = await getService(request);
+    const googleService = await getService(request)
 
-  const response = await googleService.events.get({
-    calendarId: "primary",
-    eventId,
-  });
+    const response = await googleService.events.get({
+        calendarId: 'primary',
+        eventId,
+    })
 
-  return response.data;
-};
+    return response.data
+}
 
 export const deleteEvent = async (
-  request: Request,
-  options: { eventId: string }
+    request: Request,
+    options: { eventId: string }
 ) => {
-  const { eventId } = options;
+    const { eventId } = options
 
-  const googleService = await getService(request);
+    const googleService = await getService(request)
 
-  const response = await googleService.events.delete({
-    calendarId: "primary",
-    eventId,
-  });
+    const response = await googleService.events.delete({
+        calendarId: 'primary',
+        eventId,
+    })
 
-  return response.data;
-};
+    return response.data
+}
