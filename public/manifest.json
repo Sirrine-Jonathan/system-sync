@@ -8,10 +8,10 @@
             "sizes": "1024x1024"
         }
     ],
-    "background_color": "#111",
+    "background_color": "#e1d2b7",
     "display": "standalone",
     "scope": "/",
-    "theme_color": "#ffd602",
+    "theme_color": "#a04029",
     "description": "System Sync helps you align your life goals with your tasks, habits, and calendar events.",
     "start_url": "/",
     "id": "com.systemsync.app",
