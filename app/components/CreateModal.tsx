@@ -17,7 +17,7 @@ export const CreateModal = ({
     lists?: tasks_v1.Schema$TaskList[]
     defaultStart?: Date | null
 }) => {
-    const [createType, setCreateType] = useState<'event' | 'task'>('event')
+    const [createType, setCreateType] = useState<'event' | 'task'>('task')
 
     const createTypeTitleMap = {
         event: 'Event',
@@ -35,17 +35,17 @@ export const CreateModal = ({
         >
             <FlexContainer justifyContent="center" gap="1em" padding="1em">
                 <StyledButton
-                    onClick={() => setCreateType('event')}
-                    context={createType === 'event' ? 'attention' : undefined}
-                >
-                    Event
-                </StyledButton>
-                <div>or</div>
-                <StyledButton
                     onClick={() => setCreateType('task')}
                     context={createType === 'task' ? 'attention' : undefined}
                 >
                     Task
+                </StyledButton>
+                <div>or</div>
+                <StyledButton
+                    onClick={() => setCreateType('event')}
+                    context={createType === 'event' ? 'attention' : undefined}
+                >
+                    Event
                 </StyledButton>
             </FlexContainer>
 

@@ -1,5 +1,5 @@
 import { type ActionFunctionArgs, redirect } from '@remix-run/node'
-import { useFetcher, NavLink } from '@remix-run/react'
+import { useFetcher, NavLink, useSearchParams } from '@remix-run/react'
 import { StyledForm } from '~/components/styledParts/Form'
 import { Breadcrumbs } from '~/components/Nav/Breadcrumbs'
 import { createTaskList } from '~/services/task.server'
@@ -23,6 +23,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AddTask() {
     const fetcher = useFetcher()
+    const [params] = useSearchParams()
 
     return (
         <section>
@@ -35,7 +36,11 @@ export default function AddTask() {
             </Breadcrumbs>
             <h2>Create a new task list</h2>
             <StyledForm state={fetcher.state}>
-                <fetcher.Form method="post" action="/tasklists/new">
+                <fetcher.Form
+                    method="post"
+                    action="/tasklists/new"
+                    defaultTask={params.get('listId')}
+                >
                     <label htmlFor="title">Title</label>
                     <input id="title" type="text" name="title" />
                     <button type="submit">Create</button>

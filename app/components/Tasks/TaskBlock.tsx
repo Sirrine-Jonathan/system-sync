@@ -14,10 +14,16 @@ export const TaskBlock = ({ task }: { task: TaskWithListTitle }) => {
                 gap="1em"
                 fullHeight
             >
-                <StyledLink to={`/tasklists/${task.listId}/task/${task.id}`}>
-                    {task.title.length > 30
-                        ? task.title.slice(0, 30) + '...'
-                        : task.title}
+                <StyledLink
+                    to={`/tasklists/${task.listId}/task/${task.id}`}
+                    style={{
+                        maxWidth: '100%',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                    title={task.title || ''}
+                >
+                    {task.title}
                 </StyledLink>
                 <OneLine>
                     <StyledLink to={`/tasklists/${task.listId}`}>

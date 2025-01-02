@@ -17,12 +17,14 @@ export const CreateTaskForm = ({
     lists,
     onSubmit,
     defaultStart,
+    defaultListId,
 }: {
     lists?: tasks_v1.Schema$TaskList[]
     onSubmit?: () => void
     defaultStart?: Date | null
+    defaultListId?: tasks_v1.Schema$TaskList['id']
 }) => {
-    const [listId, setListId] = useState('')
+    const [listId, setListId] = useState(defaultListId || '')
     const fetcher = useFetcher()
     const { tzFromUrl } = useTimezone()
 
@@ -58,12 +60,17 @@ export const CreateTaskForm = ({
                             name="listId"
                             onChange={(e) => setListId(e.target.value)}
                             required
+                            defaultValue={defaultListId || ''}
                         >
                             <option value="">Select a list</option>
                             {lists
                                 .filter((list) => Boolean(list.id))
                                 .map((list) => (
-                                    <option key={list.id} value={list.id}>
+                                    <option
+                                        key={list.id}
+                                        value={list.id}
+                                        selected={list.id === defaultListId}
+                                    >
                                         {list.title}
                                     </option>
                                 ))}

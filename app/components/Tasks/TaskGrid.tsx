@@ -130,7 +130,7 @@ export const TaskGrid = ({
                 </FlexContainer>
             </StyledForm>
             {expanded && (
-                <div>
+                <>
                     {fetcher.state === 'loading' && <Loading />}
                     {fetcher.state === 'idle' && noResults && <None />}
                     {fetcher.state === 'idle' && !noResults && (
@@ -146,7 +146,7 @@ export const TaskGrid = ({
                                 )}
                         </GridContainer>
                     )}
-                </div>
+                </>
             )}
         </>
     )
@@ -157,8 +157,10 @@ const MiddleDisplay = ({ children }: { children: React.ReactNode }) => {
         <FlexContainer
             gap="1em"
             justifyContent="center"
-            fullWidth
             alignItems="center"
+            fullWidth
+            fullHeight
+            padding="2em 0"
         >
             {children}
         </FlexContainer>

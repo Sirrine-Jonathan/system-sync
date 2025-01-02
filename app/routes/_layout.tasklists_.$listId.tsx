@@ -32,17 +32,27 @@ export default function ViewTask() {
         <section>
             <Breadcrumbs
                 actions={[
-                    <StyledIconLink to={`/tasklists/${list.id}/delete`}>
-                        <span>Delete List</span>
-                        <img src="/icons/delete.svg" alt="" />
-                    </StyledIconLink>,
-                    <StyledIconLink to={`/tasklists/${list.id}/edit`}>
+                    <StyledIconLink
+                        key="edit"
+                        to={`/tasklists/${list.id}/edit`}
+                    >
                         <span>Edit List</span>
                         <img src="/icons/edit.svg" alt="" />
                     </StyledIconLink>,
-                    <StyledIconLink to={`/tasklists/${list.id}/new`}>
+                    <StyledIconLink
+                        key="create"
+                        to={`/tasklists/${list.id}/new?listId=${list.id}`}
+                    >
                         <span>Create Task</span>
                         <img src="/icons/plus.svg" alt="" />
+                    </StyledIconLink>,
+                    <StyledIconLink
+                        key="delete"
+                        to={`/tasklists/${list.id}/delete`}
+                        context="danger"
+                    >
+                        <span>Delete List</span>
+                        <img src="/icons/delete.svg" alt="" />
                     </StyledIconLink>,
                 ]}
             >

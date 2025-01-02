@@ -9,7 +9,7 @@ export const Medium = styled.span`
 `
 
 export const Small = styled.span`
-    font-size: 0.8rem;
+    font-size: 0.7rem;
 `
 
 export const Highlight = styled.span`
@@ -19,7 +19,7 @@ export const Highlight = styled.span`
 
 export const Diminished = styled.span`
     font-weight: normal;
-    color: #ccc;
+    color: rgb(177, 177, 177);
 `
 
 export const Section = styled.section`

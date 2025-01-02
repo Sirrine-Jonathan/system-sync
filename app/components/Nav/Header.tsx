@@ -63,13 +63,14 @@ const StyledHeader = styled.header`
         z-index: 1;
         height: 100%;
         box-sizing: border-box;
+        padding: 1rem;
 
         ul {
             padding: 0;
             margin: 0;
 
             li {
-                margin: 0.5em 0;
+                margin: 1em 0;
                 list-style: none;
                 font-size: 1rem;
                 display: flex;

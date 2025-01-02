@@ -44,7 +44,7 @@ export default function NewTask() {
                 <NavLink to={`/tasklists/${listId}`}>{listName}</NavLink>
                 <span>New Task</span>
             </Breadcrumbs>
-            <CreateTaskForm lists={lists} />
+            <CreateTaskForm lists={lists} defaultListId={listId} />
         </section>
     )
 }

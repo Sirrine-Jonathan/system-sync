@@ -82,7 +82,8 @@ export const StyledIconLink = styled(NavLink)<{
   justify-content: center;
   border: none;
   cursor: pointer;
-  
+  min-width: var(--size);
+  box-sizing: border-box;
   border-radius: 5rem;
   box-sizing: border-box;
   text-decoration: none;

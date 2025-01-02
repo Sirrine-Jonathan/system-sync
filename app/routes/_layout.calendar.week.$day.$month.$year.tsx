@@ -111,14 +111,13 @@ export default function Calendar() {
             </StyledCalenderHeader>
             <StyledWeek>
                 {Array.from({ length: 7 }, (_, i) => {
-                    const date = addDayToDate(weekMin, i)
                     return (
                         <StyledDay key={i} gridColumnStart={i + 1}>
                             <div className="dayHeader">
                                 <span>{daysOfTheWeek[i]}</span>
                                 {' | '}
                                 <span>
-                                    {addDayToDate(weekMin, i + 1).getDate()}
+                                    {addDayToDate(weekMin, i).getDate()}
                                 </span>
                             </div>
                             {eventsWithStartDate

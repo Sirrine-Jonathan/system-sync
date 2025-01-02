@@ -46,7 +46,7 @@ export const List = ({
     taskList: TaskListWithTasks
     children: React.ReactNode
 }) => {
-    const [isOpen, setIsOpen] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
         <Well>

@@ -1,5 +1,4 @@
 import { FlexContainer } from '../styledParts/FlexContainer'
-import { useIsSignedIn } from '~/hooks/useIsSignedIn'
 import styled from '@emotion/styled'
 
 const StyledLink = styled.a`
@@ -13,12 +12,6 @@ const StyledLink = styled.a`
 `
 
 export const SignOutButton = () => {
-    const isSignedIn = useIsSignedIn()
-
-    if (!isSignedIn) {
-        return null
-    }
-
     return (
         <StyledLink href="/auth/signout">
             <FlexContainer justifyContent="space-between" alignItems="center">

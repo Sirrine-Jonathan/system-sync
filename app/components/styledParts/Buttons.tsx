@@ -89,6 +89,7 @@ export const StyledIconButton = styled.button<{
   cursor: pointer;
   border-radius: 5rem;
   box-sizing: border-box;
+  min-width: var(--size);
 
   ${({ size }) => {
       switch (size) {
