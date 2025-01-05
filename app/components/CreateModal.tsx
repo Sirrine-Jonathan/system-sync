@@ -158,13 +158,19 @@ export const CreateModal = ({
 }
 
 export const CreateModalButton = ({
+    children,
     lists,
     defaultTaskId,
     defaultStart,
+    context,
+    size,
 }: {
+    children?: React.ReactNode
     lists?: tasks_v1.Schema$TaskList[]
     defaultTaskId?: tasks_v1.Schema$Task['id']
     defaultStart?: Date | null
+    context?: 'standard' | 'danger' | 'warning' | 'transparent' | 'attention'
+    size?: 'small' | 'normal' | 'large'
 }) => {
     const { setIsCreateModalOpen } = useCreateModalContext()
     return (
@@ -177,10 +183,11 @@ export const CreateModalButton = ({
                         defaultStart,
                     })
                 }
-                context="attention"
-                size="large"
+                context={context}
+                size={size}
             >
                 <img src="/icons/plus-dark.svg" alt="" />
+                {children}
             </StyledIconButton>
             <CreateModal lists={lists} />
         </>

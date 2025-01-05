@@ -32,6 +32,18 @@ const StyledChart = styled.div`
         width: 100%;
         height: 100%;
     }
+
+    @media (max-width: 767px) {
+        flex-direction: column;
+        gap: 3em;
+
+        .legend {
+            align-self: flex-start;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+    }
 `
 
 const KeyBullet = styled.span<{ backgroundColor: string }>`
@@ -76,11 +88,9 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
     const chartRef = useRef<HTMLDivElement>(null)
     const { device } = useIsMobile()
 
-    let columns = 1
+    let columns = 2
     if (device === 'desktop') {
         columns = 4
-    } else if (device === 'tablet') {
-        columns = 2
     }
 
     const colorAugAmount = 50
@@ -268,6 +278,7 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
             <GridContainer
                 gap="1em"
                 templateColumns={`repeat(${columns}, 1fr)`}
+                className="legend"
             >
                 <FlexContainer flexDirection="column" alignItems="flex-start">
                     <FlexContainer

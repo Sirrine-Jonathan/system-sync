@@ -87,6 +87,7 @@ export const StyledIconLink = styled(NavLink)<{
   border-radius: 5rem;
   box-sizing: border-box;
   text-decoration: none;
+	position: relative;
 
   ${({ size }) => {
       switch (size) {
@@ -127,7 +128,7 @@ export const StyledIconLink = styled(NavLink)<{
   }
 
   @media (max-width: 767px) {
-    span {
+    span:not(.badge) {
       display: none;
     }
   }

@@ -63,67 +63,21 @@ export default function Dashboard() {
                     <FlexContainer
                         justifyContent="space-between"
                         alignItems="center"
-                    >
-                        <FlexContainer
-                            flexDirection="column"
-                            alignItems="flex-start"
-                            gap="1em"
-                        >
-                            <Large>
-                                <Small>Hello, </Small>
-                                {user.displayName}
-                            </Large>
-                            <DateTime />
-                        </FlexContainer>
-                        <CreateModalButton lists={lists} />
-                    </FlexContainer>
-                </Well>
-                <hr />
-                <Well>
-                    <FlexContainer
-                        justifyContent="space-between"
-                        alignItems="center"
                         fullWidth
                     >
-                        <FlexContainer gap="1em">
-                            <StyledIconLink to="/calendar/month">
-                                <img src="/icons/calendar.svg" alt="" />
-                            </StyledIconLink>
-                            {events.length === 0 ? (
-                                <div>You have no events today</div>
-                            ) : (
-                                <div>
-                                    You have {todayEvents.length} event
-                                    {todayEvents.length === 1 ? '' : 's'} today
-                                </div>
-                            )}
-                        </FlexContainer>
-                        <StyledNavLink to="/calendar/month">
-                            <Highlight>View Calendar</Highlight>
-                        </StyledNavLink>
-                    </FlexContainer>
-                    <hr />
-                    <FlexContainer
-                        justifyContent="space-between"
-                        alignItems="center"
-                        fullWidth
-                    >
-                        <FlexContainer gap="1em">
-                            <StyledIconLink to="/tasklists">
-                                <img src="/icons/task.svg" alt="" />
-                            </StyledIconLink>
-                            {numberOfTasks === 0 ? (
-                                <div>You have no tasks</div>
-                            ) : (
-                                <div>
-                                    You have {numberOfTasks} task
-                                    {numberOfTasks === 1 ? '' : 's'}.
-                                </div>
-                            )}
-                        </FlexContainer>
-                        <StyledNavLink to="/tasklists">
-                            <Highlight>View Tasks</Highlight>
-                        </StyledNavLink>
+                        <StyledIconLink to="/calendar/month">
+                            <img src="/icons/calendar.svg" alt="" />
+                            <span className="badge">
+                                Events ({todayEvents.length})
+                            </span>
+                        </StyledIconLink>
+                        <StyledIconLink to="/tasklists">
+                            <img src="/icons/task.svg" alt="" />
+                            <span className="badge">
+                                Tasks ({numberOfTasks})
+                            </span>
+                        </StyledIconLink>
+                        <CreateModalButton lists={lists} context="attention" />
                     </FlexContainer>
                 </Well>
                 <hr />
