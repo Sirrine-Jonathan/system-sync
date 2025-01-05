@@ -7,9 +7,15 @@ import {
 import styled from '@emotion/styled'
 import { Diminished, Small, Strikethrough } from '../styledParts/Text'
 import { ToggleTaskCheckbox } from './Toggle'
-import { StyledIconButton } from '../styledParts/Buttons'
 import { DeleteTaskConfirmation } from './DeleteTaskConfirmation'
-import { StyledIconLink, StyledNavLink } from '../styledParts/Links'
+import { StyledNavLink } from '../styledParts/Links'
+import {
+    Callout,
+    CalloutAction,
+    CalloutContent,
+    CalloutTrigger,
+} from '../Callout'
+import { useNavigate } from '@remix-run/react'
 
 const StyledRow = styled.div`
     display: flex;
@@ -41,6 +47,7 @@ export const TaskRow = ({
 } & FlexContainerProps) => {
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
         useState(false)
+    const navigate = useNavigate()
     return (
         <StyledRow>
             <ToggleTaskCheckbox task={task} />
@@ -73,18 +80,30 @@ export const TaskRow = ({
                 </FlexContainer>
             </div>
             <FlexContainer gap="1em" alignItems="center">
-                <StyledIconLink
-                    to={`/tasklists/${task.listId}/task/${task.id}/edit`}
-                    block
-                >
-                    <img src="/icons/edit.svg" alt="" />
-                </StyledIconLink>
-                <StyledIconButton
-                    onClick={() => setIsDeleteConfirmationOpen(true)}
-                    context="danger"
-                >
-                    <img src="/icons/delete.svg" alt="" />
-                </StyledIconButton>
+                <Callout>
+                    <CalloutTrigger>
+                        <img src="/icons/menu.svg" alt="" />
+                    </CalloutTrigger>
+                    <CalloutContent preferredDirection={'left'}>
+                        <CalloutAction
+                            onClick={() => setIsDeleteConfirmationOpen(true)}
+                        >
+                            <img src="/icons/delete.svg" alt="" />
+                            Delete
+                        </CalloutAction>
+                        <CalloutAction
+                            onClick={() =>
+                                navigate(
+                                    `/tasklists/${task.listId}/task/${task.id}/edit`
+                                )
+                            }
+                        >
+                            <img src="/icons/edit.svg" alt="" />
+                            Edit
+                        </CalloutAction>
+                    </CalloutContent>
+                </Callout>
+
                 <DeleteTaskConfirmation
                     isOpen={isDeleteConfirmationOpen}
                     setIsOpen={setIsDeleteConfirmationOpen}

@@ -97,6 +97,8 @@ const Document = withEmotionCache(
 const globalStyles = `
   :root {
     --color-black: #111111;
+    --color-gray: #444444;
+    --color-light-gray: #888888;
     --color-white: #eeeeee;
     --primary-bg: #e1d2b7;
     --primary-bg-dark:rgb(29, 27, 23);

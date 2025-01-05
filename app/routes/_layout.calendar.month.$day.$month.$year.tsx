@@ -183,16 +183,19 @@ export default function Calendar() {
 
     const getDayContents = (date: Date) => {
         const eventsForDay = events.filter((event) => {
-            const start = new Date(event.start!.dateTime!)
-            const end = new Date(event.end!.dateTime!)
-
-            const startDay = getDateAtStartOfDay(start)
-            const endDay = getDateAtEndOfDay(end)
-
-            return (
-                startDay.getTime() <= date.getTime() &&
-                endDay.getTime() >= date.getTime()
+            const start = new Date(
+                event.start!.dateTime || event.start!.date || ''
             )
+            const hasStartTime = event.start?.dateTime
+            const end = new Date(event.end!.dateTime || event.end!.date || '')
+            const hasEndTime = event.end?.dateTime
+
+            const startsOnDate = isSameDay(start, date) && hasStartTime
+            const endsOnDate = isSameDay(end, date) && hasEndTime
+            const isAllDay = !hasStartTime && !hasEndTime
+            const isAllDayToday = isAllDay && isSameDay(end, date)
+
+            return startsOnDate || endsOnDate || isAllDayToday
         })
 
         const MobileComponent = eventsForDay.length > 3 ? EventDot : EventPill
@@ -245,7 +248,15 @@ export default function Calendar() {
     }
 
     const getIsToday = (date: Date) =>
-        date.toLocaleString('en-US') === new Date().toLocaleString('en-US')
+        date.toDateString() === new Date().toDateString()
+
+    const isSameDay = (dateOne: Date, dateTwo: Date) => {
+        return (
+            dateOne.getFullYear() === dateTwo.getFullYear() &&
+            dateOne.getMonth() === dateTwo.getMonth() &&
+            dateOne.getDate() === dateTwo.getDate()
+        )
+    }
 
     return (
         <div>

@@ -37,9 +37,8 @@ export const TaskGrid = ({
         }
 
         const url = `/tasklists/all?${searchParams.toString()}`
-        console.log(url)
         fetcher.load(url)
-    }, [filterList, search])
+    }, [fetcher, filterList, search])
 
     useEffect(() => {
         refresh()

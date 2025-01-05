@@ -12,6 +12,7 @@ import {
 } from '../Callout'
 import { DeleteEventConfirmation } from './DeleteEventConfirmation'
 import { Strikethrough } from '../styledParts/Text'
+import { useCreateModalContext } from '../CreateModal'
 
 const StyledEvent = styled(Well)<{ past: boolean }>`
   position: relative;
@@ -99,6 +100,7 @@ export const Event = ({
     skipDate?: boolean
     calloutDirection?: 'top' | 'bottom' | 'left' | 'right'
 }) => {
+    const { setIsCreateModalOpen } = useCreateModalContext()
     const location = useLocation()
     const navigate = useNavigate()
     const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
@@ -114,7 +116,7 @@ export const Event = ({
         end = new Date(event.end?.date || '')
     }
 
-    const isAllDay = start.toLocaleDateString() === end.toLocaleDateString()
+    const isAllDay = !event.start?.dateTime && !event.end?.dateTime
 
     const days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
     const months = [
@@ -134,6 +136,25 @@ export const Event = ({
     const startDay = days[start.getDay()]
     const startMonth = months[start.getMonth()]
 
+    const endDay = days[end.getDay()]
+    const endMonth = months[end.getMonth()]
+
+    const title = (
+        isAllDay
+            ? [
+                  endDay?.toLocaleUpperCase(),
+                  endMonth?.toLocaleUpperCase(),
+                  end.getDate(),
+              ]
+            : [
+                  startDay?.toLocaleUpperCase(),
+                  startMonth?.toLocaleUpperCase(),
+                  start.getDate(),
+              ]
+    )
+        .filter(Boolean)
+        .join(' ')
+
     const isPastDate = end < new Date()
 
     return (
@@ -149,25 +170,14 @@ export const Event = ({
                 className="eventHeader"
             >
                 <div className="timeDetails">
-                    {!skipDate && (
-                        <p className="date">
-                            {[
-                                startDay?.toLocaleUpperCase(),
-                                startMonth?.toLocaleUpperCase(),
-                                start.getDate(),
-                            ]
-                                .filter(Boolean)
-                                .join(' ')}
-                        </p>
-                    )}
-
+                    {!skipDate && <p className="date">{title}</p>}
                     <p className="time">
                         {isAllDay
-                            ? [
+                            ? 'All day'
+                            : [
                                   start.toLocaleTimeString(),
                                   end.toLocaleTimeString(),
-                              ].join(' - ')
-                            : 'All day'}
+                              ].join(' - ')}
                     </p>
                 </div>
                 <Callout>
@@ -188,6 +198,21 @@ export const Event = ({
                         >
                             <img src="/icons/edit.svg" alt="" />
                             Edit
+                        </CalloutAction>
+                        <CalloutAction
+                            onClick={() =>
+                                setIsCreateModalOpen(true, {
+                                    type: 'event',
+                                    defaultStart: new Date(
+                                        event.start?.dateTime ||
+                                            event.start?.date ||
+                                            ''
+                                    ),
+                                })
+                            }
+                        >
+                            <img src="/icons/add.svg" alt="" />
+                            Create
                         </CalloutAction>
                     </CalloutContent>
                 </Callout>

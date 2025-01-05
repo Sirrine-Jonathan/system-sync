@@ -17,6 +17,14 @@ export const useIsMobile = () => {
     }, [])
 
     return {
+        device: (() => {
+            if (width < 768) {
+                return 'mobile'
+            } else if (width < 1024) {
+                return 'tablet'
+            }
+            return 'desktop'
+        })(),
         isMobile: width < 768,
         isLandscape: height < width,
     }

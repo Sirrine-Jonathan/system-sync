@@ -1,12 +1,10 @@
-import { useLoaderData, useOutletContext } from '@remix-run/react'
-import { authenticator, GoogleUser } from '~/services/auth.server'
+import { useOutletContext } from '@remix-run/react'
+import { GoogleUser } from '~/services/auth.server'
 import { LoaderFunction } from '@remix-run/node'
-import { getRangeMinMax } from '~/utils/time'
-import { getEvents } from '~/services/event.server'
 import { calendar_v3 } from 'googleapis'
 import { Event } from '~/components/Events/Event'
 import {
-    getListsWithTasks,
+    TaskWithListTitle,
     type TaskListWithTasks,
 } from '~/services/task.server'
 import { Section, Large, Highlight, Small } from '~/components/styledParts/Text'
@@ -18,49 +16,41 @@ import { TaskRow } from '~/components/Tasks/TaskRow'
 import { List } from '~/components/Tasks/List'
 import { StyledIconLink, StyledNavLink } from '~/components/styledParts/Links'
 import { CreateModalButton } from '~/components/CreateModal'
+import { ProgressChart } from '~/components/Tasks/ProgressChart'
 
 export const handle = {
     title: 'Dashboard',
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
-    await authenticator.isAuthenticated(request, {
-        failureRedirect: '/auth/signin',
-    })
-
-    const url = new URL(request.url)
-    const timezone = url.searchParams.get('tz') || 'UTC'
-    new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-    }).formatRange(new Date(), new Date())
-    const now = new Date()
-    const day = now.getDate()
-    const month = now.getMonth() + 1
-    const year = now.getFullYear()
-
-    const { dayMin, dayMax } = getRangeMinMax(
-        new Date(Number(year), Number(month) - 1, Number(day))
-    )
-
-    const events = await getEvents(request, {
-        timeMin: dayMin.toISOString(),
-        timeMax: dayMax.toISOString(),
-        singleEvents: true,
-        orderBy: 'startTime',
-    })
-
-    const lists = await getListsWithTasks(request)
-
-    return { events, lists }
+export const loader: LoaderFunction = async () => {
+    return null
 }
 
 export default function Dashboard() {
-    const { displayName } = useOutletContext<GoogleUser>()
-
-    const { events, lists } = useLoaderData<{
+    const { user, events, lists } = useOutletContext<{
+        user: GoogleUser
         events: calendar_v3.Schema$Event[]
         lists: TaskListWithTasks[]
     }>()
+
+    const todayEvents = events.filter((event) => {
+        const todaysDate = new Date()
+
+        const start = new Date(event.start!.dateTime || event.start!.date || '')
+        const end = new Date(event.end!.dateTime || event.end!.date || '')
+
+        const startsOnToday =
+            start.getDate() === todaysDate.getDate() &&
+            start.getMonth() === todaysDate.getMonth() &&
+            start.getFullYear() === todaysDate.getFullYear()
+
+        const endsOnToday =
+            end.getDate() === todaysDate.getDate() &&
+            end.getMonth() === todaysDate.getMonth() &&
+            end.getFullYear() === todaysDate.getFullYear()
+
+        return startsOnToday || endsOnToday
+    })
 
     const numberOfTasks = lists
         ? lists.reduce((acc, list) => acc + list.tasks?.length, 0)
@@ -81,7 +71,7 @@ export default function Dashboard() {
                         >
                             <Large>
                                 <Small>Hello, </Small>
-                                {displayName}
+                                {user.displayName}
                             </Large>
                             <DateTime />
                         </FlexContainer>
@@ -103,8 +93,8 @@ export default function Dashboard() {
                                 <div>You have no events today</div>
                             ) : (
                                 <div>
-                                    You have {events.length} event
-                                    {events.length === 1 ? '' : 's'} today
+                                    You have {todayEvents.length} event
+                                    {todayEvents.length === 1 ? '' : 's'} today
                                 </div>
                             )}
                         </FlexContainer>
@@ -137,7 +127,7 @@ export default function Dashboard() {
                     </FlexContainer>
                 </Well>
                 <hr />
-                {events.length > 0 && (
+                {todayEvents.length > 0 && (
                     <div>
                         <FlexContainer
                             justifyContent="space-between"
@@ -151,7 +141,7 @@ export default function Dashboard() {
                             gap="1em"
                             alignItems="stretch"
                         >
-                            {events.map((event) => (
+                            {todayEvents.map((event) => (
                                 <Event
                                     key={event.id}
                                     event={event}
@@ -164,25 +154,28 @@ export default function Dashboard() {
                 )}
                 {numberOfTasks && (
                     <div>
-                        <FlexContainer
-                            justifyContent="space-between"
-                            alignItems="center"
-                        >
-                            <h2>
-                                Tasks (
-                                {lists.reduce(
-                                    (acc, list) => acc + list.tasks?.length,
-                                    0
-                                )}
-                                )
-                            </h2>
-                        </FlexContainer>
+                        <h2>
+                            Tasks (
+                            {lists.reduce(
+                                (acc, list) => acc + list.tasks?.length,
+                                0
+                            )}
+                            )
+                        </h2>
+                        <ProgressChart lists={lists as TaskListWithTasks[]} />
                         <GridContainer gap="1em">
                             {lists.map((list) => (
-                                <List key={list.id} taskList={list}>
+                                <List
+                                    key={list.id}
+                                    taskList={list as TaskListWithTasks}
+                                    allLists={lists}
+                                >
                                     {list.tasks.map((task) => (
                                         <li key={task.id}>
-                                            <TaskRow task={task} showListName />
+                                            <TaskRow
+                                                task={task as TaskWithListTitle}
+                                                showListName
+                                            />
                                         </li>
                                     ))}
                                 </List>

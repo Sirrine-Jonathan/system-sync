@@ -14,6 +14,7 @@ import { Diminished, Small } from '~/components/styledParts/Text'
 import { Well } from '~/components/styledParts/Well'
 import { DeleteTaskConfirmation } from '~/components/Tasks/DeleteTaskConfirmation'
 import { ScheduleTaskForm } from '~/components/Tasks/ScheduleTaskForm'
+import { ToggleTaskCheckbox } from '~/components/Tasks/Toggle'
 
 export const handle = {
     title: 'Task',
@@ -98,22 +99,19 @@ export default function ViewTask() {
                 gap="1em"
             >
                 <Well>
-                    <h2>{task.title}</h2>
-
+                    <FlexContainer
+                        justifyContent="space-between"
+                        alignItems="center"
+                    >
+                        <ToggleTaskCheckbox task={task} />
+                        <h2>{task.title}</h2>
+                    </FlexContainer>
                     <FlexContainer
                         flexDirection="column"
                         justifyContent="flex-start"
                         alignItems="flex-start"
                         gap="1rem"
                     >
-                        <div>List: {list.title}</div>
-                        <div>
-                            Status:
-                            {task.status === 'needsAction' && ' Needs Action'}
-                            {task.status === 'completed' && ' Completed'}
-                            {task.status === 'deleted' && ' Deleted'}
-                        </div>
-                        <div></div>
                         {(task.links || [])
                             .filter(
                                 (t) => Boolean(t.link) && Boolean(t.description)
@@ -128,18 +126,20 @@ export default function ViewTask() {
                                 Webview Link
                             </StyledExternalLink>
                         )}
+                    </FlexContainer>
+                    <FlexContainer justifyContent="flex-end">
                         <Diminished>
                             <Small>{task.updated}</Small>
                         </Diminished>
                     </FlexContainer>
                 </Well>
 
-                <Well>
-                    <p>{task.notes}</p>
-                </Well>
-
-                <h3>Due Date</h3>
-                <p>{task.due}</p>
+                {task.notes && (
+                    <Well>
+                        <Small>Notes</Small>
+                        <p>{task.notes}</p>
+                    </Well>
+                )}
             </FlexContainer>
         </section>
     )

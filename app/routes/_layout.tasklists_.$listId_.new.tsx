@@ -20,11 +20,17 @@ export const action = async ({ request, params }: ActionFunctionArgs) => {
     const formData = await request.formData()
     const title = formData.get('title') as string
     const notes = formData.get('notes') as string
+    const status = (formData.get('status') as string) || 'needsAction'
     if (!title) {
         throw new Error('Title is required')
     }
 
-    const task = await createTask(request, { tasklist: listId, title, notes })
+    const task = await createTask(request, {
+        tasklist: listId,
+        title,
+        notes,
+        status,
+    })
 
     console.log('task', task)
 

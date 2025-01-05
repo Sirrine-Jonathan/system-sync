@@ -208,9 +208,14 @@ export const updateTaskList = async (
 
 export const createTask = async (
     request: Request,
-    options: { tasklist: string; title: string; notes?: string }
+    options: {
+        tasklist: string
+        title: string
+        notes?: string
+        status?: string
+    }
 ) => {
-    const { tasklist, title, notes } = options
+    const { tasklist, title, notes, status } = options
     if (!tasklist) {
         throw new Error('Tasklist ID is required')
     }
@@ -221,6 +226,7 @@ export const createTask = async (
             resource: {
                 title,
                 notes,
+                status,
             },
         })
         .then((res) => res.data)

@@ -23,7 +23,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function AddTask() {
     const fetcher = useFetcher()
-    const [params] = useSearchParams()
 
     return (
         <section>
@@ -36,11 +35,7 @@ export default function AddTask() {
             </Breadcrumbs>
             <h2>Create a new task list</h2>
             <StyledForm state={fetcher.state}>
-                <fetcher.Form
-                    method="post"
-                    action="/tasklists/new"
-                    defaultTask={params.get('listId')}
-                >
+                <fetcher.Form method="post" action="/tasklists/new">
                     <label htmlFor="title">Title</label>
                     <input id="title" type="text" name="title" />
                     <button type="submit">Create</button>

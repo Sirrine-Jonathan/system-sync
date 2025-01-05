@@ -2,11 +2,14 @@ import { type TaskListWithTasks } from '~/services/task.server'
 import styled from '@emotion/styled'
 import { useState } from 'react'
 import { Well } from '../styledParts/Well'
-import { Diminished, Large, Small } from '../styledParts/Text'
+import { Small, Large, Highlight, Diminished } from '../styledParts/Text'
 import { tasks_v1 } from 'googleapis'
 import { Link } from '@remix-run/react'
 import { StyledIconButton } from '../styledParts/Buttons'
 import { FlexContainer } from '../styledParts/FlexContainer'
+import { CreateModalButton } from '../CreateModal'
+import { PieChart } from 'react-minimal-pie-chart'
+import { ListChart } from './ProgressChart'
 
 const StyledHeader = styled.div`
     display: flex;
@@ -36,17 +39,26 @@ const StyledList = styled.ul`
 
     &.open {
         height: auto;
+        overflow: visible;
     }
 `
 
 export const List = ({
     taskList,
+    allLists,
     children,
 }: {
     taskList: TaskListWithTasks
+    allLists: TaskListWithTasks[]
     children: React.ReactNode
 }) => {
     const [isOpen, setIsOpen] = useState(false)
+
+    const totalTasks = taskList?.tasks.length || 0
+    const completedTasks = taskList?.tasks.filter(
+        (task: tasks_v1.Schema$Task) => task.status === 'completed'
+    )
+    const percentage = completedTasks?.length / totalTasks
 
     return (
         <Well>
@@ -57,11 +69,25 @@ export const List = ({
                 alignItems="stretch"
             >
                 <StyledHeader>
-                    <Link to={`/tasklists/${taskList.id}`}>
-                        <Large>
-                            {taskList.title} ({taskList?.tasks.length || 0})
-                        </Large>
-                    </Link>
+                    <FlexContainer gap="1em">
+                        <ListChart list={taskList} />
+                        <FlexContainer
+                            flexDirection="column"
+                            alignItems="flex-start"
+                        >
+                            <Link to={`/tasklists/${taskList.id}`}>
+                                <Large style={{ marginRight: '0.5em' }}>
+                                    {taskList.title}
+                                </Large>
+                                <Highlight key="percentage">
+                                    {Math.round(percentage * 100)}%
+                                </Highlight>
+                            </Link>
+                            <Small>
+                                <Diminished>{totalTasks} tasks</Diminished>
+                            </Small>
+                        </FlexContainer>
+                    </FlexContainer>
                     <StyledIconButton
                         onClick={() => setIsOpen(!isOpen)}
                         context="transparent"
@@ -74,6 +100,12 @@ export const List = ({
                 </StyledHeader>
                 <StyledList className={isOpen ? 'open' : ''}>
                     {children}
+                    <FlexContainer justifyContent="flex-end">
+                        <CreateModalButton
+                            lists={allLists}
+                            defaultTaskId={taskList.id}
+                        />
+                    </FlexContainer>
                 </StyledList>
             </FlexContainer>
         </Well>

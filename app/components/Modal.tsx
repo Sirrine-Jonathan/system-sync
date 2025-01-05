@@ -20,7 +20,7 @@ const StyledModal = styled.div`
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: #000;
+        background: var(--color-black);
         border-radius: 5px;
         width: calc(100% - var(--horizontal-padding) * 2);
         max-width: 1200px;
@@ -43,10 +43,12 @@ const StyledModal = styled.div`
         }
 
         .modalSubtitle {
-            padding: 0;
+            padding: 0.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: var(--color-light-gray);
+            color: black;
         }
 
         .modalHeader {
