@@ -126,11 +126,26 @@ export const StyledIconButton = styled.button<{
 
   span {
     margin: 0 5px;
-    color: var(--color-white);
+    font-weight: normal;
+    color: ${({ context }) => {
+        if (!context) return 'var(--color-white);'
+        switch (context) {
+            case 'danger':
+                return 'var(--color-white);'
+            case 'warning':
+                return 'var(--color-white);'
+            case 'transparent':
+                return 'var(--color-white);'
+            case 'attention':
+                return 'var(--color-black);'
+            default:
+                return 'var(--color-white);'
+        }
+    }}
   }
 
   @media (max-width: 767px) {
-    span {
+    span:not(.badge) {
       display: none;
     }
   }

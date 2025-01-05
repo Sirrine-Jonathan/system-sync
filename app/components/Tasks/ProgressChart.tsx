@@ -17,14 +17,13 @@ const StyledChart = styled.div`
     justify-content: space-evenly;
     align-items: center;
     width: 100%;
-    padding: 1em 0;
+    font-size: 0.8em;
+    box-sizing: border-box;
 
     .charts {
         --size: min(350px, calc(50dvw + 2 * var(--horizontal-padding)));
         margin: 10px;
         position: relative;
-        width: var(--size);
-        height: var(--size);
         box-sizing: border-box;
     }
 
@@ -38,10 +37,12 @@ const StyledChart = styled.div`
         gap: 3em;
 
         .legend {
+            font-size: 1em;
             align-self: flex-start;
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
+            margin-bottom: 3em;
         }
     }
 `
@@ -146,7 +147,7 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
                                 'cy',
                                 svgRect.y + svgRect.height / 2
                             )
-                            circle.setAttribute('r', `${lineWidth / 3}px`)
+                            circle.setAttribute('r', `5px`)
                             circle.setAttribute(
                                 'fill',
                                 'var(--primary-bg-dark)'
@@ -176,7 +177,7 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
                                 ? `${Math.round(dataEntry.percentage)}%`
                                 : ''
                         }
-                        radius={23}
+                        radius={18}
                         lineWidth={lineWidth + 5}
                         labelStyle={{
                             fontSize: '0.8em',
@@ -213,7 +214,7 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
                             left: '0',
                         }}
                         rounded
-                        radius={35}
+                        radius={30}
                         lineWidth={lineWidth}
                         paddingAngle={lineWidth}
                         startAngle={90 + lineWidth}
@@ -243,11 +244,11 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
                             left: '0',
                         }}
                         rounded
-                        radius={50}
-                        lineWidth={lineWidth}
+                        radius={42}
+                        lineWidth={lineWidth - 3}
                         labelPosition={90}
-                        paddingAngle={lineWidth}
-                        startAngle={90 + lineWidth}
+                        paddingAngle={lineWidth - 5}
+                        startAngle={90 + lineWidth - 5}
                         label={({ dataEntry }) =>
                             Math.round(dataEntry.percentage) > 0
                                 ? `${Math.round(dataEntry.percentage)}%`
@@ -356,7 +357,7 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
                                 <SubKeyBullet
                                     backgroundColor={list.needsActionColor}
                                 />{' '}
-                                Needs Action: {list.completed.length}
+                                Needs Action: {list.needsAction.length}
                             </FlexContainer>,
                         ]}
                     </FlexContainer>

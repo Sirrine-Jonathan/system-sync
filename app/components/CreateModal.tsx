@@ -173,6 +173,8 @@ export const CreateModalButton = ({
     size?: 'small' | 'normal' | 'large'
 }) => {
     const { setIsCreateModalOpen } = useCreateModalContext()
+    const src =
+        context === 'attention' ? '/icons/plus-dark.svg' : '/icons/plus.svg'
     return (
         <>
             <StyledIconButton
@@ -186,7 +188,7 @@ export const CreateModalButton = ({
                 context={context}
                 size={size}
             >
-                <img src="/icons/plus-dark.svg" alt="" />
+                <img src={src} alt="" />
                 {children}
             </StyledIconButton>
             <CreateModal lists={lists} />

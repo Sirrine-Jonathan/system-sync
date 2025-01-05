@@ -13,6 +13,7 @@ import {
 import { DeleteEventConfirmation } from './DeleteEventConfirmation'
 import { Strikethrough } from '../styledParts/Text'
 import { useCreateModalContext } from '../CreateModal'
+import { StyledNavLink } from '../styledParts/Links'
 
 const StyledEvent = styled(Well)<{ past: boolean }>`
   position: relative;
@@ -106,15 +107,8 @@ export const Event = ({
     const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
         useState(false)
 
-    let start = new Date(event.start?.dateTime || '')
-    let end = new Date(event.end?.dateTime || '')
-
-    if (start.toString() === 'Invalid Date') {
-        start = new Date(event.start?.date || '')
-    }
-    if (end.toString() === 'Invalid Date') {
-        end = new Date(event.end?.date || '')
-    }
+    const start = new Date(event.start?.dateTime || event.start?.date || '')
+    const end = new Date(event.end?.dateTime || event.end?.date || '')
 
     const isAllDay = !event.start?.dateTime && !event.end?.dateTime
 
@@ -155,7 +149,12 @@ export const Event = ({
         .filter(Boolean)
         .join(' ')
 
-    const isPastDate = end < new Date()
+    const pastTime = new Date(end)
+    pastTime.setHours(23, 59, 59, 999)
+    pastTime.setMinutes(59, 59, 999)
+    pastTime.setSeconds(59, 999)
+
+    const isPastDate = pastTime.getTime() < Date.now()
 
     return (
         <StyledEvent className={`event ${startDay}`} past={isPastDate}>
@@ -217,14 +216,14 @@ export const Event = ({
                     </CalloutContent>
                 </Callout>
             </FlexContainer>
-            <NavLink
+            <StyledNavLink
                 to={`/event/${event.id}`}
                 className="summary"
                 state={{ returnUrl: location.pathname }}
             >
                 {isPastDate && <Strikethrough>{event.summary}</Strikethrough>}
                 {!isPastDate && event.summary}
-            </NavLink>
+            </StyledNavLink>
             {expanded && (
                 <>
                     <StyledDetails

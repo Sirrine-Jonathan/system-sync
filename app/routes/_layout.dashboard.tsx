@@ -7,16 +7,16 @@ import {
     TaskWithListTitle,
     type TaskListWithTasks,
 } from '~/services/task.server'
-import { Section, Large, Highlight, Small } from '~/components/styledParts/Text'
+import { Section } from '~/components/styledParts/Text'
 import { Well } from '~/components/styledParts/Well'
-import { DateTime } from '~/components/DateTime'
 import { FlexContainer } from '~/components/styledParts/FlexContainer'
 import { GridContainer } from '~/components/styledParts/GridContainer'
 import { TaskRow } from '~/components/Tasks/TaskRow'
 import { List } from '~/components/Tasks/List'
-import { StyledIconLink, StyledNavLink } from '~/components/styledParts/Links'
+import { StyledIconLink } from '~/components/styledParts/Links'
 import { CreateModalButton } from '~/components/CreateModal'
 import { ProgressChart } from '~/components/Tasks/ProgressChart'
+import { MonthView } from '~/components/Events/MonthView'
 
 export const handle = {
     title: 'Dashboard',
@@ -27,7 +27,7 @@ export const loader: LoaderFunction = async () => {
 }
 
 export default function Dashboard() {
-    const { user, events, lists } = useOutletContext<{
+    const { events, lists } = useOutletContext<{
         user: GoogleUser
         events: calendar_v3.Schema$Event[]
         lists: TaskListWithTasks[]
@@ -59,63 +59,27 @@ export default function Dashboard() {
     return (
         <main>
             <Section>
-                <Well>
-                    <FlexContainer
-                        justifyContent="space-between"
-                        alignItems="center"
-                        fullWidth
-                    >
-                        <StyledIconLink to="/calendar/month">
-                            <img src="/icons/calendar.svg" alt="" />
-                            <span className="badge">
-                                Events ({todayEvents.length})
-                            </span>
-                        </StyledIconLink>
-                        <StyledIconLink to="/tasklists">
-                            <img src="/icons/task.svg" alt="" />
-                            <span className="badge">
-                                Tasks ({numberOfTasks})
-                            </span>
-                        </StyledIconLink>
-                        <CreateModalButton lists={lists} context="attention" />
-                    </FlexContainer>
-                </Well>
-                <hr />
-                {todayEvents.length > 0 && (
-                    <div>
-                        <FlexContainer
-                            justifyContent="space-between"
-                            alignItems="center"
-                        >
-                            <h2>Events</h2>
-                            <div>{new Date().toLocaleDateString()}</div>
-                        </FlexContainer>
-                        <FlexContainer
-                            flexDirection="column"
-                            gap="1em"
-                            alignItems="stretch"
-                        >
-                            {todayEvents.map((event) => (
-                                <Event
-                                    key={event.id}
-                                    event={event}
-                                    calloutDirection="left"
-                                />
-                            ))}
-                        </FlexContainer>
-                        <hr />
-                    </div>
-                )}
+                <FlexContainer
+                    justifyContent="space-between"
+                    alignItems="center"
+                    fullWidth
+                >
+                    <StyledIconLink to="/calendar/month">
+                        <img src="/icons/calendar.svg" alt="" />
+                        <span className="badge">
+                            Events ({todayEvents.length})
+                        </span>
+                    </StyledIconLink>
+                    <StyledIconLink to="/tasklists">
+                        <img src="/icons/task.svg" alt="" />
+                        <span className="badge">Tasks ({numberOfTasks})</span>
+                    </StyledIconLink>
+                    <CreateModalButton lists={lists}>
+                        <span className="badge">Create</span>
+                    </CreateModalButton>
+                </FlexContainer>
                 {numberOfTasks && (
                     <div>
-                        <h2>
-                            Tasks (
-                            {lists.reduce(
-                                (acc, list) => acc + list.tasks?.length,
-                                0
-                            )}
-                            )
-                        </h2>
                         <ProgressChart lists={lists as TaskListWithTasks[]} />
                         <GridContainer gap="1em">
                             {lists.map((list) => (
@@ -137,6 +101,7 @@ export default function Dashboard() {
                         </GridContainer>
                     </div>
                 )}
+                <MonthView events={events || []} />
             </Section>
         </main>
     )
