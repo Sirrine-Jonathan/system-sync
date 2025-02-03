@@ -114,8 +114,6 @@ export function MonthView({ events }: { events: calendar_v3.Schema$Event[] }) {
         0
     ).getDate()
 
-    console.log({ daysInMonth })
-
     // first day of this month
     const firstDay = new Date(date.getFullYear(), date.getMonth(), 1)
 

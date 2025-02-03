@@ -1,22 +1,14 @@
 import { useOutletContext } from '@remix-run/react'
-import { GoogleUser } from '~/services/auth.server'
 import { LoaderFunction } from '@remix-run/node'
 import { calendar_v3 } from 'googleapis'
-import { Event } from '~/components/Events/Event'
-import {
-    TaskWithListTitle,
-    type TaskListWithTasks,
-} from '~/services/task.server'
+import { type TaskListWithTasks } from '~/services/task.server'
 import { Section } from '~/components/styledParts/Text'
-import { Well } from '~/components/styledParts/Well'
 import { FlexContainer } from '~/components/styledParts/FlexContainer'
-import { GridContainer } from '~/components/styledParts/GridContainer'
-import { TaskRow } from '~/components/Tasks/TaskRow'
-import { List } from '~/components/Tasks/List'
 import { StyledIconLink } from '~/components/styledParts/Links'
 import { CreateModalButton } from '~/components/CreateModal'
 import { ProgressChart } from '~/components/Tasks/ProgressChart'
 import { MonthView } from '~/components/Events/MonthView'
+import SwipeableViews from 'react-swipeable-views-react-18-fix'
 
 export const handle = {
     title: 'Dashboard',
@@ -78,30 +70,12 @@ export default function Dashboard() {
                         <span className="badge">Create</span>
                     </CreateModalButton>
                 </FlexContainer>
-                {numberOfTasks && (
-                    <div>
+                <SwipeableViews>
+                    {numberOfTasks && (
                         <ProgressChart lists={lists as TaskListWithTasks[]} />
-                        <GridContainer gap="1em">
-                            {lists.map((list) => (
-                                <List
-                                    key={list.id}
-                                    taskList={list as TaskListWithTasks}
-                                    allLists={lists}
-                                >
-                                    {list.tasks.map((task) => (
-                                        <li key={task.id}>
-                                            <TaskRow
-                                                task={task as TaskWithListTitle}
-                                                showListName
-                                            />
-                                        </li>
-                                    ))}
-                                </List>
-                            ))}
-                        </GridContainer>
-                    </div>
-                )}
-                <MonthView events={events || []} />
+                    )}
+                    <MonthView events={events || []} />
+                </SwipeableViews>
             </Section>
         </main>
     )

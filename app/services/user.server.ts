@@ -1,10 +1,29 @@
 import { mongoose } from '~/services/db.server'
 
 const UserSchema = new mongoose.Schema({
-    email: { type: String, required: true },
-    displayName: { type: String, required: true },
-    accessToken: { type: String, required: false },
-    refreshToken: { type: String, required: false },
+    profile: {
+        id: { type: String, required: false },
+        email: { type: String, required: false },
+        verified_email: { type: Boolean, required: false },
+        name: { type: String, required: false },
+        given_name: { type: String, required: false },
+        family_name: { type: String, required: false },
+        picture: { type: String, required: false },
+    },
+    tokens: {
+        accessToken: { type: String, required: false },
+        refreshToken: { type: String, required: false },
+    },
+    pillars: {
+        name: { type: String, required: false },
+        frequency: { type: Number, required: false },
+    },
+    settings: {
+        timezone: { type: String, required: false },
+        theme: { type: String, required: false },
+        notifications: { type: Boolean, required: false },
+        reminders: { type: Boolean, required: false },
+    },
 })
 
 // Type of an hydrated document (with all the getters, etc...)
@@ -24,36 +43,26 @@ try {
 }
 
 export async function getUsers(): Promise<THydratedUserModel[]> {
-    const users = await User.find().exec()
-    return users
+    return await User.find().exec()
 }
 
 export async function addUser(fields: TUserModel): Promise<THydratedUserModel> {
-    const user = await User.create(fields)
-    return user
+    return await User.create(fields)
 }
 
-export async function updateUser(
-    id: string,
-    email: string
-): Promise<THydratedUserModel> {
-    const user = await User.findOneAndUpdate(
-        { _id: id },
-        { email },
-        { new: true }
-    )
-    return user
+export async function updateUser(id: string, email: string) {
+    return await User.findOneAndUpdate({ _id: id }, { email }, { new: true })
 }
 
-export async function deleteUser(id: string): Promise<THydratedUserModel> {
-    const user = await User.findOneAndDelete({ _id: id })
-    return user
+export async function deleteUser(id: string) {
+    return await User.findOneAndDelete({ _id: id })
 }
 
 export async function findOrCreateUser(
     fields: TUserModel
 ): Promise<THydratedUserModel> {
-    const user = await User.findOne({ email: fields.email })
+    if (!fields.profile?.email) throw new Error('No email provided')
+    const user = await User.findOne({ 'profile.email': fields.profile.email })
     if (user) return user
     return await addUser(fields)
 }

@@ -1,55 +1,61 @@
 import { Authenticator } from 'remix-auth'
-import { GoogleStrategy, GoogleProfile } from 'remix-auth-google'
-import { sessionStorage } from './session.server'
+import { OAuth2Strategy } from 'remix-auth-oauth2'
+import { getProfile } from './profile.server'
 import { findOrCreateUser } from './user.server'
-import { mongoose } from './db.server'
+import { getSession } from './session.server'
 
-export type GoogleUser = GoogleProfile & {
-    _id: mongoose.Types.ObjectId
-    tokens: {
-        accessToken: string | null | undefined
-        refreshToken: string | null | undefined
-    }
-    timeZone?: string
-}
+export const authenticator = new Authenticator()
 
-export const authenticator = new Authenticator<GoogleUser>(sessionStorage, {
-    sessionKey: 'user',
-    sessionErrorKey: 'error',
-})
-
-export const googleStrategy = new GoogleStrategy(
+const googleStrategy = new OAuth2Strategy(
     {
-        clientID: process.env.GOOGLE_CLIENT_ID!,
+        cookie: {
+            name: 'oauth2',
+            maxAge: 60 * 60 * 24 * 7, // 1 week
+            path: '/auth',
+            httpOnly: true,
+            sameSite: 'Lax',
+            secure: true,
+        },
+        clientId: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-        callbackURL:
+        redirectURI:
             process.env.NODE_ENV === 'production'
                 ? 'https://system-sync.netlify.app/auth/callback'
                 : 'http://localhost:5173/auth/callback',
-        scope: 'profile email https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/tasks',
-        includeGrantedScopes: true,
+        authorizationEndpoint:
+            'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline',
+        tokenEndpoint: 'https://oauth2.googleapis.com/token',
+        tokenRevocationEndpoint: 'https://oauth2.googleapis.com/revoke',
+        scopes: [
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/tasks',
+        ],
     },
-    async ({ profile, accessToken, refreshToken }) => {
-        const dbUser = await findOrCreateUser({
-            email: profile.emails?.[0]?.value,
-            displayName: profile.displayName,
-            accessToken: accessToken,
-            refreshToken: refreshToken,
+    async ({ tokens, request }) => {
+        const userTokens = {
+            accessToken: tokens.accessToken(),
+            refreshToken: tokens.hasRefreshToken()
+                ? tokens.refreshToken()
+                : null,
+        }
+        const profile = await getProfile(userTokens)
+
+        const user = await findOrCreateUser({
+            profile,
+            tokens: userTokens,
         })
 
-        const user: GoogleUser = {
-            _id: dbUser._id,
-            ...profile,
-            tokens: {
-                accessToken,
-                refreshToken,
-            },
-        }
+        const session = await getSession(request)
+        session.set('user', user)
 
-        console.log({ user })
-
-        return user
+        return session
     }
 )
 
-authenticator.use(googleStrategy)
+authenticator.use(googleStrategy, 'google')
+
+export async function refreshToken(refreshToken: string) {
+    return await googleStrategy.refreshToken(refreshToken)
+}

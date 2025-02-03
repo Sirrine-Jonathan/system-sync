@@ -4,7 +4,6 @@ import {
     useRouteError,
     useMatches,
 } from '@remix-run/react'
-import { authenticator } from '~/services/auth.server'
 import { type LoaderFunctionArgs } from '@remix-run/node'
 import { Header, FALLBACK_IMAGE_URL } from '~/components/Nav/Header'
 import { useEffect } from 'react'
@@ -20,15 +19,10 @@ import {
 } from '~/components/CreateModal'
 import { getEvents } from '~/services/event.server'
 import { getListsWithTasks } from '~/services/task.server'
-import { getSession } from '~/services/session.server'
+import { requireUser } from '~/services/session.server'
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    await authenticator.isAuthenticated(request, {
-        failureRedirect: '/auth/signin',
-    })
-
-    const session = await getSession(request)
-    const user = session.get('user')
+    const user = await requireUser(request)
 
     const url = new URL(request.url)
     const timezone = url.searchParams.get('tz') || 'UTC'
@@ -85,7 +79,7 @@ export default function Layout() {
         <CreateModalContextProvider>
             <main className="flex-col">
                 <Header
-                    imageUrl={user?.photos?.[0].value || FALLBACK_IMAGE_URL}
+                    imageUrl={user.profile?.picture || FALLBACK_IMAGE_URL}
                 />
                 <DesktopNav user={user} />
                 <Outlet context={{ events, lists, user }} />

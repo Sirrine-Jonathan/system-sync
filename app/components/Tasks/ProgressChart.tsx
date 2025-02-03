@@ -1,11 +1,16 @@
 import { FlexContainer } from '../styledParts/FlexContainer'
 import { PieChart } from 'react-minimal-pie-chart'
-import { type TaskListWithTasks } from '~/services/task.server'
+import {
+    TaskWithListTitle,
+    type TaskListWithTasks,
+} from '~/services/task.server'
 import { darkenRgb, lightenRgb, getListColor } from '~/utils/color'
 import styled from '@emotion/styled'
 import { useEffect, useRef } from 'react'
 import { GridContainer } from '../styledParts/GridContainer'
 import { useIsMobile } from '~/hooks/useIsMobile'
+import { List } from './List'
+import { TaskRow } from './TaskRow'
 
 const PieSettings = {
     completedColor: '#fefefe',
@@ -34,7 +39,6 @@ const StyledChart = styled.div`
 
     @media (max-width: 767px) {
         flex-direction: column;
-        gap: 3em;
 
         .legend {
             font-size: 1em;
@@ -131,7 +135,6 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
             chartChildren.forEach((child) => {
                 if (child.tagName === 'svg') {
                     const svgChildren = getAllChildren(child)
-                    console.log({ child, svgChildren })
                     svgChildren.forEach((svgChild) => {
                         if (svgChild.tagName === 'text') {
                             const svgRect = svgChild.getBBox()
@@ -276,91 +279,23 @@ export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
                     />
                 </div>
             </FlexContainer>
-            <GridContainer
-                gap="1em"
-                templateColumns={`repeat(${columns}, 1fr)`}
-                className="legend"
-            >
-                <FlexContainer flexDirection="column" alignItems="flex-start">
-                    <FlexContainer
-                        gap="0.5em"
-                        alignItems="center"
-                        style={{
-                            padding: '0.5em',
-                            width: 'max-content',
-                        }}
+            <GridContainer gap="1em">
+                {listsWithDetails.map((list) => (
+                    <List
+                        key={list.id}
+                        taskList={list as TaskListWithTasks}
+                        allLists={lists}
+                        color={list.color}
                     >
-                        <KeyBullet
-                            backgroundColor={PieSettings.completedColor}
-                        />{' '}
-                        Completed
-                    </FlexContainer>
-                    <FlexContainer
-                        gap="0.5em"
-                        alignItems="center"
-                        style={{
-                            padding: '0.5em',
-                            width: 'max-content',
-                        }}
-                    >
-                        <KeyBullet
-                            backgroundColor={PieSettings.needsActionColor}
-                        />{' '}
-                        Needs Action
-                    </FlexContainer>
-                </FlexContainer>
-                {listsWithDetails.flatMap((list) => (
-                    <FlexContainer
-                        flexDirection="column"
-                        alignItems="flex-start"
-                    >
-                        {[
-                            <FlexContainer
-                                gap="0.5em"
-                                alignItems="center"
-                                key={list.id}
-                                style={{
-                                    padding: '0.5em',
-                                    width: 'max-content',
-                                }}
-                            >
-                                <KeyBullet backgroundColor={list.color} />{' '}
-                                {list.title}
-                            </FlexContainer>,
-                            <FlexContainer
-                                gap="0.5em"
-                                alignItems="center"
-                                key={`list.id` + 'completed'}
-                                style={{
-                                    padding: '0.5em',
-                                    width: 'max-content',
-                                    marginLeft: '1em',
-                                    fontSize: '0.8em',
-                                }}
-                            >
-                                <SubKeyBullet
-                                    backgroundColor={list.completedColor}
-                                />{' '}
-                                Completed: {list.completed.length}
-                            </FlexContainer>,
-                            <FlexContainer
-                                gap="0.5em"
-                                alignItems="center"
-                                key={`list.id` + 'needsAction'}
-                                style={{
-                                    padding: '0.5em',
-                                    width: 'max-content',
-                                    marginLeft: '1em',
-                                    fontSize: '0.8em',
-                                }}
-                            >
-                                <SubKeyBullet
-                                    backgroundColor={list.needsActionColor}
-                                />{' '}
-                                Needs Action: {list.needsAction.length}
-                            </FlexContainer>,
-                        ]}
-                    </FlexContainer>
+                        {list.tasks.map((task) => (
+                            <li key={task.id}>
+                                <TaskRow
+                                    task={task as TaskWithListTitle}
+                                    showListName
+                                />
+                            </li>
+                        ))}
+                    </List>
                 ))}
             </GridContainer>
         </StyledChart>

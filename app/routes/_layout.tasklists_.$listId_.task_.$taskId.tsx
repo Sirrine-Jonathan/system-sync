@@ -44,8 +44,6 @@ export default function ViewTask() {
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
         useState(false)
 
-    console.log({ task })
-
     return (
         <section>
             <Breadcrumbs

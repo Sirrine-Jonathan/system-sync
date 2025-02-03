@@ -18,13 +18,18 @@ export type TaskInList = tasks_v1.Schema$TaskList & {
 const getService = async (request: Request) => {
     // Get session and access token
     const session = await getSession(request)
-    const accessToken = session.get('accessToken')
+    const user = session.get('user')
+    const accessToken = user.tokens.accessToken
+    const refreshToken = user.tokens.refreshToken
 
     if (!accessToken) throw new Error('User not authenticated')
 
     // Set up the OAuth2 client with access token
     const oauth2Client = new google.auth.OAuth2()
-    oauth2Client.setCredentials({ access_token: accessToken })
+    oauth2Client.setCredentials({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+    })
 
     // Initialize Google Calendar API client
     return google.tasks({ version: 'v1', auth: oauth2Client })

@@ -4,12 +4,11 @@ import { google, calendar_v3 } from 'googleapis'
 const getService = async (request: Request) => {
     // Get session and access token
     const session = await getSession(request)
-    const accessToken = session.get('accessToken')
-    const refreshToken = session.get('refreshToken')
+    const user = session.get('user')
+    const accessToken = user.tokens.accessToken
+    const refreshToken = user.tokens.refreshToken
 
     if (!accessToken) throw new Error('User not authenticated')
-
-    console.log('accessToken', accessToken)
 
     // Set up the OAuth2 client with access token
     const oauth2Client = new google.auth.OAuth2()

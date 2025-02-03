@@ -46,10 +46,12 @@ const StyledList = styled.ul`
 export const List = ({
     taskList,
     allLists,
+    color,
     children,
 }: {
     taskList: TaskListWithTasks
     allLists: TaskListWithTasks[]
+    color?: string
     children: React.ReactNode
 }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -61,7 +63,7 @@ export const List = ({
     const percentage = completedTasks?.length / totalTasks
 
     return (
-        <Well>
+        <Well style={color ? { backgroundColor: color } : {}}>
             <FlexContainer
                 flexDirection="column"
                 gap={isOpen ? '1em' : '0'}

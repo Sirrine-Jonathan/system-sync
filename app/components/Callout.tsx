@@ -181,18 +181,6 @@ export const CalloutContent = ({
             const leftOverlap = rect.left < 0
             const rightOverlap = rect.right + rect.width > windowWidth
 
-            console.log('reposition', {
-                rect,
-                windowWidth,
-                windowHeight,
-                preferredDirection,
-                nextDirection,
-                topOverlap,
-                bottomOverlap,
-                leftOverlap,
-                rightOverlap,
-            })
-
             if (topOverlap) {
                 nextDirection = 'bottom'
             } else if (bottomOverlap) {

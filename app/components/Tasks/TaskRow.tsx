@@ -17,7 +17,8 @@ import {
 } from '../Callout'
 import { useNavigate } from '@remix-run/react'
 
-const StyledRow = styled.div`
+const StyledRow = styled.div<{ color?: string }>`
+    background-color: ${({ color }) => color || 'unset'};
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -40,16 +41,18 @@ const StyledRow = styled.div`
 
 export const TaskRow = ({
     task,
+    color,
     showListName,
 }: {
     task: TaskWithListTitle
+    color?: string
     showListName?: boolean
 } & FlexContainerProps) => {
     const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
         useState(false)
     const navigate = useNavigate()
     return (
-        <StyledRow>
+        <StyledRow color={color}>
             <ToggleTaskCheckbox task={task} />
             <div className="taskContainer">
                 <FlexContainer
