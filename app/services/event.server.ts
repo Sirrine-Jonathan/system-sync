@@ -5,7 +5,6 @@ const getService = async (request: Request) => {
     // Get session and access token
     const session = await getSession(request)
     const user = session.get('user')
-    console.log({ user })
     const accessToken = user.tokens.accessToken
     const refreshToken = user.tokens.refreshToken
 

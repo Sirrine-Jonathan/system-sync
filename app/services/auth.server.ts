@@ -48,7 +48,7 @@ const googleStrategy = new OAuth2Strategy(
         })
 
         const updatedUser = {
-            ...user,
+            ...user._doc,
             tokens: {
                 accessToken: userTokens.accessToken,
                 refreshToken: userTokens.refreshToken,
