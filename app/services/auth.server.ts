@@ -47,8 +47,16 @@ const googleStrategy = new OAuth2Strategy(
             tokens: userTokens,
         })
 
+        const updatedUser = {
+            ...user,
+            tokens: {
+                accessToken: userTokens.accessToken,
+                refreshToken: userTokens.refreshToken,
+            },
+        }
+
         const session = await getSession(request)
-        session.set('user', user)
+        session.set('user', updatedUser)
 
         return session
     }

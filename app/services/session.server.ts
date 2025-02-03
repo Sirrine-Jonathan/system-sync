@@ -46,6 +46,7 @@ export const requireUser = async (request: Request) => {
         (!user.accessToken || isTokenExpired(user.accessToken)) &&
         user.refreshToken
     ) {
+        console.log('==== REFRESH TOKEN')
         const result = await refreshToken(user.refreshToken)
         console.log('==== REFRESH TOKEN result', result)
         user.accessToken = result.accessToken

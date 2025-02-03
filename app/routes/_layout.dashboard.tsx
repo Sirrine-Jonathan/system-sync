@@ -8,7 +8,6 @@ import { StyledIconLink } from '~/components/styledParts/Links'
 import { CreateModalButton } from '~/components/CreateModal'
 import { ProgressChart } from '~/components/Tasks/ProgressChart'
 import { MonthView } from '~/components/Events/MonthView'
-import SwipeableViews from 'react-swipeable-views-react-18-fix'
 
 export const handle = {
     title: 'Dashboard',
@@ -70,12 +69,14 @@ export default function Dashboard() {
                         <span className="badge">Create</span>
                     </CreateModalButton>
                 </FlexContainer>
-                <SwipeableViews>
+                <div>
                     {numberOfTasks && (
                         <ProgressChart lists={lists as TaskListWithTasks[]} />
                     )}
+                </div>
+                <div>
                     <MonthView events={events || []} />
-                </SwipeableViews>
+                </div>
             </Section>
         </main>
     )

@@ -91,12 +91,6 @@ type ListWithDetails = {
 export const ProgressChart = ({ lists }: { lists: TaskListWithTasks[] }) => {
     const lineWidth = 20
     const chartRef = useRef<HTMLDivElement>(null)
-    const { device } = useIsMobile()
-
-    let columns = 2
-    if (device === 'desktop') {
-        columns = 4
-    }
 
     const colorAugAmount = 50
 

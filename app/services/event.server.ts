@@ -5,10 +5,14 @@ const getService = async (request: Request) => {
     // Get session and access token
     const session = await getSession(request)
     const user = session.get('user')
+    console.log({ user })
     const accessToken = user.tokens.accessToken
     const refreshToken = user.tokens.refreshToken
 
     if (!accessToken) throw new Error('User not authenticated')
+
+    console.log('==== ACCESS TOKEN', accessToken)
+    console.log('==== REFRESH TOKEN', refreshToken)
 
     // Set up the OAuth2 client with access token
     const oauth2Client = new google.auth.OAuth2()
