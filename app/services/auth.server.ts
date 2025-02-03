@@ -8,14 +8,6 @@ export const authenticator = new Authenticator()
 
 const googleStrategy = new OAuth2Strategy(
     {
-        cookie: {
-            name: 'oauth2',
-            maxAge: 60 * 60 * 24 * 7, // 1 week
-            path: '/auth',
-            httpOnly: true,
-            sameSite: 'Lax',
-            secure: true,
-        },
         clientId: process.env.GOOGLE_CLIENT_ID!,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
         redirectURI:
